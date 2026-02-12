@@ -50,7 +50,7 @@ class Menu():
         self.clock = pygame.time.Clock()
         
         # Load custom cursor
-        cursor_surface = pygame.image.load('root\\assets\\images\\cat_cursor.png').convert_alpha()
+        cursor_surface = pygame.image.load('assets/images/cat_cursor.png').convert_alpha()
         scaled_cursor_surface = pygame.transform.scale(cursor_surface, (64, 64))
         pygame.mouse.set_visible(False)
         self.cursor = scaled_cursor_surface
