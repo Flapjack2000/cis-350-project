@@ -3,11 +3,12 @@ Entry point for the game
 Handles menu -> game transitions
 """
 import os
-os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = '1'
 import pygame
-
 from menu import Menu
 from game import Game
+
+# Importing pygame prints out a message. This prevents it.
+os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = '1'
 
 def main():
     while True:
