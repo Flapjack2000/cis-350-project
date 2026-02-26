@@ -13,5 +13,5 @@ class Settings:
     }
 
     self.time: dict = {
-      "FPS": 120
+      "fps": 120
     }

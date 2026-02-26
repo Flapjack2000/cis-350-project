@@ -10,7 +10,7 @@ import pygame
 
 from global_settings import Settings
 
-class Game():
+class Game:
   def __init__(self) -> None:
     # Create window and apply settings
     self.running = True
@@ -32,12 +32,12 @@ class Game():
   
   def delta_time(self):
       """ Calculate time since last frame """
-      return self.clock.tick(self.settings.time["FPS"]) / 1000
+      return self.clock.tick(self.settings.time["fps"]) / 1000
       
   def run(self):
         while self.running:
-            FPS = self.settings.time["FPS"]
-            self.clock.tick(FPS)
+            fps = self.settings.time["fps"]
+            self.clock.tick(fps)
             self.handle_events()
             self.update()
             self.draw()

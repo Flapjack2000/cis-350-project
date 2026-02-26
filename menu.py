@@ -11,7 +11,7 @@ import pygame
 from global_settings import Settings
 
 
-class Button():
+class Button:
     def __init__(self, x, y, width, height, text, font_size=36):
         self.rect = pygame.Rect(x, y, width, height)
         self.text = text
@@ -77,8 +77,8 @@ class Menu():
         
     def run(self):
         while self.running:
-            FPS = self.settings.time["FPS"]
-            self.clock.tick(FPS)
+            fps = self.settings.time["fps"]
+            self.clock.tick(fps)
             self.handle_events()
             self.update()
             self.draw()
