@@ -14,19 +14,19 @@ def main():
         # Show menu
         menu = Menu()
         action = menu.run()
-        
+
         if action == 'start':
             # Start the game
             game = Game()
             game.run()
             # When game ends, loop back to menu
-            
+
         elif action == 'settings':
             pass
-            
+
         elif action == 'quit':
             break
-            
+
     pygame.quit()
 
 if __name__ == "__main__":
