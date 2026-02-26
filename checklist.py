@@ -21,6 +21,12 @@ class Checklist:
     SEED_OFFSET = 1
 
     def __init__(self, initial_tasks: list[str]):
+
+        tasks_length = len(initial_tasks)
+        req_tasks_length = self.DAY_TASKS_REQUIRED + self.NIGHT_TASKS_REQUIRED
+        if tasks_length < req_tasks_length:
+            raise ValueError(f"Checklist initialized with {tasks_length} tasks. Requires at least {req_tasks_length} tasks.")
+
         self._pool: list[str] = initial_tasks
         self.tasks: dict[str, bool] = {}
         self._cycle: int = 1
