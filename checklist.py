@@ -27,19 +27,19 @@ class Checklist:
         if tasks_length < req_tasks_length:
             raise ValueError(f"Checklist initialized with {tasks_length} tasks. Requires at least {req_tasks_length} tasks.")
 
-        self._pool: list[str] = initial_tasks
+        self.__pool: list[str] = initial_tasks
         self.tasks: dict[str, bool] = {}
-        self._cycle: int = 1
+        self.__cycle: int = 1
 
         self.__load_phase_tasks()
 
     @property
     def is_day(self) -> bool:
-        return self._cycle % 2 == 1
+        return self.__cycle % 2 == 1
 
     @property
     def day_count(self) -> int:
-        return (self._cycle + 1) // 2
+        return (self.__cycle + 1) // 2
 
     def complete_task(self, task: str):
         if task in self.tasks:
@@ -55,13 +55,13 @@ class Checklist:
         return [task for task, done in self.tasks.items() if not done]
 
     def __set_pool(self, tasks: list[str]):
-        self._pool = tasks
+        self.__pool = tasks
         self.__load_phase_tasks()
 
     def __get_day_night_split(self) -> tuple[list[str], list[str]]:
         # use the day number as seed so both phases of the same day share a split
         rng = random.Random(self.day_count + self.SEED_OFFSET)
-        shuffled = rng.sample(self._pool, len(self._pool))
+        shuffled = rng.sample(self.__pool, len(self.__pool))
         day_tasks = shuffled[:self.DAY_TASKS_REQUIRED]
         night_tasks = shuffled[self.DAY_TASKS_REQUIRED:self.DAY_TASKS_REQUIRED + self.NIGHT_TASKS_REQUIRED]
         return day_tasks, night_tasks
@@ -72,5 +72,5 @@ class Checklist:
         self.tasks = {task: False for task in tasks}
 
     def __advance_cycle(self):
-        self._cycle += 1
+        self.__cycle += 1
         self.__load_phase_tasks()
