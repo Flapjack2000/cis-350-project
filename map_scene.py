@@ -6,6 +6,7 @@ os.environ["PYGAME_HIDE_SUPPORT_PROMPT"] = "1"
 
 import pygame
 from scene import Scene, SceneManager
+from global_settings import Settings
 
 class MapScene(Scene):
     """The core gameplay scene: clock, day/night cycle, movement, etc."""
@@ -13,8 +14,9 @@ class MapScene(Scene):
     def __init__(self, manager: SceneManager) -> None:
         super().__init__(manager)
 
-        cursor_surface = pygame.image.load("assets/images/cat_cursor.png").convert_alpha()
-        self.cursor = pygame.transform.scale(cursor_surface, (64, 64))
+        cursor_cfg = Settings().cursor
+        cursor_surface = pygame.image.load(cursor_cfg["image_path"]).convert_alpha()
+        self.cursor = pygame.transform.scale(cursor_surface, cursor_cfg["size"])
 
     def handle_events(self, events: list[pygame.event.Event]) -> None:
         for event in events:

@@ -14,3 +14,8 @@ class Settings:
         self.time: dict = {
             "fps": 120
         }
+
+        self.cursor: dict = {
+            "image_path": "assets/images/cat_cursor.png",
+            "size": (64, 64),
+        }

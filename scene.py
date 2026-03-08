@@ -57,13 +57,6 @@ class SceneManager:
     def is_empty(self) -> bool:
         return not self.__stack
 
-    def switch(self, scene: Scene) -> None:
-        """Replace the whole stack with scene."""
-        while self.__stack:
-            self.__stack.pop().on_exit()
-        scene.on_enter()
-        self.__stack.append(scene)
-
     def push(self, scene: Scene) -> None:
         """Overlay scene on top of the current scene."""
         scene.on_enter()
@@ -74,7 +67,7 @@ class SceneManager:
         if self.__stack:
             self.__stack.pop().on_exit()
 
-    def switch_to_empty(self) -> None:
+    def exit_all(self) -> None:
         """Clear the entire stack, causing the game loop to exit cleanly."""
         while self.__stack:
             self.__stack.pop().on_exit()

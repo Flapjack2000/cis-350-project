@@ -30,8 +30,9 @@ class MenuScene(Scene):
         self.title_font = pygame.font.Font(None, 72)
 
     def on_enter(self) -> None:
-        cursor_surface = pygame.image.load("assets/images/cat_cursor.png").convert_alpha()
-        self.cursor = pygame.transform.scale(cursor_surface, (64, 64))
+        cursor_cfg = Settings().cursor
+        cursor_surface = pygame.image.load(cursor_cfg["image_path"]).convert_alpha()
+        self.cursor = pygame.transform.scale(cursor_surface, cursor_cfg["size"])
         for button in self.buttons.values():
             button.hovered = False
 
@@ -61,6 +62,7 @@ class MenuScene(Scene):
 
     def _handle_action(self, action: str) -> None:
         if action == "start":
-            self.manager.switch(MapScene(self.manager))
+            self.manager.pop()
+            self.manager.push(MapScene(self.manager))
         elif action == "quit":
-            self.manager.switch_to_empty()
+            self.manager.exit_all()
