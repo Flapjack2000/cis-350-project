@@ -44,9 +44,6 @@ class SceneManager:
     switch(scene)  - replace the entire stack with a new scene (menu -> game).
     push(scene)    - overlay a scene on top (pause menus, dialogues, etc.).
     pop()          - remove the top scene and resume the one below.
-
-    Here's the general flow. When the game is started, the menu scene gets pushed to the stack.
-    When the game
     """
 
     def __init__(self) -> None:
