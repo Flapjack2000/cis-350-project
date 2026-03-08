@@ -1,70 +1,52 @@
 """
-Manages the game loop and gameplay
-* Clock
-* Day/Night cycle
-* Movement
+Manages the main game loop.
 """
+
 import os
+os.environ["PYGAME_HIDE_SUPPORT_PROMPT"] = "1"
+
 import pygame
 from checklist import Checklist
+from scene import SceneManager
+from menu_scene import MenuScene
 from global_settings import Settings
 
-# Importing pygame prints out a message. This prevents it.
-os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = '1'
-
 class Game:
+    instance: "Game" = None  # Global reference so scenes can signal quit
+
     def __init__(self) -> None:
+        Game.instance = self
         self.running = True
         pygame.init()
+
+        self.settings = Settings()
+        self.screen = pygame.display.set_mode(self.settings.window["size"])
+        pygame.display.set_caption(self.settings.window["title"])
+        pygame.mouse.set_visible(False)
+
+        self.clock = pygame.time.Clock()
 
         initial_tasks = ["Tiger", "Monkey", "Lions", "Zebra", "Fish", "Rattlesnake", "Meerkats"]
         self.checklist = Checklist(initial_tasks)
 
-        self.settings = Settings()
-        size = self.settings.window["size"]
-        self.screen = pygame.display.set_mode(size)
+        self.scene_manager = SceneManager()
+        self.scene_manager.push(MenuScene(self.scene_manager))
 
-        title = self.settings.window["title"]
-        pygame.display.set_caption(title)
+    def run(self) -> None:
+        while self.running and not self.scene_manager.is_empty:
+            dt = self.clock.tick(self.settings.time["fps"]) / 1000.0
 
-        self.clock = pygame.time.Clock()
+            events = pygame.event.get()
+            for event in events:
+                if event.type == pygame.QUIT:
+                    self.running = False
 
-        cursor_surface = pygame.image.load('assets/images/cat_cursor.png').convert_alpha()
-        scaled_cursor_surface = pygame.transform.scale(cursor_surface, (64, 64))
-        pygame.mouse.set_visible(False)
-        self.cursor = scaled_cursor_surface
+            scene = self.scene_manager.current
+            if scene:
+                scene.handle_events(events)
+                scene.update(dt)
+                scene.draw(self.screen)
 
-    def run(self):
-        while self.running:
-            fps = self.settings.time["fps"]
-            self.clock.tick(fps)
-            self.handle_events()
-            self.update()
-            self.draw()
+            pygame.display.flip()
 
-    def handle_events(self):
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                self.running = False
-
-    def delta_time(self):
-        """ Calculate time since last frame """
-        return self.clock.tick(self.settings.time["fps"]) / 1000
-
-    def update(self):
-        pass
-
-    def draw(self):
-        self.screen.fill([255, 230, 230])
-        # Draw the custom cursor
-        mouse_pos = pygame.mouse.get_pos()
-        self.screen.blit(self.cursor, mouse_pos)
-        pygame.display.flip()
-
-
-if __name__ == "__main__":
-    RED = '\033[91m'
-    ENDC = '\033[0m'
-    print(f"{RED}---------------------------{ENDC}")
-    print(f"{RED}Run the main.py file, bozo!{ENDC}")
-    print(f"{RED}---------------------------{ENDC}")
+        pygame.quit()
