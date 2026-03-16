@@ -7,13 +7,13 @@ class Minigame:
         if not isinstance(is_day, bool):
             raise ValueError
         else:
-            self._is_day = is_day
+            self.__is_day = is_day
 
         self._is_complete = False
 
     @property
     def is_day(self) -> bool:
-        return self._is_day
+        return self.__is_day
 
     @property
     def is_complete(self) -> bool:
