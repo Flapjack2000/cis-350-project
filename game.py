@@ -12,10 +12,7 @@ from menu_scene import MenuScene
 from global_settings import Settings
 
 class Game:
-    instance: "Game" = None  # Global reference so scenes can signal quit
-
     def __init__(self) -> None:
-        Game.instance = self
         self.running = True
         pygame.init()
 
