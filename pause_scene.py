@@ -72,5 +72,5 @@ class PauseScene(Scene):
         if action == "resume":
             self._manager.pop()
         elif action == "quit":
-            self._manager.pop()
+            self._manager.exit_all()
             self._manager.push(MenuScene(self._manager))
