@@ -62,7 +62,7 @@ class MenuScene(Scene):
 
     def _handle_action(self, action: str) -> None:
         if action == "start":
-            self.__manager.pop()
-            self.__manager.push(MapScene(self.__manager))
+            self._manager.pop()
+            self._manager.push(MapScene(self._manager))
         elif action == "quit":
-            self.__manager.exit_all()
+            self._manager.exit_all()

@@ -16,7 +16,7 @@ class Scene(ABC):
     """
 
     def __init__(self, manager: "SceneManager") -> None:
-        self.__manager = manager
+        self._manager = manager
 
     def on_enter(self) -> None:
         """Called once when this scene becomes the active scene."""

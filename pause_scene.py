@@ -46,7 +46,7 @@ class PauseScene(Scene):
 
         for event in events:
             if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
-                self.__manager.pop()
+                self._manager.pop()
             elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                 for name, button in self.buttons.items():
                     if button.is_clicked(mouse_pos, (True,)):
@@ -70,7 +70,7 @@ class PauseScene(Scene):
 
     def _handle_action(self, action: str) -> None:
         if action == "resume":
-            self.__manager.pop()
+            self._manager.pop()
         elif action == "quit":
-            self.__manager.pop()
-            self.__manager.push(MenuScene(self.__manager))
+            self._manager.pop()
+            self._manager.push(MenuScene(self._manager))
