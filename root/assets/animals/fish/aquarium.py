@@ -12,9 +12,6 @@ pygame.display.set_caption("Fish Test")
 BLUE = (30, 100, 180)
 clock = pygame.time.Clock()
 
-# Each entry: (filename, faces_right, size_px)
-# size_px is proportional to each species' real-world max size.
-# Reference: sailfin tang & yellow perch (~38 cm) = 240px, clownfish (~8 cm) = 50px
 FISH_INFO = [
     ("moorishidol.png", False, 180),
     ("sailfintang.png", False, 240),
@@ -25,6 +22,7 @@ FISH_INFO = [
     ("africanjewelfish.png", False, 220),
 ]
 
+#I APOLOGIZE IN ADVANCE, THIS AQUARIUM IS FAR MORE CUSTOM THAN ENCLOSURE, THUS HAS ITS OWN LOGIC+FILE
 class Fish:
     def __init__(self, img_path, faces_right, size_px, x, y, speed):
         raw = pygame.image.load(img_path).convert_alpha()
@@ -76,22 +74,20 @@ def load_fish():
 
     for i, (fname, faces_right, size_px) in enumerate(FISH_INFO):
         path = os.path.join(script_dir, fname)
-        if not os.path.exists(path):
-            print(f"WARNING: {path} not found, skipping.")
-            continue
         x = margin_x + (i % 4) * x_gap
         y = y_positions[i]
         fish_list.append(Fish(path, faces_right, size_px, x, y, speeds[i]))
 
     return fish_list
 
-
+#SAME ISSUE AS IN ENCLOSURE, I MADE A SEPARATE MAIN FOR TESTING, SO USE WHAT YOU NEED IN THE ORIGINAL SCENE SWITCH.
 def main():
     fish_list = load_fish()
-    if not fish_list:
-        print("No fish images found! Make sure the .png files are in the same folder as this script.")
-        pygame.quit()
-        sys.exit()
+
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    bg_path = os.path.join(script_dir, "..", "..", "images", "aquarium_background.png")
+    background = pygame.image.load(bg_path).convert()
+    background = pygame.transform.smoothscale(background, (WIDTH, HEIGHT))
 
     running = True
     while running:
@@ -101,7 +97,7 @@ def main():
             elif event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
                 running = False
 
-        screen.fill(BLUE)
+        screen.blit(background, (0, 0))
 
         for fish in fish_list:
             fish.update()
