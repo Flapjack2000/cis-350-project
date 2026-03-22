@@ -20,13 +20,13 @@ class MapScene(Scene):
         cursor_surface = pygame.image.load(cursor_cfg["image_path"]).convert_alpha()
         self.cursor = pygame.transform.scale(cursor_surface, cursor_cfg["size"])
 
-    # TODO: single function for handling selection of minigame, push its scene to self.__manager
-
     def handle_events(self, events: list[pygame.event.Event]) -> None:
         for event in events:
             if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
                 from pause_scene import PauseScene
                 self._manager.push(PauseScene(self._manager))
+
+            # TODO: click event for handling selection of minigame, push its scene to self._manager
 
     def update(self, dt: float) -> None:
         pass  # TODO: leave blank but keep to fulfill abstract requirement?
