@@ -16,10 +16,10 @@ BLACK = (0, 0, 0)
 RED = (255, 0, 0)
 
 # Load all 4 images
-body = pygame.image.load("./rattlesnake_body.png").convert_alpha()
-head = pygame.image.load("./rattlesnake_head.png").convert_alpha()
-tail = pygame.image.load("./rattlesnake_tail.png").convert_alpha()
-tongue = pygame.image.load("./rattlesnake_tongue.png").convert_alpha()
+body = pygame.image.load("rattlesnake_body.png").convert_alpha()
+head = pygame.image.load("rattlesnake_head.png").convert_alpha()
+tail = pygame.image.load("rattlesnake_tail.png").convert_alpha()
+tongue = pygame.image.load("rattlesnake_tongue.png").convert_alpha()
 
 # Image position (center of screen)
 image_x = SCREEN_WIDTH // 2
