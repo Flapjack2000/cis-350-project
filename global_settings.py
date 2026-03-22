@@ -3,15 +3,19 @@ Various global settings and hard coded values across the game
 """
 
 class Settings:
-  def __init__(self)-> None:
-    
-    self.window: dict = {
-      "title": "Zoo Game",
-      "size": (1280, 720),
-      "width": 1280,
-      "height": 720,
-    }
+    def __init__(self) -> None:
+        self.window: dict = {
+            "title": "Zoo Game",
+            "size": (1280, 720),
+            "width": 1280,
+            "height": 720,
+        }
 
-    self.time: dict = {
-      "FPS": 120
-    }
+        self.time: dict = {
+            "fps": 120
+        }
+
+        self.cursor: dict = {
+            "image_path": "assets/images/cat_cursor.png",
+            "size": (64, 64),
+        }
