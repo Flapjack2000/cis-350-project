@@ -19,3 +19,10 @@ class Settings:
             "image_path": "assets/images/cat_cursor.png",
             "size": (64, 64),
         }
+
+        self.backgrounds = {
+        "Jungle": "jungle_background.png",
+        "Savanna": "savanna_background.png",
+        "Grassland": "grassland_background.png",
+        "Aquarium": "aquarium_background.png",
+    }

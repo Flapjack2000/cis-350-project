@@ -3,6 +3,7 @@ os.environ["PYGAME_HIDE_SUPPORT_PROMPT"] = "1"
 
 import pygame
 from abc import ABC, abstractmethod
+from global_settings import Settings
 
 class Scene(ABC):
     """
@@ -13,16 +14,24 @@ class Scene(ABC):
 
     The scene receives a reference to the SceneManager so it can
     trigger transitions itself.
+
+    Cursor loading and cleanup are handled automatically via on_enter
+    and on_exit. Subclasses that override these must call super().
     """
 
     def __init__(self, manager: "SceneManager") -> None:
         self._manager = manager
+        self.cursor: pygame.Surface | None = None
 
     def on_enter(self) -> None:
         """Called once when this scene becomes the active scene."""
+        cursor_cfg = Settings().cursor
+        cursor_surface = pygame.image.load(cursor_cfg["image_path"]).convert_alpha()
+        self.cursor = pygame.transform.scale(cursor_surface, cursor_cfg["size"])
 
     def on_exit(self) -> None:
         """Called once just before this scene is removed / replaced."""
+        self.cursor = None
 
     @abstractmethod
     def handle_events(self, events: list[pygame.event.Event]) -> None:

@@ -22,24 +22,21 @@ class PauseScene(Scene):
         bx = (screen_width - bw) // 2
         start_y = screen_height // 2 - 60
 
-        self.cursor: pygame.Surface | None = None
         self.buttons = {
             "resume": Button(bx, start_y,      "Resume",       width=bw, height=bh),
             "quit":   Button(bx, start_y + 80, "Quit to Menu", width=bw, height=bh),
         }
         self.title_font = pygame.font.Font(None, 72)
         self.overlay = pygame.Surface((screen_width, screen_height), pygame.SRCALPHA)
-        self.overlay.fill((0, 0, 0, 120))
+        self.overlay.fill((10, 0, 0, 120))
 
     def on_enter(self) -> None:
-        cursor_cfg = Settings().cursor
-        cursor_surface = pygame.image.load(cursor_cfg["image_path"]).convert_alpha()
-        self.cursor = pygame.transform.scale(cursor_surface, cursor_cfg["size"])
+        super().on_enter()
         for button in self.buttons.values():
             button.hovered = False
 
     def on_exit(self) -> None:
-        self.cursor = None
+        super().on_exit()
 
     def handle_events(self, events: list[pygame.event.Event]) -> None:
         mouse_pos = pygame.mouse.get_pos()
