@@ -43,20 +43,23 @@ class SceneManager:
     """
     Manages a stack of Scene objects.
 
-    switch(scene)  - replace the entire stack with a new scene (menu -> game).
-    push(scene)    - overlay a scene on top (pause menus, dialogues, etc.).
+    push(scene)    - overlay a scene on top (pause menus, etc.).
     pop()          - remove the top scene and resume the one below.
+    exit_all()     - empty the stack, allowing the game to end on the next loop
     """
 
     def __init__(self) -> None:
+        """Initialize the scene stack."""
         self.__stack: list[Scene] = []
 
     @property
     def current(self) -> Scene | None:
+        """Return the top scene in the stack."""
         return self.__stack[-1] if self.__stack else None
 
     @property
     def is_empty(self) -> bool:
+        """Check if stack is empty."""
         return not self.__stack
 
     def push(self, scene: Scene) -> None:
