@@ -21,7 +21,7 @@ _LAYERS_V3 = [
 
 
 class MeerkatHabitat(HabitatScene):
-    BACKGROUND_FILE = "savanna_background.png"
+    BACKGROUND_FILE = "grassland_background.png"
 
     def __init__(self, manager: SceneManager) -> None:
         super().__init__(manager)
