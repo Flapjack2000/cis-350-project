@@ -55,6 +55,8 @@ class Button:
     DEFAULT_BORDER_RADIUS = 10
     DEFAULT_DISABLED_COLOR = (200, 200, 200)
     DEFAULT_DISABLED_TEXT_COLOR = (140, 140, 140)
+    DEFAULT_DISABLED_BORDER_COLOR = (173, 173, 173)
+    DEFAULT_HOVER_BORDER_COLOR = (180, 120, 140)
 
     def __init__(
             self,
@@ -74,6 +76,8 @@ class Button:
             border_radius: int = DEFAULT_BORDER_RADIUS,
             disabled_color: tuple = DEFAULT_DISABLED_COLOR,
             disabled_text_color: tuple = DEFAULT_DISABLED_TEXT_COLOR,
+            hover_border_color: tuple = DEFAULT_HOVER_BORDER_COLOR,
+            disabled_border_color: tuple = DEFAULT_DISABLED_BORDER_COLOR,
             enabled: bool = True,
     ) -> None:
         self.rect = pygame.Rect(x, y, width, height)
@@ -89,6 +93,8 @@ class Button:
         self.border_radius = border_radius
         self.disabled_color = disabled_color
         self.disabled_text_color = disabled_text_color
+        self.hover_border_color = hover_border_color
+        self.disabled_border_color = disabled_border_color
 
         # state
         self.enabled = enabled
@@ -103,17 +109,20 @@ class Button:
         if not self.enabled:
             bg = self.disabled_color
             fg = self.disabled_text_color
+            bd = self.disabled_border_color
         elif self.hovered:
             bg = self.hover_color
             fg = self.text_color
+            bd = self.hover_border_color
         else:
             bg = self.color
             fg = self.text_color
+            bd = self.border_color
 
         pygame.draw.rect(screen, bg, self.rect, border_radius=self.border_radius)
         if self.border_width > 0:
             pygame.draw.rect(
-                screen, self.border_color, self.rect,
+                screen, bd, self.rect,
                 self.border_width, border_radius=self.border_radius,
             )
 
