@@ -6,9 +6,7 @@ class Settings:
     def __init__(self) -> None:
         self.window: dict = {
             "title": "Zoo Game",
-            "size": (1280, 720),
-            "width": 1280,
-            "height": 720,
+            "size": (1280, 720)
         }
 
         self.time: dict = {
