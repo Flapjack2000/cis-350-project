@@ -113,6 +113,3 @@ class FishHabitat(Scene):
 
         for fish in self._fish:
             fish.draw(screen)
-
-        if self.cursor:
-            screen.blit(self.cursor, pygame.mouse.get_pos())

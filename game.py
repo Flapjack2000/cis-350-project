@@ -23,6 +23,10 @@ class Game:
 
         self.clock = pygame.time.Clock()
 
+        cursor_cfg = self.settings.cursor
+        cursor_surface = pygame.image.load(cursor_cfg["image_path"]).convert_alpha()
+        self.cursor = pygame.transform.scale(cursor_surface, cursor_cfg["size"])
+
         initial_tasks = ["Tiger", "Monkey", "Lions", "Zebra", "Fish", "Rattlesnake", "Meerkats"]
         self.checklist = Checklist(initial_tasks)
 
@@ -43,6 +47,8 @@ class Game:
                 scene.handle_events(events)
                 scene.update(dt)
                 scene.draw(self.screen)
+
+            self.screen.blit(self.cursor, pygame.mouse.get_pos())
 
             pygame.display.flip()
 

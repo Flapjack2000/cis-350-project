@@ -28,4 +28,3 @@ class MapScene(Scene):
 
     def draw(self, screen: pygame.Surface) -> None:
         screen.fill((255, 230, 230))
-        screen.blit(self.cursor, pygame.mouse.get_pos())
