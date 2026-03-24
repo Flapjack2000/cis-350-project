@@ -45,12 +45,8 @@ class MenuScene(Scene):
         self.title_font = pygame.font.Font(None, 72)
 
     def on_enter(self) -> None:
-        super().on_enter()
         for button in self.buttons.values():
             button.hovered = False
-
-    def on_exit(self) -> None:
-        super().on_exit()
 
     def handle_events(self, events: list[pygame.event.Event]) -> None:
         mouse_pos = pygame.mouse.get_pos()
@@ -70,8 +66,6 @@ class MenuScene(Scene):
         screen.blit(title, title.get_rect(center=(screen.get_width() // 2, 150)))
         for button in self.buttons.values():
             button.draw(screen)
-        if self.cursor:
-            screen.blit(self.cursor, pygame.mouse.get_pos())
 
     def _handle_action(self, action: str) -> None:
         if action == "start":

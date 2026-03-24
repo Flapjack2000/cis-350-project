@@ -31,12 +31,8 @@ class PauseScene(Scene):
         self.overlay.fill((10, 0, 0, 120))
 
     def on_enter(self) -> None:
-        super().on_enter()
         for button in self.buttons.values():
             button.hovered = False
-
-    def on_exit(self) -> None:
-        super().on_exit()
 
     def handle_events(self, events: list[pygame.event.Event]) -> None:
         mouse_pos = pygame.mouse.get_pos()
@@ -61,9 +57,6 @@ class PauseScene(Scene):
 
         for button in self.buttons.values():
             button.draw(screen)
-
-        if self.cursor:
-            screen.blit(self.cursor, pygame.mouse.get_pos())
 
     def _handle_action(self, action: str) -> None:
         if action == "resume":

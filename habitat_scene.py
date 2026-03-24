@@ -56,6 +56,3 @@ class HabitatScene(Scene):
 
         for animal in sorted(self._animals, key=lambda a: a.y):
             animal.draw(screen)
-
-        if self.cursor:
-            screen.blit(self.cursor, pygame.mouse.get_pos())
