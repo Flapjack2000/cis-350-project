@@ -49,5 +49,6 @@ class RattlesnakeHabitat(HabitatScene):
         return [
             Animal(x=300, y=300, layer_files=_LAYER_FILES, subfolder=_SUBFOLDER,
                    scale=1.0, default_facing_left=False, speed=0,
-                   animate_fn=_rattlesnake_animate),
+                   # animate_fn=_rattlesnake_animate),
+                   animate_fn=None),
         ]
