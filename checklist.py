@@ -1,5 +1,6 @@
 import random
 
+
 class Checklist:
     """
         Manages a day/night task checklist that cycles deterministically.
@@ -21,12 +22,20 @@ class Checklist:
     SEED_OFFSET = 1
 
     def __init__(self, initial_tasks: list[str]):
-        """Load the tasks and create the checklist dictionary"""
+        """Load the tasks and create the checklist dictionary.
+
+        Args:
+            initial_tasks (list[str]): The pool of task names to draw from each day/night cycle.
+
+        Raises:
+            ValueError: If fewer tasks are provided than DAY_TASKS_REQUIRED + NIGHT_TASKS_REQUIRED.
+        """
 
         tasks_length = len(initial_tasks)
         req_tasks_length = self.DAY_TASKS_REQUIRED + self.NIGHT_TASKS_REQUIRED
         if tasks_length < req_tasks_length:
-            raise ValueError(f"Checklist initialized with {tasks_length} tasks. Requires at least {req_tasks_length} tasks.")
+            raise ValueError(
+                f"Checklist initialized with {tasks_length} tasks. Requires at least {req_tasks_length} tasks.")
 
         self.__pool: list[str] = initial_tasks
         self.tasks: dict[str, bool] = {}
@@ -65,7 +74,12 @@ class Checklist:
         self.__load_phase_tasks()
 
     def __get_day_night_split(self) -> tuple[list[str], list[str]]:
-        """Partition tasks between day and night."""
+        """Partition tasks between day and night.
+
+        Returns:
+            tuple[list[str], list[str]]: A tuple of (day_tasks, night_tasks), each a
+                deterministically shuffled subset of the pool for the current day.
+        """
         rng = random.Random(self.day_count + self.SEED_OFFSET)
         shuffled = rng.sample(self.__pool, len(self.__pool))
         day_tasks = shuffled[:self.DAY_TASKS_REQUIRED]

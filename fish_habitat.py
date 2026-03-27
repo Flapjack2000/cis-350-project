@@ -1,7 +1,5 @@
 import os
 import random
-os.environ["PYGAME_HIDE_SUPPORT_PROMPT"] = "1"
-
 import pygame
 from scene import Scene, SceneManager
 from global_settings import Settings
@@ -21,8 +19,8 @@ _SUBFOLDER = os.path.join("assets", "animals", "fish")
 
 
 class _Fish:
-    """Represents a single fish in the aquarium habitat.
-    """
+    """Represents a single fish in the aquarium habitat."""
+
     def __init__(self, img_path: str, faces_right: bool, size_px: int,
                  x: float, y: float, speed: float, screen_width: int) -> None:
         """Initialize a fish with a sprite, position, speed, and movement direction.
@@ -98,8 +96,7 @@ class FishHabitat(Scene):
         self._base_dir = os.path.dirname(os.path.abspath(__file__))
 
     def on_enter(self) -> None:
-        """Called when entering the FishHabitat scene.
-        """
+        """Called when entering the FishHabitat scene."""
         super().on_enter()
         bg_path = os.path.join(self._base_dir, "assets", "images", self.BACKGROUND_FILE)
         screen_size = Settings().window["size"]

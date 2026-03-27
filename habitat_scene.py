@@ -7,8 +7,7 @@ from scene import Scene, SceneManager
 from animal import Animal
 
 class HabitatScene(Scene):
-    """Abstract base class for habitat scenes containing multiple animals.
-    """
+    """Abstract base class for habitat scenes containing multiple animals."""
     BACKGROUND_FILE: str = ""
 
     def __init__(self, manager: SceneManager) -> None:
@@ -32,8 +31,7 @@ class HabitatScene(Scene):
         pass
 
     def on_enter(self) -> None:
-        """Called when entering the habitat scene. Loads animals and sprites.
-        """
+        """Called when entering the habitat scene. Loads animals and sprites."""
         super().on_enter()
         bg_path = os.path.abspath(
             os.path.join(self._base_dir, "assets", "images", self.BACKGROUND_FILE)
@@ -44,8 +42,7 @@ class HabitatScene(Scene):
             animal.load(self._base_dir)
 
     def on_exit(self) -> None:
-        """Called when exiting the habitat scene. Clears background and animal lists.
-        """
+        """Called when exiting the habitat scene. Clears background and animal lists."""
         super().on_exit()
         self._background = None
         self._animals = []
@@ -61,8 +58,7 @@ class HabitatScene(Scene):
                 self.handle_escape()
 
     def handle_escape(self) -> None:
-        """Handle the ESC key being pressed.
-        """
+        """Handle the ESC key being pressed and pause."""
         from pause_scene import PauseScene # Import here to avoid circular import when loading module
         self._manager.push(PauseScene(self._manager))
 

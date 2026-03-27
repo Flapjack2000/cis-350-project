@@ -1,9 +1,9 @@
-"""
-Various global settings and hard coded values across the game
-"""
-
 class Settings:
+    """Various global settings and hard coded values across the game."""
+
     def __init__(self) -> None:
+        """Initialize settings values."""
+
         self.window: dict = {
             "title": "Zoo Game",
             "size": (1280, 720)

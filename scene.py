@@ -14,6 +14,11 @@ class Scene(ABC):
     """
 
     def __init__(self, manager: "SceneManager") -> None:
+        """Store a reference to the scene manager for use in transitions.
+
+        Args:
+            manager (SceneManager): The scene manager controlling scene transitions.
+        """
         self._manager = manager
 
     def on_enter(self) -> None:
@@ -38,13 +43,7 @@ class Scene(ABC):
 
 
 class SceneManager:
-    """
-    Manages a stack of Scene objects.
-
-    push(scene)    - overlay a scene on top (pause menus, etc.).
-    pop()          - remove the top scene and resume the one below.
-    exit_all()     - empty the stack, allowing the game to end on the next loop
-    """
+    """Manage a stack of Scene objects."""
 
     def __init__(self) -> None:
         """Initialize the scene stack."""
@@ -57,7 +56,11 @@ class SceneManager:
 
     @property
     def is_empty(self) -> bool:
-        """Check if stack is empty."""
+        """Check if stack is empty.
+
+        Returns:
+            bool: True if there are no scenes on the stack, False otherwise.
+        """
         return not self.__stack
 
     def push(self, scene: Scene) -> None:

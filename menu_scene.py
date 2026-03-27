@@ -38,8 +38,7 @@ class MenuScene(Scene):
         self.title_font = pygame.font.Font(None, 72)
 
     def on_enter(self) -> None:
-        """Resets the hover state of all buttons.
-        """
+        """Resets the hover state of all buttons."""
         for button in self.buttons.values():
             button.hovered = False
 

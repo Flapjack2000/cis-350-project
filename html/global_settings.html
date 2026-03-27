@@ -36,6 +36,9 @@
                     <a class="class" href="#Settings">Settings</a>
                             <ul class="memberlist">
                         <li>
+                                <a class="function" href="#Settings.__init__">Settings</a>
+                        </li>
+                        <li>
                                 <a class="variable" href="#Settings.window">window</a>
                         </li>
                         <li>
@@ -66,19 +69,17 @@
                     <h1 class="modulename">
 global_settings    </h1>
 
-                        <div class="docstring"><p>Various global settings and hard coded values across the game</p>
-</div>
-
+                
                         <input id="mod-global_settings-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 
                         <label class="view-source-button" for="mod-global_settings-view-source"><span>View Source</span></label>
 
-                        <div class="pdoc-code codehilite"><pre><span></span><span id="L-1"><a href="#L-1"><span class="linenos"> 1</span></a><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="L-2"><a href="#L-2"><span class="linenos"> 2</span></a><span class="sd">Various global settings and hard coded values across the game</span>
-</span><span id="L-3"><a href="#L-3"><span class="linenos"> 3</span></a><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="L-4"><a href="#L-4"><span class="linenos"> 4</span></a>
-</span><span id="L-5"><a href="#L-5"><span class="linenos"> 5</span></a><span class="k">class</span><span class="w"> </span><span class="nc">Settings</span><span class="p">:</span>
-</span><span id="L-6"><a href="#L-6"><span class="linenos"> 6</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+                        <div class="pdoc-code codehilite"><pre><span></span><span id="L-1"><a href="#L-1"><span class="linenos"> 1</span></a><span class="k">class</span><span class="w"> </span><span class="nc">Settings</span><span class="p">:</span>
+</span><span id="L-2"><a href="#L-2"><span class="linenos"> 2</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Various global settings and hard coded values across the game.&quot;&quot;&quot;</span>
+</span><span id="L-3"><a href="#L-3"><span class="linenos"> 3</span></a>
+</span><span id="L-4"><a href="#L-4"><span class="linenos"> 4</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="L-5"><a href="#L-5"><span class="linenos"> 5</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize settings values.&quot;&quot;&quot;</span>
+</span><span id="L-6"><a href="#L-6"><span class="linenos"> 6</span></a>
 </span><span id="L-7"><a href="#L-7"><span class="linenos"> 7</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">window</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="p">{</span>
 </span><span id="L-8"><a href="#L-8"><span class="linenos"> 8</span></a>            <span class="s2">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Zoo Game&quot;</span><span class="p">,</span>
 </span><span id="L-9"><a href="#L-9"><span class="linenos"> 9</span></a>            <span class="s2">&quot;size&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">1280</span><span class="p">,</span> <span class="mi">720</span><span class="p">)</span>
@@ -114,8 +115,12 @@ global_settings    </h1>
 
     </div>
     <a class="headerlink" href="#Settings"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="Settings-6"><a href="#Settings-6"><span class="linenos"> 6</span></a><span class="k">class</span><span class="w"> </span><span class="nc">Settings</span><span class="p">:</span>
-</span><span id="Settings-7"><a href="#Settings-7"><span class="linenos"> 7</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Settings-2"><a href="#Settings-2"><span class="linenos"> 2</span></a><span class="k">class</span><span class="w"> </span><span class="nc">Settings</span><span class="p">:</span>
+</span><span id="Settings-3"><a href="#Settings-3"><span class="linenos"> 3</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Various global settings and hard coded values across the game.&quot;&quot;&quot;</span>
+</span><span id="Settings-4"><a href="#Settings-4"><span class="linenos"> 4</span></a>
+</span><span id="Settings-5"><a href="#Settings-5"><span class="linenos"> 5</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="Settings-6"><a href="#Settings-6"><span class="linenos"> 6</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize settings values.&quot;&quot;&quot;</span>
+</span><span id="Settings-7"><a href="#Settings-7"><span class="linenos"> 7</span></a>
 </span><span id="Settings-8"><a href="#Settings-8"><span class="linenos"> 8</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">window</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="p">{</span>
 </span><span id="Settings-9"><a href="#Settings-9"><span class="linenos"> 9</span></a>            <span class="s2">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Zoo Game&quot;</span><span class="p">,</span>
 </span><span id="Settings-10"><a href="#Settings-10"><span class="linenos">10</span></a>            <span class="s2">&quot;size&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">1280</span><span class="p">,</span> <span class="mi">720</span><span class="p">)</span>
@@ -139,8 +144,51 @@ global_settings    </h1>
 </span></pre></div>
 
 
-    
+            <div class="docstring"><p>Various global settings and hard coded values across the game.</p>
+</div>
 
+
+                            <div id="Settings.__init__" class="classattr">
+                                        <input id="Settings.__init__-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+            
+        <span class="name">Settings</span><span class="signature pdoc-code condensed">()</span>
+
+                <label class="view-source-button" for="Settings.__init__-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#Settings.__init__"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Settings.__init__-5"><a href="#Settings.__init__-5"><span class="linenos"> 5</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="Settings.__init__-6"><a href="#Settings.__init__-6"><span class="linenos"> 6</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize settings values.&quot;&quot;&quot;</span>
+</span><span id="Settings.__init__-7"><a href="#Settings.__init__-7"><span class="linenos"> 7</span></a>
+</span><span id="Settings.__init__-8"><a href="#Settings.__init__-8"><span class="linenos"> 8</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">window</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="p">{</span>
+</span><span id="Settings.__init__-9"><a href="#Settings.__init__-9"><span class="linenos"> 9</span></a>            <span class="s2">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Zoo Game&quot;</span><span class="p">,</span>
+</span><span id="Settings.__init__-10"><a href="#Settings.__init__-10"><span class="linenos">10</span></a>            <span class="s2">&quot;size&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">1280</span><span class="p">,</span> <span class="mi">720</span><span class="p">)</span>
+</span><span id="Settings.__init__-11"><a href="#Settings.__init__-11"><span class="linenos">11</span></a>        <span class="p">}</span>
+</span><span id="Settings.__init__-12"><a href="#Settings.__init__-12"><span class="linenos">12</span></a>
+</span><span id="Settings.__init__-13"><a href="#Settings.__init__-13"><span class="linenos">13</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">time</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="p">{</span>
+</span><span id="Settings.__init__-14"><a href="#Settings.__init__-14"><span class="linenos">14</span></a>            <span class="s2">&quot;fps&quot;</span><span class="p">:</span> <span class="mi">120</span>
+</span><span id="Settings.__init__-15"><a href="#Settings.__init__-15"><span class="linenos">15</span></a>        <span class="p">}</span>
+</span><span id="Settings.__init__-16"><a href="#Settings.__init__-16"><span class="linenos">16</span></a>
+</span><span id="Settings.__init__-17"><a href="#Settings.__init__-17"><span class="linenos">17</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">cursor</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="p">{</span>
+</span><span id="Settings.__init__-18"><a href="#Settings.__init__-18"><span class="linenos">18</span></a>            <span class="s2">&quot;image_path&quot;</span><span class="p">:</span> <span class="s2">&quot;assets/images/cat_cursor.png&quot;</span><span class="p">,</span>
+</span><span id="Settings.__init__-19"><a href="#Settings.__init__-19"><span class="linenos">19</span></a>            <span class="s2">&quot;size&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">64</span><span class="p">,</span> <span class="mi">64</span><span class="p">),</span>
+</span><span id="Settings.__init__-20"><a href="#Settings.__init__-20"><span class="linenos">20</span></a>        <span class="p">}</span>
+</span><span id="Settings.__init__-21"><a href="#Settings.__init__-21"><span class="linenos">21</span></a>
+</span><span id="Settings.__init__-22"><a href="#Settings.__init__-22"><span class="linenos">22</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">backgrounds</span> <span class="o">=</span> <span class="p">{</span>
+</span><span id="Settings.__init__-23"><a href="#Settings.__init__-23"><span class="linenos">23</span></a>        <span class="s2">&quot;Jungle&quot;</span><span class="p">:</span> <span class="s2">&quot;jungle_background.png&quot;</span><span class="p">,</span>
+</span><span id="Settings.__init__-24"><a href="#Settings.__init__-24"><span class="linenos">24</span></a>        <span class="s2">&quot;Savanna&quot;</span><span class="p">:</span> <span class="s2">&quot;savanna_background.png&quot;</span><span class="p">,</span>
+</span><span id="Settings.__init__-25"><a href="#Settings.__init__-25"><span class="linenos">25</span></a>        <span class="s2">&quot;Grassland&quot;</span><span class="p">:</span> <span class="s2">&quot;grassland_background.png&quot;</span><span class="p">,</span>
+</span><span id="Settings.__init__-26"><a href="#Settings.__init__-26"><span class="linenos">26</span></a>        <span class="s2">&quot;Aquarium&quot;</span><span class="p">:</span> <span class="s2">&quot;aquarium_background.png&quot;</span><span class="p">,</span>
+</span><span id="Settings.__init__-27"><a href="#Settings.__init__-27"><span class="linenos">27</span></a>    <span class="p">}</span>
+</span></pre></div>
+
+
+            <div class="docstring"><p>Initialize settings values.</p>
+</div>
+
+
+                            </div>
                             <div id="Settings.window" class="classattr">
                                 <div class="attr variable">
             <span class="name">window</span><span class="annotation">: dict</span>

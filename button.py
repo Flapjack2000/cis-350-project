@@ -1,46 +1,4 @@
-"""
-Reusable Button widget for pygame scenes.
-
-Typical usage
--------------
-    btn = Button(x, y, "Click me")
-
-    # in update:
-    btn.update(pygame.mouse.get_pos())
-
-    # in draw:
-    btn.draw(screen)
-
-    # in handle_events:
-    if btn.is_clicked(mouse_pos, pygame.mouse.get_pressed()):
-        ...
-
-Customisation
--------------
-Pass keyword arguments to the constructor to override any visual property:
-
-    Button(x, y, "Start",
-        width=240, height=70,
-        font_size=42,
-        color=(200, 230, 255),
-        hover_color=(160, 200, 255),
-        border_color=(100, 150, 200),
-        text_color=(20, 40, 80),
-        border_width=3,
-        border_radius=16,
-        disabled_color=(180, 180, 180),
-        disabled_text_color=(120, 120, 120),
-    )
-
-You can also mutate any attribute after construction:
-    btn.text = "Resume"
-    btn.color = (255, 200, 200)
-"""
-import os
-os.environ["PYGAME_HIDE_SUPPORT_PROMPT"] = "1"
-
 import pygame
-
 
 class Button:
     """Button for use across the game"""
@@ -68,18 +26,41 @@ class Button:
             height: int = DEFAULT_HEIGHT,
             font_size: int = DEFAULT_FONT_SIZE,
             font: pygame.font.Font | None = None,
-            color: tuple = DEFAULT_COLOR,
-            hover_color: tuple = DEFAULT_HOVER_COLOR,
-            border_color: tuple = DEFAULT_BORDER_COLOR,
-            text_color: tuple = DEFAULT_TEXT_COLOR,
+            color: tuple[int, int, int] = DEFAULT_COLOR,
+            hover_color: tuple[int, int, int] = DEFAULT_HOVER_COLOR,
+            border_color: tuple[int, int, int] = DEFAULT_BORDER_COLOR,
+            text_color: tuple[int, int, int] = DEFAULT_TEXT_COLOR,
             border_width: int = DEFAULT_BORDER_WIDTH,
             border_radius: int = DEFAULT_BORDER_RADIUS,
-            disabled_color: tuple = DEFAULT_DISABLED_COLOR,
-            disabled_text_color: tuple = DEFAULT_DISABLED_TEXT_COLOR,
-            hover_border_color: tuple = DEFAULT_HOVER_BORDER_COLOR,
-            disabled_border_color: tuple = DEFAULT_DISABLED_BORDER_COLOR,
+            disabled_color: tuple[int, int, int] = DEFAULT_DISABLED_COLOR,
+            disabled_text_color: tuple[int, int, int] = DEFAULT_DISABLED_TEXT_COLOR,
+            hover_border_color: tuple[int, int, int] = DEFAULT_HOVER_BORDER_COLOR,
+            disabled_border_color: tuple[int, int, int] = DEFAULT_DISABLED_BORDER_COLOR,
             enabled: bool = True,
     ) -> None:
+        """Create a button using default and custom values.
+
+        Args:
+            x (int): The x-coordinate of the button's position.
+            y (int): The y-coordinate of the button's position.
+            text (string): The label displayed on the button.
+            width (int): The width of the button in pixels.
+            height (int): The height of the button in pixels.
+            font_size (int): The font size of the button label.
+            font (pygame.font.Font | None): A custom pygame Font object. If None, the default font is used.
+            color (tuple[int, int, int]): The background color of the button.
+            hover_color (tuple[int, int, int]): The background color when the button is hovered.
+            border_color (tuple[int, int, int]): The border color of the button.
+            text_color (tuple[int, int, int]): The color of the button label text.
+            border_width (int): The thickness of the button border in pixels.
+            border_radius (int): The radius of the button's rounded corners.
+            disabled_color (tuple[int, int, int]): The background color when the button is disabled.
+            disabled_text_color (tuple[int, int, int]): The text color when the button is disabled.
+            hover_border_color (tuple[int, int, int]): The border color when the button is hovered.
+            disabled_border_color (tuple[int, int, int]): The border color when the button is disabled.
+            enabled (bool): Whether the button is interactive. Defaults to True.
+        """
+
         self.rect = pygame.Rect(x, y, width, height)
         self.text = text
         self.font = font or pygame.font.Font(None, font_size)
@@ -101,7 +82,11 @@ class Button:
         self.hovered = False
 
     def update(self, mouse_pos: tuple[int, int]) -> None:
-        """Track hover state. Call once per frame before draw()."""
+        """Track hover state. Call once per frame before draw().
+
+        Args:
+            mouse_pos (tuple[int, int]): the current mouse position
+        """
         self.hovered = self.enabled and self.rect.collidepoint(mouse_pos)
 
     def draw(self, screen: pygame.Surface) -> None:
@@ -135,19 +120,39 @@ class Button:
             mouse_pressed: tuple[bool, ...],
             button: int = 0,
     ) -> bool:
-        """Return True when the left mouse button (or *button* index) is pressed over this button."""
+        """Return True when the specified mouse button is pressed over this button.
+
+        Args:
+            mouse_pos: The current (x, y) position of the mouse cursor.
+            mouse_pressed: A tuple of booleans representing the pressed state
+                of each mouse button, as returned by pygame.mouse.get_pressed().
+            button: The index of the mouse button to check. Defaults to 0 (left click).
+
+        Returns:
+            True if the button is enabled, the mouse is over it, and the
+            specified mouse button is pressed. False otherwise.
+        """
         return (
                 self.enabled
                 and self.rect.collidepoint(mouse_pos)
                 and mouse_pressed[button]
         )
 
-    def move_to(self, x: int, y: int) -> "Button":
-        """Reposition the button and return self for chaining."""
-        self.rect.topleft = (x, y)
-        return self
+    def move_to(self, x: int, y: int):
+        """Reposition the button.
 
-    def resize(self, width: int, height: int) -> "Button":
-        """Resize the button, keeping its top-left position."""
+        Args:
+            x (int): the new x position of the button's top left corner
+            y (int): the new y position of the button's top left corner
+
+        """
+        self.rect.topleft = (x, y)
+
+    def resize(self, width: int, height: int):
+        """Resize the button, keeping its top-left position.
+
+        Args:
+            width (int): the new width of the button
+            height (int): the new height of the button
+        """
         self.rect.size = (width, height)
-        return self

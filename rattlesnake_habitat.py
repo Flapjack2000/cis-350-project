@@ -30,6 +30,15 @@ _RATTLE_TIME       = 1.0   # seconds of rattling
 
 
 def _rattlesnake_animate(animal: Animal, dt: float) -> None:
+    """Manipulate the parts of the rattlesnake puppet to animate it.
+
+    Applies a continuous head bob to the head and tongue layers, and a rapid
+    tail rattle that activates periodically based on the animal's elapsed time.
+
+    Args:
+        animal (Animal): The rattlesnake Animal instance whose layer_angles are updated.
+        dt (float): Time delta since the last frame in seconds (unused; animation uses animal.time).
+    """
     t = animal.time
     cycle = t % (_STILL_TIME + _RATTLE_TIME)
     is_rattling = cycle >= _STILL_TIME

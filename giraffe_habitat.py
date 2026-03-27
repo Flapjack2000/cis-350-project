@@ -1,6 +1,4 @@
 import os
-os.environ["PYGAME_HIDE_SUPPORT_PROMPT"] = "1"
-
 from scene import SceneManager
 from habitat_scene import HabitatScene
 from animal import Animal
@@ -23,8 +21,7 @@ _LAYER_FILES = [
 
 
 class GiraffeHabitat(HabitatScene):
-    """Habitat scene representing giraffes in a savanna environment.
-    """
+    """Habitat scene representing giraffes in a savanna environment."""
     BACKGROUND_FILE = "savanna_background.png"
 
     def __init__(self, manager: SceneManager) -> None:

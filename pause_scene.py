@@ -12,9 +12,19 @@ from button import Button
 from menu_scene import MenuScene
 
 class PauseScene(Scene):
-    """Pause overlay — pushed on top of GameScene, popped on resume."""
+    """The pause menu.
+
+    Extends Scene for scene switching logic.
+    Actions for resuming and returning to the main menu.
+    """
 
     def __init__(self, manager: SceneManager) -> None:
+        """Create the screen and buttons of the pause menu.
+
+        Args:
+            manager (SceneManager): The scene manager controlling scene transitions.
+        """
+
         super().__init__(manager)
 
         screen_width, screen_height = Settings().window["size"]
@@ -31,10 +41,16 @@ class PauseScene(Scene):
         self.overlay.fill((10, 0, 0, 120))
 
     def on_enter(self) -> None:
+        """Set hovered state of buttons to false."""
         for button in self.buttons.values():
             button.hovered = False
 
     def handle_events(self, events: list[pygame.event.Event]) -> None:
+        """Handle button presses and keyboard shortcuts in the pause menu.
+
+        Args:
+            events (list[pygame.event.Event]): A list of pygame events to process.
+        """
         mouse_pos = pygame.mouse.get_pos()
 
         for event in events:
@@ -46,10 +62,20 @@ class PauseScene(Scene):
                         self._handle_action(name)
 
     def update(self, dt: float) -> None:
+        """Update button hover states based on the current mouse position.
+
+        Args:
+            dt (float): Time delta since the last frame (unused but required by Scene interface).
+        """
         for button in self.buttons.values():
             button.update(pygame.mouse.get_pos())
 
     def draw(self, screen: pygame.Surface) -> None:
+        """Render the pause overlay, title, and buttons onto the screen.
+
+        Args:
+            screen (pygame.Surface): The surface to draw the pause menu on.
+        """
         screen.blit(self.overlay, (0, 0))
 
         title = self.title_font.render("Paused", True, (255, 255, 255))
@@ -59,6 +85,7 @@ class PauseScene(Scene):
             button.draw(screen)
 
     def _handle_action(self, action: str) -> None:
+        """Handle button press actions."""
         if action == "resume":
             self._manager.pop()
         elif action == "quit":

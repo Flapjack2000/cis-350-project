@@ -1,6 +1,4 @@
 import os
-os.environ["PYGAME_HIDE_SUPPORT_PROMPT"] = "1"
-
 import pygame
 from typing import Callable
 
@@ -8,17 +6,18 @@ from typing import Callable
 class Animal:
     """Represents an animated animal with multiple sprite layers that can move and be drawn.
 """
+
     def __init__(
-        self,
-        x: int,
-        y: int,
-        layer_files: list[str],
-        subfolder: str,
-        scale: float = 1.0,
-        default_facing_left: bool = False,
-        direction: int = 1,
-        speed: float = 1.0,
-        animate_fn: Callable[["Animal", float], None] | None = None, # a function that takes in an Animal and dt
+            self,
+            x: int,
+            y: int,
+            layer_files: list[str],
+            subfolder: str,
+            scale: float = 1.0,
+            default_facing_left: bool = False,
+            direction: int = 1,
+            speed: float = 1.0,
+            animate_fn: Callable[["Animal", float], None] | None = None,  # a function that takes in an Animal and dt
     ) -> None:
         """Initialize an Animal instance.
 
@@ -83,7 +82,7 @@ class Animal:
             self.x = 0
             self.direction = 1
 
-        self.facing_left = self.direction < 0
+        self.facing_left: bool = self.direction < 0
 
         if self._animate_fn:
             self._animate_fn(self, dt)

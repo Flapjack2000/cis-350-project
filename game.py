@@ -12,7 +12,11 @@ from menu_scene import MenuScene
 from global_settings import Settings
 
 class Game:
+    """Manage the logic of running the game."""
+
     def __init__(self) -> None:
+        """Initialize the screen, checklist, settings, and scene manager."""
+
         self.running = True
         pygame.init()
 
@@ -34,6 +38,8 @@ class Game:
         self.scene_manager.push(MenuScene(self.scene_manager))
 
     def run(self) -> None:
+        """Run the game loop of the current scene."""
+
         while self.running and not self.scene_manager.is_empty:
             dt = self.clock.tick(self.settings.time["fps"]) / 1000.0
 
