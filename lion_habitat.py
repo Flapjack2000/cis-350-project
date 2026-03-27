@@ -29,12 +29,27 @@ _LAYERS_FEMALE = _LAYERS_BASE + ["lion_head.png"]
 
 
 class LionHabitat(HabitatScene):
+    """Habitat scene representing lions in a savanna environment.
+
+    Handles creating male and female lion animals with multiple sprite layers
+    and manages their movement within the scene.
+    """
     BACKGROUND_FILE = "savanna_background.png"
 
     def __init__(self, manager: SceneManager) -> None:
+        """Initialize the LionHabitat scene.
+
+        Args:
+            manager (SceneManager): The scene manager controlling scene transitions.
+        """
         super().__init__(manager)
 
     def create_animals(self) -> list[Animal]:
+        """Create and return a list of lion Animal instances for this habitat.
+
+        Returns:
+            list[Animal]: The lion animals in the scene, each with its sprite layers, position, and movement parameters.
+        """
         return [
             Animal(x=200, y=300, layer_files=_LAYERS_MALE,   subfolder=_SUBFOLDER,
                    scale=0.45, default_facing_left=True, direction=1,  speed=1.0),

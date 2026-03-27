@@ -23,12 +23,24 @@ _LAYER_FILES = [
 
 
 class GiraffeHabitat(HabitatScene):
+    """Habitat scene representing giraffes in a savanna environment.
+    """
     BACKGROUND_FILE = "savanna_background.png"
 
     def __init__(self, manager: SceneManager) -> None:
+        """Initialize the GiraffeHabitat scene.
+
+        Args:
+            manager (SceneManager): The scene manager controlling scene transitions.
+        """
         super().__init__(manager)
 
     def create_animals(self) -> list[Animal]:
+        """Create and return a list of giraffe Animal instances for this habitat.
+
+        Returns:
+            list[Animal]: The giraffe animals in the scene, each with its sprite layers, position, and movement parameters.
+        """
         return [
             Animal(x=200, y=300, layer_files=_LAYER_FILES, subfolder=_SUBFOLDER,
                    scale=0.5, default_facing_left=True, direction=1,  speed=0.8),

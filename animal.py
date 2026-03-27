@@ -6,6 +6,8 @@ from typing import Callable
 
 
 class Animal:
+    """Represents an animated animal with multiple sprite layers that can move and be drawn.
+"""
     def __init__(
         self,
         x: int,
@@ -18,6 +20,19 @@ class Animal:
         speed: float = 1.0,
         animate_fn: Callable[["Animal", float], None] | None = None, # a function that takes in an Animal and dt
     ) -> None:
+        """Initialize an Animal instance.
+
+        Args:
+            x (int): Initial x-coordinate of the animal.
+            y (int): Initial y-coordinate of the animal.
+            layer_files (list[str]): Filenames of sprite layers for this animal.
+            subfolder (str): Subfolder under base directory where sprites are located.
+            scale (float, optional): Scaling factor for sprite images. Defaults to 1.0.
+            default_facing_left (bool, optional): Whether the animal faces left by default. Defaults to False.
+            direction (int, optional): Initial horizontal direction (1 = right, -1 = left). Defaults to 1.
+            speed (float, optional): Horizontal movement speed. Defaults to 1.0.
+            animate_fn (Callable[[Animal, float], None] | None, optional): Custom animation function called each update. Defaults to None.
+        """
         self.x: float = x
         self.y: float = y
         self.layer_files = layer_files
@@ -33,7 +48,11 @@ class Animal:
         self.time: float = 0.0  # elapsed seconds, available to animate_fn
 
     def load(self, base_dir: str) -> None:
-        """Load sprite layers from disk. Called by HabitatScene.on_enter()."""
+        """Load sprite layers from disk. Called by HabitatScene.on_enter().
+
+        Args:
+            base_dir (str): Base directory containing the animal's sprite subfolder.
+        """
         folder = os.path.join(base_dir, self.subfolder)
         self.layers = []
         for filename in self.layer_files:
@@ -47,7 +66,12 @@ class Animal:
         self.layer_angles = [0.0] * len(self.layers)
 
     def update(self, screen_width: int, dt: float = 0.0) -> None:
-        """Advance position, bounce off screen edges, and run animation."""
+        """Advance the animal's position, handle screen-edge bouncing, and run custom animation.
+
+        Args:
+            screen_width (int): Width of the screen to handle edge collisions.
+            dt (float, optional): Time delta since last update in seconds. Defaults to 0.0.
+        """
         self.time += dt
         self.x += self.speed * self.direction
         width = max((layer.get_width() for layer in self.layers), default=0)
@@ -65,7 +89,11 @@ class Animal:
             self._animate_fn(self, dt)
 
     def draw(self, screen: pygame.Surface) -> None:
-        """Blit all layers at the animal's current position, with per-layer rotation."""
+        """Draw all sprite layers at the current position, applying rotation and horizontal flipping.
+
+        Args:
+            screen (pygame.Surface): The Pygame surface to draw the animal on.
+        """
         should_flip = self.facing_left != self.default_facing_left
         for layer, angle in zip(self.layers, self.layer_angles):
             if should_flip:

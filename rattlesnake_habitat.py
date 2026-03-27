@@ -40,12 +40,27 @@ def _rattlesnake_animate(animal: Animal, dt: float) -> None:
 
 
 class RattlesnakeHabitat(HabitatScene):
+    """Habitat scene representing rattlesnakes in a grassland environment.
+
+    Handles creating rattlesnake animals with layered sprites and optional
+    animation (head bobbing and tail rattling) within the scene.
+    """
     BACKGROUND_FILE = "grassland_background.png"
 
     def __init__(self, manager: SceneManager) -> None:
+        """Initialize the RattlesnakeHabitat scene.
+
+        Args:
+            manager (SceneManager): The scene manager controlling scene transitions.
+        """
         super().__init__(manager)
 
     def create_animals(self) -> list[Animal]:
+        """Create and return a list of rattlesnake Animal instances for this habitat.
+
+       Returns:
+           list[Animal]: The rattlesnake animals in the scene, each with its sprite layers, position, and optional animation function.
+       """
         return [
             Animal(x=300, y=300, layer_files=_LAYER_FILES, subfolder=_SUBFOLDER,
                    scale=1.0, default_facing_left=False, speed=0,

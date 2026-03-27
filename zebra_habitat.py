@@ -27,9 +27,20 @@ _LAYER_FILES = [
 
 
 class ZebraHabitat(HabitatScene):
+    """Habitat scene representing a zebra interacting with a water trough.
+
+    Extends HabitatScene to include a water-trough mini-game where the zebra
+    walks back and forth, drinks water when the trough is filled, and the player
+    can increment the water level by clicking on the trough.
+    """
     BACKGROUND_FILE = "savanna_background.png"
 
     def __init__(self, manager: SceneManager) -> None:
+        """Initialize the ZebraHabitat scene and its gameplay elements.
+
+        Args:
+            manager (SceneManager): The scene manager controlling scene transitions.
+        """
         super().__init__(manager)
 
         # Habitat-specific gameplay setup variables
@@ -69,15 +80,22 @@ class ZebraHabitat(HabitatScene):
             raise ValueError("Water level cannot exceed maximum and cannot be less than zero.")
 
     def create_animals(self) -> list[Animal]:
-        """Create the zebra in the habitat"""
+        """Create and return the zebra Animal instance for this habitat.
+
+        Returns:
+            list[Animal]: A single zebra configured with sprite layers, starting position, and speed.
+        """
         return [
             Animal(x=120, y=0, layer_files=_LAYER_FILES, subfolder=_SUBFOLDER,
                    scale=0.45, default_facing_left=True, direction=1, speed=self.__zebra_speed)
         ]
 
     def draw_instruction(self, screen: pygame.Surface) -> None:
-        """Render instruction text to the right of the trough"""
+        """Render instruction text next to the water trough.
 
+        Args:
+            screen (pygame.Surface): The surface to draw the instruction text on.
+        """
         trough_rect = self.get_trough_rect(screen)
 
         text_x = trough_rect.right + 20  # 20px padding to the right
@@ -86,8 +104,11 @@ class ZebraHabitat(HabitatScene):
         screen.blit(self._instruction_text, (text_x, text_y))
 
     def draw_water_trough(self, screen: pygame.Surface):
-        """Render the water trough"""
+        """Render the water trough, including walls, base, and current water level.
 
+        Args:
+            screen (pygame.Surface): The surface to draw the trough on.
+        """
         # Create trough & water surfaces
         water_height = int((self.__s1 - self.__s2) * (self.__water_level / self.__max_water_level))
         trough_parts = [
@@ -117,8 +138,11 @@ class ZebraHabitat(HabitatScene):
             screen.blit(trough_parts[i], part_positions[i])
 
     def draw(self, screen: pygame.Surface) -> None:
-        """Render the scene and its elements"""
+        """Render the entire habitat, including background, zebra, trough, instructions, and buttons.
 
+        Args:
+            screen (pygame.Surface): The surface to render the scene on.
+        """
         # Parent handles zebra and background automatically
         super().draw(screen)
 
@@ -163,13 +187,24 @@ class ZebraHabitat(HabitatScene):
         self.__water_level += self.__increment_amount
 
     def get_trough_rect(self, screen: pygame.Surface) -> pygame.Rect:
-        """Return the bounding rect of the trough for click hit-testing"""
+        """Return the bounding rectangle of the trough for mouse hit-testing.
+
+        Args:
+            screen (pygame.Surface): The current screen surface for positioning calculations.
+
+        Returns:
+            pygame.Rect: The rectangle representing the trough's position and size.
+        """
         cx = (screen.get_width() // 2) - (self.__s1 // 2)
         cy = (screen.get_height() // 2) - (self.__s1 // 2) + 220
         return pygame.Rect(cx, cy, self.__s1, self.__s1)
 
     def handle_events(self, events: list[pygame.event.Event]) -> None:
-        """Send events to parent class and handle click events"""
+        """Handle mouse and keyboard events, including clicks on the trough or finish button.
+
+        Args:
+            events (list[pygame.event.Event]): The list of pygame events to process.
+        """
         super().handle_events(events)
 
         screen = pygame.display.get_surface()
@@ -184,7 +219,11 @@ class ZebraHabitat(HabitatScene):
                     self.handle_finish()
 
     def update(self, dt: float) -> None:
-        """Manage the gameplay loop"""
+        """Update the habitat scene, including zebra movement, trough interaction, and win conditions.
+
+        Args:
+            dt (float): Delta time since the last frame, in seconds.
+        """
 
         # Check win condition and allow the player to use the finish button if done
         if self.__water_level >= self.__max_water_level:
@@ -233,5 +272,5 @@ class ZebraHabitat(HabitatScene):
             self.__pass_counted = False
 
     def handle_finish(self):
-        """Return to map via SceneManager"""
+        """Handle returning to the map by popping this scene from the SceneManager."""
         self._manager.pop()

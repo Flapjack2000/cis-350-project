@@ -21,12 +21,27 @@ _LAYERS_V3 = [
 
 
 class MeerkatHabitat(HabitatScene):
+    """Habitat scene representing meerkats in a grassland environment.
+
+    Handles creating multiple meerkat animals with different sprite layers
+    and manages their movement within the scene.
+    """
     BACKGROUND_FILE = "grassland_background.png"
 
     def __init__(self, manager: SceneManager) -> None:
+        """Initialize the MeerkatHabitat scene.
+
+        Args:
+            manager (SceneManager): The scene manager controlling scene transitions.
+        """
         super().__init__(manager)
 
     def create_animals(self) -> list[Animal]:
+        """Create and return a list of meerkat Animal instances for this habitat.
+
+        Returns:
+            list[Animal]: The meerkat animals in the scene, each with its sprite layers, position, and movement parameters.
+        """
         return [
             Animal(x=200, y=300, layer_files=_LAYERS_V1, subfolder=_SUBFOLDER, scale=0.65, speed=0),
             Animal(x=500, y=200, layer_files=_LAYERS_V2, subfolder=_SUBFOLDER, scale=0.65, speed=0),

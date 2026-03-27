@@ -22,6 +22,11 @@ class MapScene(Scene):
     """
 
     def __init__(self, manager: SceneManager) -> None:
+        """Initialize the MapScene with buttons for each habitat minigame.
+
+        Args:
+            manager (SceneManager): The scene manager controlling scene transitions.
+        """
         super().__init__(manager)
 
         screen_width, screen_height = Settings().window["size"]
@@ -41,6 +46,11 @@ class MapScene(Scene):
         }
 
     def handle_events(self, events: list[pygame.event.Event]) -> None:
+        """Handle keyboard and mouse input events for the map.
+
+        Args:
+            events (list[pygame.event.Event]): A list of pygame events to process.
+        """
         mouse_pos = pygame.mouse.get_pos()
         for event in events:
             if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
@@ -52,15 +62,30 @@ class MapScene(Scene):
                         self._handle_action(name)
 
     def update(self, dt: float) -> None:
+        """Update the state of all habitat buttons.
+
+        Args:
+            dt (float): Time delta since the last frame.
+        """
         for button in self.buttons.values():
             button.update(pygame.mouse.get_pos())
 
     def draw(self, screen: pygame.Surface) -> None:
+        """Render the map scene and all buttons on the screen.
+
+        Args:
+            screen (pygame.Surface): The surface to draw the scene on.
+        """
         screen.fill((255, 230, 230))
         for button in self.buttons.values():
             button.draw(screen)
 
     def _handle_action(self, action: str) -> None:
+        """Push the corresponding habitat scene onto the scene manager stack.
+
+        Args:
+            action (str): The action identifier corresponding to a habitat.
+        """
         if action == "zebra":
             self._manager.push(ZebraHabitat(self._manager))
         elif action == "meerkat":
