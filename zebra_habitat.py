@@ -1,7 +1,4 @@
 import os
-
-os.environ["PYGAME_HIDE_SUPPORT_PROMPT"] = "1"
-
 import pygame
 import random
 from button import Button
@@ -30,8 +27,8 @@ class ZebraHabitat(HabitatScene):
     """Habitat scene representing a zebra interacting with a water trough.
 
     Extends HabitatScene to include a water-trough mini-game where the zebra
-    walks back and forth, drinks water when the trough is filled, and the player
-    can increment the water level by clicking on the trough.
+    walks back and forth, drinks water when the trough is filled,
+    and the player can increment the water level by clicking on the trough.
     """
     BACKGROUND_FILE = "savanna_background.png"
 
@@ -39,7 +36,7 @@ class ZebraHabitat(HabitatScene):
         """Initialize the ZebraHabitat scene and its gameplay elements.
 
         Args:
-            manager (SceneManager): The scene manager controlling scene transitions.
+            manager (SceneManager): The object controlling scene transitions.
         """
         super().__init__(manager)
 

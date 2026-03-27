@@ -1,8 +1,6 @@
-import os
-os.environ["PYGAME_HIDE_SUPPORT_PROMPT"] = "1"
-
 import pygame
 from abc import ABC, abstractmethod
+
 
 class Scene(ABC):
     """

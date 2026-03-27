@@ -1,6 +1,4 @@
 import os
-os.environ["PYGAME_HIDE_SUPPORT_PROMPT"] = "1"
-
 from scene import SceneManager
 from habitat_scene import HabitatScene
 from animal import Animal
@@ -29,8 +27,8 @@ _LAYER_FILES = [
 class TigerHabitat(HabitatScene):
     """Habitat scene representing tigers in a jungle environment.
 
-    Handles creating tiger animals with layered sprites, movement, and rendering
-    within the scene.
+    Handles creating tiger animals with layered sprites,
+    movement, and rendering within the scene.
     """
     BACKGROUND_FILE = "jungle_background.png"
 
@@ -38,19 +36,24 @@ class TigerHabitat(HabitatScene):
         """Initialize the TigerHabitat scene.
 
         Args:
-            manager (SceneManager): The scene manager controlling scene transitions.
+            manager (SceneManager): The object controlling scene transitions.
         """
         super().__init__(manager)
 
     def create_animals(self) -> list[Animal]:
-        """Create and return a list of tiger Animal instances for this habitat.
+        """Return a list of tiger Animal instances for this habitat.
 
        Returns:
-           list[Animal]: The tiger animals in the scene, each with its sprite layers, position, and movement settings.
+           list[Animal]: The tiger animals in the scene,
+           each with its sprite layers, position, and movement settings.
        """
         return [
-            Animal(x=200, y=300, layer_files=_LAYER_FILES, subfolder=_SUBFOLDER,
-                   scale=0.4, default_facing_left=False, direction=1,  speed=1.0),
-            Animal(x=600, y=0,   layer_files=_LAYER_FILES, subfolder=_SUBFOLDER,
-                   scale=0.4, default_facing_left=False, direction=-1, speed=1.4),
+            Animal(x=200, y=300,
+                   layer_files=_LAYER_FILES, subfolder=_SUBFOLDER,
+                   scale=0.4, default_facing_left=False,
+                   direction=1, speed=1.0),
+            Animal(x=600, y=0,
+                   layer_files=_LAYER_FILES, subfolder=_SUBFOLDER,
+                   scale=0.4, default_facing_left=False,
+                   direction=-1, speed=1.4),
         ]
