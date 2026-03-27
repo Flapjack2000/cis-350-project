@@ -1,0 +1,88 @@
+@startuml packages
+set namespaceSeparator none
+package "animal" as animal {
+}
+package "button" as button {
+}
+package "checklist" as checklist {
+}
+package "fish_habitat" as fish_habitat {
+}
+package "game" as game {
+}
+package "giraffe_habitat" as giraffe_habitat {
+}
+package "global_settings" as global_settings {
+}
+package "habitat_scene" as habitat_scene {
+}
+package "lion_habitat" as lion_habitat {
+}
+package "main" as main {
+}
+package "map_scene" as map_scene {
+}
+package "meerkat_habitat" as meerkat_habitat {
+}
+package "menu_scene" as menu_scene {
+}
+package "pause_scene" as pause_scene {
+}
+package "rattlesnake_habitat" as rattlesnake_habitat {
+}
+package "scene" as scene {
+}
+package "tiger_habitat" as tiger_habitat {
+}
+package "zebra_habitat" as zebra_habitat {
+}
+fish_habitat --> global_settings
+fish_habitat --> pause_scene
+fish_habitat --> scene
+game --> checklist
+game --> global_settings
+game --> menu_scene
+game --> scene
+giraffe_habitat --> animal
+giraffe_habitat --> habitat_scene
+giraffe_habitat --> scene
+habitat_scene --> animal
+habitat_scene --> pause_scene
+habitat_scene --> scene
+lion_habitat --> animal
+lion_habitat --> habitat_scene
+lion_habitat --> scene
+main --> game
+map_scene --> button
+map_scene --> fish_habitat
+map_scene --> giraffe_habitat
+map_scene --> global_settings
+map_scene --> lion_habitat
+map_scene --> meerkat_habitat
+map_scene --> pause_scene
+map_scene --> rattlesnake_habitat
+map_scene --> scene
+map_scene --> tiger_habitat
+map_scene --> zebra_habitat
+meerkat_habitat --> animal
+meerkat_habitat --> habitat_scene
+meerkat_habitat --> scene
+menu_scene --> button
+menu_scene --> global_settings
+menu_scene --> map_scene
+menu_scene --> scene
+pause_scene --> button
+pause_scene --> global_settings
+pause_scene --> menu_scene
+pause_scene --> scene
+rattlesnake_habitat --> animal
+rattlesnake_habitat --> habitat_scene
+rattlesnake_habitat --> scene
+tiger_habitat --> animal
+tiger_habitat --> habitat_scene
+tiger_habitat --> scene
+zebra_habitat --> animal
+zebra_habitat --> button
+zebra_habitat --> habitat_scene
+zebra_habitat --> scene
+@enduml

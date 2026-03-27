@@ -1,0 +1,198 @@
+@startuml classes
+set namespaceSeparator none
+class "Animal" as animal.Animal {
+  default_facing_left : bool
+  direction : int
+  facing_left : bool
+  layer_angles : list[float]
+  layer_files : list[str]
+  layers : list[pygame.Surface]
+  scale : float
+  speed : float
+  subfolder : str
+  time : float
+  x : float, int
+  y : float
+  draw(screen: pygame.Surface) -> None
+  load(base_dir: str) -> None
+  update(screen_width: int, dt: float) -> None
+}
+class "Button" as button.Button {
+  DEFAULT_BORDER_COLOR : tuple
+  DEFAULT_BORDER_RADIUS : int
+  DEFAULT_BORDER_WIDTH : int
+  DEFAULT_COLOR : tuple
+  DEFAULT_DISABLED_BORDER_COLOR : tuple
+  DEFAULT_DISABLED_COLOR : tuple
+  DEFAULT_DISABLED_TEXT_COLOR : tuple
+  DEFAULT_FONT_SIZE : int
+  DEFAULT_HEIGHT : int
+  DEFAULT_HOVER_BORDER_COLOR : tuple
+  DEFAULT_HOVER_COLOR : tuple
+  DEFAULT_TEXT_COLOR : tuple
+  DEFAULT_WIDTH : int
+  border_color : tuple
+  border_radius : int
+  border_width : int
+  color : tuple
+  disabled_border_color : tuple
+  disabled_color : tuple
+  disabled_text_color : tuple
+  enabled : bool
+  font : Font
+  hover_border_color : tuple
+  hover_color : tuple
+  hovered : bool
+  rect
+  text : str
+  text_color : tuple
+  draw(screen: pygame.Surface) -> None
+  is_clicked(mouse_pos: tuple[int, int], mouse_pressed: tuple[bool, ...], button: int) -> bool
+  move_to(x: int, y: int)
+  resize(width: int, height: int)
+  update(mouse_pos: tuple[int, int]) -> None
+}
+class "Checklist" as checklist.Checklist {
+  DAY_TASKS_REQUIRED : int
+  NIGHT_TASKS_REQUIRED : int
+  SEED_OFFSET : int
+  day_count : int
+  is_day : bool
+  tasks : dict[str, bool]
+  complete_task(task: str)
+  get_available_tasks() -> list[str]
+  is_phase_complete() -> bool
+}
+class "FishHabitat" as fish_habitat.FishHabitat {
+  BACKGROUND_FILE : str
+  draw(screen: pygame.Surface) -> None
+  handle_events(events: list[pygame.event.Event]) -> None
+  on_enter() -> None
+  on_exit() -> None
+  update(dt: float) -> None
+}
+class "Game" as game.Game {
+  checklist
+  clock
+  cursor
+  running : bool
+  scene_manager
+  screen
+  settings
+  run() -> None
+}
+class "GiraffeHabitat" as giraffe_habitat.GiraffeHabitat {
+  BACKGROUND_FILE : str
+  create_animals() -> list[Animal]
+}
+class "HabitatScene" as habitat_scene.HabitatScene {
+  BACKGROUND_FILE : str
+  {abstract}create_animals() -> list[Animal]
+  draw(screen: pygame.Surface) -> None
+  handle_escape() -> None
+  handle_events(events: list[pygame.event.Event]) -> None
+  on_enter() -> None
+  on_exit() -> None
+  update(dt: float) -> None
+}
+class "LionHabitat" as lion_habitat.LionHabitat {
+  BACKGROUND_FILE : str
+  create_animals() -> list[Animal]
+}
+class "MapScene" as map_scene.MapScene {
+  buttons : dict
+  draw(screen: pygame.Surface) -> None
+  handle_events(events: list[pygame.event.Event]) -> None
+  update(dt: float) -> None
+}
+class "MeerkatHabitat" as meerkat_habitat.MeerkatHabitat {
+  BACKGROUND_FILE : str
+  create_animals() -> list[Animal]
+}
+class "MenuScene" as menu_scene.MenuScene {
+  buttons : dict
+  title_font : Font
+  draw(screen: pygame.Surface) -> None
+  handle_events(events: list[pygame.event.Event]) -> None
+  on_enter() -> None
+  update(dt: float) -> None
+}
+class "PauseScene" as pause_scene.PauseScene {
+  buttons : dict
+  overlay : NoneType
+  title_font : Font
+  draw(screen: pygame.Surface) -> None
+  handle_events(events: list[pygame.event.Event]) -> None
+  on_enter() -> None
+  update(dt: float) -> None
+}
+class "RattlesnakeHabitat" as rattlesnake_habitat.RattlesnakeHabitat {
+  BACKGROUND_FILE : str
+  create_animals() -> list[Animal]
+}
+class "Scene" as scene.Scene {
+  {abstract}draw(screen: pygame.Surface) -> None
+  {abstract}handle_events(events: list[pygame.event.Event]) -> None
+  {abstract}on_enter() -> None
+  {abstract}on_exit() -> None
+  {abstract}update(dt: float) -> None
+}
+class "SceneManager" as scene.SceneManager {
+  current : Scene | None
+  is_empty : bool
+  exit_all() -> None
+  pop() -> None
+  push(scene: Scene) -> None
+}
+class "Settings" as global_settings.Settings {
+  backgrounds : dict
+  cursor : dict
+  time : dict
+  window : dict
+}
+class "TigerHabitat" as tiger_habitat.TigerHabitat {
+  BACKGROUND_FILE : str
+  create_animals() -> list[Animal]
+}
+class "ZebraHabitat" as zebra_habitat.ZebraHabitat {
+  BACKGROUND_FILE : str
+  buttons : dict
+  create_animals() -> list[Animal]
+  decrement_water() -> None
+  draw(screen: pygame.Surface) -> None
+  draw_instruction(screen: pygame.Surface) -> None
+  draw_water_trough(screen: pygame.Surface)
+  get_trough_rect(screen: pygame.Surface) -> pygame.Rect
+  handle_events(events: list[pygame.event.Event]) -> None
+  handle_finish()
+  increment_water() -> None
+  update(dt: float) -> None
+}
+class "_Fish" as fish_habitat._Fish {
+  base_img
+  faces_right : bool
+  home_y : float
+  moving_right
+  screen_width : int
+  speed : float
+  width : int
+  x : float
+  y : float
+  draw(surface: pygame.Surface) -> None
+  update() -> None
+}
+fish_habitat.FishHabitat --|> scene.Scene
+giraffe_habitat.GiraffeHabitat --|> habitat_scene.HabitatScene
+habitat_scene.HabitatScene --|> scene.Scene
+lion_habitat.LionHabitat --|> habitat_scene.HabitatScene
+map_scene.MapScene --|> scene.Scene
+meerkat_habitat.MeerkatHabitat --|> habitat_scene.HabitatScene
+menu_scene.MenuScene --|> scene.Scene
+pause_scene.PauseScene --|> scene.Scene
+rattlesnake_habitat.RattlesnakeHabitat --|> habitat_scene.HabitatScene
+tiger_habitat.TigerHabitat --|> habitat_scene.HabitatScene
+zebra_habitat.ZebraHabitat --|> habitat_scene.HabitatScene
+checklist.Checklist --* game.Game : checklist
+global_settings.Settings --* game.Game : settings
+scene.SceneManager --* game.Game : scene_manager
+@enduml
