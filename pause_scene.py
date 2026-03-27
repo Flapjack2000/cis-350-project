@@ -85,7 +85,11 @@ class PauseScene(Scene):
             button.draw(screen)
 
     def _handle_action(self, action: str) -> None:
-        """Handle button press actions."""
+        """Handle button press actions.
+
+        Args:
+            action (str): The name of the action to enact.
+        """
         if action == "resume":
             self._manager.pop()
         elif action == "quit":

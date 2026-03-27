@@ -134,52 +134,68 @@ scene    </h1>
 </span><span id="L-31"><a href="#L-31"><span class="linenos">31</span></a>
 </span><span id="L-32"><a href="#L-32"><span class="linenos">32</span></a>    <span class="nd">@abstractmethod</span>
 </span><span id="L-33"><a href="#L-33"><span class="linenos">33</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">handle_events</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">events</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">pygame</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">Event</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="L-34"><a href="#L-34"><span class="linenos">34</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Process input events for this frame.&quot;&quot;&quot;</span>
+</span><span id="L-34"><a href="#L-34"><span class="linenos">34</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Process input events for this frame.</span>
 </span><span id="L-35"><a href="#L-35"><span class="linenos">35</span></a>
-</span><span id="L-36"><a href="#L-36"><span class="linenos">36</span></a>    <span class="nd">@abstractmethod</span>
-</span><span id="L-37"><a href="#L-37"><span class="linenos">37</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dt</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="L-38"><a href="#L-38"><span class="linenos">38</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Advance game logic. dt is elapsed seconds since the last frame.&quot;&quot;&quot;</span>
+</span><span id="L-36"><a href="#L-36"><span class="linenos">36</span></a><span class="sd">        Args:</span>
+</span><span id="L-37"><a href="#L-37"><span class="linenos">37</span></a><span class="sd">            events (list[pygame.event.Event]): The events for this frame.</span>
+</span><span id="L-38"><a href="#L-38"><span class="linenos">38</span></a><span class="sd">        &quot;&quot;&quot;</span>
 </span><span id="L-39"><a href="#L-39"><span class="linenos">39</span></a>
 </span><span id="L-40"><a href="#L-40"><span class="linenos">40</span></a>    <span class="nd">@abstractmethod</span>
-</span><span id="L-41"><a href="#L-41"><span class="linenos">41</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">draw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">screen</span><span class="p">:</span> <span class="n">pygame</span><span class="o">.</span><span class="n">Surface</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="L-42"><a href="#L-42"><span class="linenos">42</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Render everything to screen.&quot;&quot;&quot;</span>
+</span><span id="L-41"><a href="#L-41"><span class="linenos">41</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dt</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="L-42"><a href="#L-42"><span class="linenos">42</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Advance game logic.</span>
 </span><span id="L-43"><a href="#L-43"><span class="linenos">43</span></a>
-</span><span id="L-44"><a href="#L-44"><span class="linenos">44</span></a>
-</span><span id="L-45"><a href="#L-45"><span class="linenos">45</span></a><span class="k">class</span><span class="w"> </span><span class="nc">SceneManager</span><span class="p">:</span>
-</span><span id="L-46"><a href="#L-46"><span class="linenos">46</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Manage a stack of Scene objects.&quot;&quot;&quot;</span>
+</span><span id="L-44"><a href="#L-44"><span class="linenos">44</span></a><span class="sd">        Args:</span>
+</span><span id="L-45"><a href="#L-45"><span class="linenos">45</span></a><span class="sd">            dt (float): Delta time, the time since the last frame.</span>
+</span><span id="L-46"><a href="#L-46"><span class="linenos">46</span></a><span class="sd">        &quot;&quot;&quot;</span>
 </span><span id="L-47"><a href="#L-47"><span class="linenos">47</span></a>
-</span><span id="L-48"><a href="#L-48"><span class="linenos">48</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="L-49"><a href="#L-49"><span class="linenos">49</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize the scene stack.&quot;&quot;&quot;</span>
-</span><span id="L-50"><a href="#L-50"><span class="linenos">50</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">__stack</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Scene</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span id="L-48"><a href="#L-48"><span class="linenos">48</span></a>    <span class="nd">@abstractmethod</span>
+</span><span id="L-49"><a href="#L-49"><span class="linenos">49</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">draw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">screen</span><span class="p">:</span> <span class="n">pygame</span><span class="o">.</span><span class="n">Surface</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="L-50"><a href="#L-50"><span class="linenos">50</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Render everything to screen.</span>
 </span><span id="L-51"><a href="#L-51"><span class="linenos">51</span></a>
-</span><span id="L-52"><a href="#L-52"><span class="linenos">52</span></a>    <span class="nd">@property</span>
-</span><span id="L-53"><a href="#L-53"><span class="linenos">53</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">current</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Scene</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="L-54"><a href="#L-54"><span class="linenos">54</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the top scene in the stack.&quot;&quot;&quot;</span>
-</span><span id="L-55"><a href="#L-55"><span class="linenos">55</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__stack</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__stack</span> <span class="k">else</span> <span class="kc">None</span>
+</span><span id="L-52"><a href="#L-52"><span class="linenos">52</span></a><span class="sd">        Args:</span>
+</span><span id="L-53"><a href="#L-53"><span class="linenos">53</span></a><span class="sd">            screen (pygame.Surface): The main screen to draw on.</span>
+</span><span id="L-54"><a href="#L-54"><span class="linenos">54</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="L-55"><a href="#L-55"><span class="linenos">55</span></a>
 </span><span id="L-56"><a href="#L-56"><span class="linenos">56</span></a>
-</span><span id="L-57"><a href="#L-57"><span class="linenos">57</span></a>    <span class="nd">@property</span>
-</span><span id="L-58"><a href="#L-58"><span class="linenos">58</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">is_empty</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-</span><span id="L-59"><a href="#L-59"><span class="linenos">59</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if stack is empty.</span>
-</span><span id="L-60"><a href="#L-60"><span class="linenos">60</span></a>
-</span><span id="L-61"><a href="#L-61"><span class="linenos">61</span></a><span class="sd">        Returns:</span>
-</span><span id="L-62"><a href="#L-62"><span class="linenos">62</span></a><span class="sd">            bool: True if there are no scenes on the stack, False otherwise.</span>
-</span><span id="L-63"><a href="#L-63"><span class="linenos">63</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="L-64"><a href="#L-64"><span class="linenos">64</span></a>        <span class="k">return</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">__stack</span>
-</span><span id="L-65"><a href="#L-65"><span class="linenos">65</span></a>
-</span><span id="L-66"><a href="#L-66"><span class="linenos">66</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">push</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scene</span><span class="p">:</span> <span class="n">Scene</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="L-67"><a href="#L-67"><span class="linenos">67</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Overlay scene on top of the current scene.&quot;&quot;&quot;</span>
-</span><span id="L-68"><a href="#L-68"><span class="linenos">68</span></a>        <span class="n">scene</span><span class="o">.</span><span class="n">on_enter</span><span class="p">()</span>
-</span><span id="L-69"><a href="#L-69"><span class="linenos">69</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">__stack</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">scene</span><span class="p">)</span>
-</span><span id="L-70"><a href="#L-70"><span class="linenos">70</span></a>
-</span><span id="L-71"><a href="#L-71"><span class="linenos">71</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">pop</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="L-72"><a href="#L-72"><span class="linenos">72</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Remove the top scene and return to the one below.&quot;&quot;&quot;</span>
-</span><span id="L-73"><a href="#L-73"><span class="linenos">73</span></a>        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__stack</span><span class="p">:</span>
-</span><span id="L-74"><a href="#L-74"><span class="linenos">74</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">__stack</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span><span class="o">.</span><span class="n">on_exit</span><span class="p">()</span>
-</span><span id="L-75"><a href="#L-75"><span class="linenos">75</span></a>
-</span><span id="L-76"><a href="#L-76"><span class="linenos">76</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">exit_all</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="L-77"><a href="#L-77"><span class="linenos">77</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Clear the entire stack, causing the game loop to exit cleanly.&quot;&quot;&quot;</span>
-</span><span id="L-78"><a href="#L-78"><span class="linenos">78</span></a>        <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">__stack</span><span class="p">:</span>
-</span><span id="L-79"><a href="#L-79"><span class="linenos">79</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">__stack</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span><span class="o">.</span><span class="n">on_exit</span><span class="p">()</span>
+</span><span id="L-57"><a href="#L-57"><span class="linenos">57</span></a><span class="k">class</span><span class="w"> </span><span class="nc">SceneManager</span><span class="p">:</span>
+</span><span id="L-58"><a href="#L-58"><span class="linenos">58</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Manage a stack of Scene objects.&quot;&quot;&quot;</span>
+</span><span id="L-59"><a href="#L-59"><span class="linenos">59</span></a>
+</span><span id="L-60"><a href="#L-60"><span class="linenos">60</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="L-61"><a href="#L-61"><span class="linenos">61</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize the scene stack.&quot;&quot;&quot;</span>
+</span><span id="L-62"><a href="#L-62"><span class="linenos">62</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">__stack</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Scene</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span id="L-63"><a href="#L-63"><span class="linenos">63</span></a>
+</span><span id="L-64"><a href="#L-64"><span class="linenos">64</span></a>    <span class="nd">@property</span>
+</span><span id="L-65"><a href="#L-65"><span class="linenos">65</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">current</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Scene</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="L-66"><a href="#L-66"><span class="linenos">66</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the top scene in the stack.&quot;&quot;&quot;</span>
+</span><span id="L-67"><a href="#L-67"><span class="linenos">67</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__stack</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__stack</span> <span class="k">else</span> <span class="kc">None</span>
+</span><span id="L-68"><a href="#L-68"><span class="linenos">68</span></a>
+</span><span id="L-69"><a href="#L-69"><span class="linenos">69</span></a>    <span class="nd">@property</span>
+</span><span id="L-70"><a href="#L-70"><span class="linenos">70</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">is_empty</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+</span><span id="L-71"><a href="#L-71"><span class="linenos">71</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if stack is empty.</span>
+</span><span id="L-72"><a href="#L-72"><span class="linenos">72</span></a>
+</span><span id="L-73"><a href="#L-73"><span class="linenos">73</span></a><span class="sd">        Returns:</span>
+</span><span id="L-74"><a href="#L-74"><span class="linenos">74</span></a><span class="sd">            bool: True if there are no scenes on the stack, False otherwise.</span>
+</span><span id="L-75"><a href="#L-75"><span class="linenos">75</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="L-76"><a href="#L-76"><span class="linenos">76</span></a>        <span class="k">return</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">__stack</span>
+</span><span id="L-77"><a href="#L-77"><span class="linenos">77</span></a>
+</span><span id="L-78"><a href="#L-78"><span class="linenos">78</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">push</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scene</span><span class="p">:</span> <span class="n">Scene</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="L-79"><a href="#L-79"><span class="linenos">79</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Overlay scene on top of the current scene.</span>
+</span><span id="L-80"><a href="#L-80"><span class="linenos">80</span></a>
+</span><span id="L-81"><a href="#L-81"><span class="linenos">81</span></a><span class="sd">        Args:</span>
+</span><span id="L-82"><a href="#L-82"><span class="linenos">82</span></a><span class="sd">            scene (Scene): the scene to run next</span>
+</span><span id="L-83"><a href="#L-83"><span class="linenos">83</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="L-84"><a href="#L-84"><span class="linenos">84</span></a>        <span class="n">scene</span><span class="o">.</span><span class="n">on_enter</span><span class="p">()</span>
+</span><span id="L-85"><a href="#L-85"><span class="linenos">85</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">__stack</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">scene</span><span class="p">)</span>
+</span><span id="L-86"><a href="#L-86"><span class="linenos">86</span></a>
+</span><span id="L-87"><a href="#L-87"><span class="linenos">87</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">pop</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="L-88"><a href="#L-88"><span class="linenos">88</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Remove the top scene and return to the one below.&quot;&quot;&quot;</span>
+</span><span id="L-89"><a href="#L-89"><span class="linenos">89</span></a>        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__stack</span><span class="p">:</span>
+</span><span id="L-90"><a href="#L-90"><span class="linenos">90</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">__stack</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span><span class="o">.</span><span class="n">on_exit</span><span class="p">()</span>
+</span><span id="L-91"><a href="#L-91"><span class="linenos">91</span></a>
+</span><span id="L-92"><a href="#L-92"><span class="linenos">92</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">exit_all</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="L-93"><a href="#L-93"><span class="linenos">93</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Clear the entire stack, causing the game loop to exit cleanly.&quot;&quot;&quot;</span>
+</span><span id="L-94"><a href="#L-94"><span class="linenos">94</span></a>        <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">__stack</span><span class="p">:</span>
+</span><span id="L-95"><a href="#L-95"><span class="linenos">95</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">__stack</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span><span class="o">.</span><span class="n">on_exit</span><span class="p">()</span>
 </span></pre></div>
 
 
@@ -224,15 +240,27 @@ scene    </h1>
 </span><span id="Scene-32"><a href="#Scene-32"><span class="linenos">32</span></a>
 </span><span id="Scene-33"><a href="#Scene-33"><span class="linenos">33</span></a>    <span class="nd">@abstractmethod</span>
 </span><span id="Scene-34"><a href="#Scene-34"><span class="linenos">34</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">handle_events</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">events</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">pygame</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">Event</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="Scene-35"><a href="#Scene-35"><span class="linenos">35</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Process input events for this frame.&quot;&quot;&quot;</span>
+</span><span id="Scene-35"><a href="#Scene-35"><span class="linenos">35</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Process input events for this frame.</span>
 </span><span id="Scene-36"><a href="#Scene-36"><span class="linenos">36</span></a>
-</span><span id="Scene-37"><a href="#Scene-37"><span class="linenos">37</span></a>    <span class="nd">@abstractmethod</span>
-</span><span id="Scene-38"><a href="#Scene-38"><span class="linenos">38</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dt</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="Scene-39"><a href="#Scene-39"><span class="linenos">39</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Advance game logic. dt is elapsed seconds since the last frame.&quot;&quot;&quot;</span>
+</span><span id="Scene-37"><a href="#Scene-37"><span class="linenos">37</span></a><span class="sd">        Args:</span>
+</span><span id="Scene-38"><a href="#Scene-38"><span class="linenos">38</span></a><span class="sd">            events (list[pygame.event.Event]): The events for this frame.</span>
+</span><span id="Scene-39"><a href="#Scene-39"><span class="linenos">39</span></a><span class="sd">        &quot;&quot;&quot;</span>
 </span><span id="Scene-40"><a href="#Scene-40"><span class="linenos">40</span></a>
 </span><span id="Scene-41"><a href="#Scene-41"><span class="linenos">41</span></a>    <span class="nd">@abstractmethod</span>
-</span><span id="Scene-42"><a href="#Scene-42"><span class="linenos">42</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">draw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">screen</span><span class="p">:</span> <span class="n">pygame</span><span class="o">.</span><span class="n">Surface</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="Scene-43"><a href="#Scene-43"><span class="linenos">43</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Render everything to screen.&quot;&quot;&quot;</span>
+</span><span id="Scene-42"><a href="#Scene-42"><span class="linenos">42</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dt</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="Scene-43"><a href="#Scene-43"><span class="linenos">43</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Advance game logic.</span>
+</span><span id="Scene-44"><a href="#Scene-44"><span class="linenos">44</span></a>
+</span><span id="Scene-45"><a href="#Scene-45"><span class="linenos">45</span></a><span class="sd">        Args:</span>
+</span><span id="Scene-46"><a href="#Scene-46"><span class="linenos">46</span></a><span class="sd">            dt (float): Delta time, the time since the last frame.</span>
+</span><span id="Scene-47"><a href="#Scene-47"><span class="linenos">47</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="Scene-48"><a href="#Scene-48"><span class="linenos">48</span></a>
+</span><span id="Scene-49"><a href="#Scene-49"><span class="linenos">49</span></a>    <span class="nd">@abstractmethod</span>
+</span><span id="Scene-50"><a href="#Scene-50"><span class="linenos">50</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">draw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">screen</span><span class="p">:</span> <span class="n">pygame</span><span class="o">.</span><span class="n">Surface</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="Scene-51"><a href="#Scene-51"><span class="linenos">51</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Render everything to screen.</span>
+</span><span id="Scene-52"><a href="#Scene-52"><span class="linenos">52</span></a>
+</span><span id="Scene-53"><a href="#Scene-53"><span class="linenos">53</span></a><span class="sd">        Args:</span>
+</span><span id="Scene-54"><a href="#Scene-54"><span class="linenos">54</span></a><span class="sd">            screen (pygame.Surface): The main screen to draw on.</span>
+</span><span id="Scene-55"><a href="#Scene-55"><span class="linenos">55</span></a><span class="sd">        &quot;&quot;&quot;</span>
 </span></pre></div>
 
 
@@ -332,11 +360,18 @@ trigger transitions itself.</p>
     <a class="headerlink" href="#Scene.handle_events"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="Scene.handle_events-33"><a href="#Scene.handle_events-33"><span class="linenos">33</span></a>    <span class="nd">@abstractmethod</span>
 </span><span id="Scene.handle_events-34"><a href="#Scene.handle_events-34"><span class="linenos">34</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">handle_events</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">events</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">pygame</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">Event</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="Scene.handle_events-35"><a href="#Scene.handle_events-35"><span class="linenos">35</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Process input events for this frame.&quot;&quot;&quot;</span>
+</span><span id="Scene.handle_events-35"><a href="#Scene.handle_events-35"><span class="linenos">35</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Process input events for this frame.</span>
+</span><span id="Scene.handle_events-36"><a href="#Scene.handle_events-36"><span class="linenos">36</span></a>
+</span><span id="Scene.handle_events-37"><a href="#Scene.handle_events-37"><span class="linenos">37</span></a><span class="sd">        Args:</span>
+</span><span id="Scene.handle_events-38"><a href="#Scene.handle_events-38"><span class="linenos">38</span></a><span class="sd">            events (list[pygame.event.Event]): The events for this frame.</span>
+</span><span id="Scene.handle_events-39"><a href="#Scene.handle_events-39"><span class="linenos">39</span></a><span class="sd">        &quot;&quot;&quot;</span>
 </span></pre></div>
 
 
             <div class="docstring"><p>Process input events for this frame.</p>
+
+<p>Args:
+    events (list[pygame.event.Event]): The events for this frame.</p>
 </div>
 
 
@@ -353,13 +388,20 @@ trigger transitions itself.</p>
 
     </div>
     <a class="headerlink" href="#Scene.update"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="Scene.update-37"><a href="#Scene.update-37"><span class="linenos">37</span></a>    <span class="nd">@abstractmethod</span>
-</span><span id="Scene.update-38"><a href="#Scene.update-38"><span class="linenos">38</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dt</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="Scene.update-39"><a href="#Scene.update-39"><span class="linenos">39</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Advance game logic. dt is elapsed seconds since the last frame.&quot;&quot;&quot;</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Scene.update-41"><a href="#Scene.update-41"><span class="linenos">41</span></a>    <span class="nd">@abstractmethod</span>
+</span><span id="Scene.update-42"><a href="#Scene.update-42"><span class="linenos">42</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dt</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="Scene.update-43"><a href="#Scene.update-43"><span class="linenos">43</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Advance game logic.</span>
+</span><span id="Scene.update-44"><a href="#Scene.update-44"><span class="linenos">44</span></a>
+</span><span id="Scene.update-45"><a href="#Scene.update-45"><span class="linenos">45</span></a><span class="sd">        Args:</span>
+</span><span id="Scene.update-46"><a href="#Scene.update-46"><span class="linenos">46</span></a><span class="sd">            dt (float): Delta time, the time since the last frame.</span>
+</span><span id="Scene.update-47"><a href="#Scene.update-47"><span class="linenos">47</span></a><span class="sd">        &quot;&quot;&quot;</span>
 </span></pre></div>
 
 
-            <div class="docstring"><p>Advance game logic. dt is elapsed seconds since the last frame.</p>
+            <div class="docstring"><p>Advance game logic.</p>
+
+<p>Args:
+    dt (float): Delta time, the time since the last frame.</p>
 </div>
 
 
@@ -376,13 +418,20 @@ trigger transitions itself.</p>
 
     </div>
     <a class="headerlink" href="#Scene.draw"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="Scene.draw-41"><a href="#Scene.draw-41"><span class="linenos">41</span></a>    <span class="nd">@abstractmethod</span>
-</span><span id="Scene.draw-42"><a href="#Scene.draw-42"><span class="linenos">42</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">draw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">screen</span><span class="p">:</span> <span class="n">pygame</span><span class="o">.</span><span class="n">Surface</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="Scene.draw-43"><a href="#Scene.draw-43"><span class="linenos">43</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Render everything to screen.&quot;&quot;&quot;</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Scene.draw-49"><a href="#Scene.draw-49"><span class="linenos">49</span></a>    <span class="nd">@abstractmethod</span>
+</span><span id="Scene.draw-50"><a href="#Scene.draw-50"><span class="linenos">50</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">draw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">screen</span><span class="p">:</span> <span class="n">pygame</span><span class="o">.</span><span class="n">Surface</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="Scene.draw-51"><a href="#Scene.draw-51"><span class="linenos">51</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Render everything to screen.</span>
+</span><span id="Scene.draw-52"><a href="#Scene.draw-52"><span class="linenos">52</span></a>
+</span><span id="Scene.draw-53"><a href="#Scene.draw-53"><span class="linenos">53</span></a><span class="sd">        Args:</span>
+</span><span id="Scene.draw-54"><a href="#Scene.draw-54"><span class="linenos">54</span></a><span class="sd">            screen (pygame.Surface): The main screen to draw on.</span>
+</span><span id="Scene.draw-55"><a href="#Scene.draw-55"><span class="linenos">55</span></a><span class="sd">        &quot;&quot;&quot;</span>
 </span></pre></div>
 
 
             <div class="docstring"><p>Render everything to screen.</p>
+
+<p>Args:
+    screen (pygame.Surface): The main screen to draw on.</p>
 </div>
 
 
@@ -399,41 +448,45 @@ trigger transitions itself.</p>
 
     </div>
     <a class="headerlink" href="#SceneManager"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="SceneManager-46"><a href="#SceneManager-46"><span class="linenos">46</span></a><span class="k">class</span><span class="w"> </span><span class="nc">SceneManager</span><span class="p">:</span>
-</span><span id="SceneManager-47"><a href="#SceneManager-47"><span class="linenos">47</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Manage a stack of Scene objects.&quot;&quot;&quot;</span>
-</span><span id="SceneManager-48"><a href="#SceneManager-48"><span class="linenos">48</span></a>
-</span><span id="SceneManager-49"><a href="#SceneManager-49"><span class="linenos">49</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="SceneManager-50"><a href="#SceneManager-50"><span class="linenos">50</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize the scene stack.&quot;&quot;&quot;</span>
-</span><span id="SceneManager-51"><a href="#SceneManager-51"><span class="linenos">51</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">__stack</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Scene</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
-</span><span id="SceneManager-52"><a href="#SceneManager-52"><span class="linenos">52</span></a>
-</span><span id="SceneManager-53"><a href="#SceneManager-53"><span class="linenos">53</span></a>    <span class="nd">@property</span>
-</span><span id="SceneManager-54"><a href="#SceneManager-54"><span class="linenos">54</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">current</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Scene</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="SceneManager-55"><a href="#SceneManager-55"><span class="linenos">55</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the top scene in the stack.&quot;&quot;&quot;</span>
-</span><span id="SceneManager-56"><a href="#SceneManager-56"><span class="linenos">56</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__stack</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__stack</span> <span class="k">else</span> <span class="kc">None</span>
-</span><span id="SceneManager-57"><a href="#SceneManager-57"><span class="linenos">57</span></a>
-</span><span id="SceneManager-58"><a href="#SceneManager-58"><span class="linenos">58</span></a>    <span class="nd">@property</span>
-</span><span id="SceneManager-59"><a href="#SceneManager-59"><span class="linenos">59</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">is_empty</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-</span><span id="SceneManager-60"><a href="#SceneManager-60"><span class="linenos">60</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if stack is empty.</span>
-</span><span id="SceneManager-61"><a href="#SceneManager-61"><span class="linenos">61</span></a>
-</span><span id="SceneManager-62"><a href="#SceneManager-62"><span class="linenos">62</span></a><span class="sd">        Returns:</span>
-</span><span id="SceneManager-63"><a href="#SceneManager-63"><span class="linenos">63</span></a><span class="sd">            bool: True if there are no scenes on the stack, False otherwise.</span>
-</span><span id="SceneManager-64"><a href="#SceneManager-64"><span class="linenos">64</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="SceneManager-65"><a href="#SceneManager-65"><span class="linenos">65</span></a>        <span class="k">return</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">__stack</span>
-</span><span id="SceneManager-66"><a href="#SceneManager-66"><span class="linenos">66</span></a>
-</span><span id="SceneManager-67"><a href="#SceneManager-67"><span class="linenos">67</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">push</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scene</span><span class="p">:</span> <span class="n">Scene</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="SceneManager-68"><a href="#SceneManager-68"><span class="linenos">68</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Overlay scene on top of the current scene.&quot;&quot;&quot;</span>
-</span><span id="SceneManager-69"><a href="#SceneManager-69"><span class="linenos">69</span></a>        <span class="n">scene</span><span class="o">.</span><span class="n">on_enter</span><span class="p">()</span>
-</span><span id="SceneManager-70"><a href="#SceneManager-70"><span class="linenos">70</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">__stack</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">scene</span><span class="p">)</span>
-</span><span id="SceneManager-71"><a href="#SceneManager-71"><span class="linenos">71</span></a>
-</span><span id="SceneManager-72"><a href="#SceneManager-72"><span class="linenos">72</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">pop</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="SceneManager-73"><a href="#SceneManager-73"><span class="linenos">73</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Remove the top scene and return to the one below.&quot;&quot;&quot;</span>
-</span><span id="SceneManager-74"><a href="#SceneManager-74"><span class="linenos">74</span></a>        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__stack</span><span class="p">:</span>
-</span><span id="SceneManager-75"><a href="#SceneManager-75"><span class="linenos">75</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">__stack</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span><span class="o">.</span><span class="n">on_exit</span><span class="p">()</span>
-</span><span id="SceneManager-76"><a href="#SceneManager-76"><span class="linenos">76</span></a>
-</span><span id="SceneManager-77"><a href="#SceneManager-77"><span class="linenos">77</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">exit_all</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="SceneManager-78"><a href="#SceneManager-78"><span class="linenos">78</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Clear the entire stack, causing the game loop to exit cleanly.&quot;&quot;&quot;</span>
-</span><span id="SceneManager-79"><a href="#SceneManager-79"><span class="linenos">79</span></a>        <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">__stack</span><span class="p">:</span>
-</span><span id="SceneManager-80"><a href="#SceneManager-80"><span class="linenos">80</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">__stack</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span><span class="o">.</span><span class="n">on_exit</span><span class="p">()</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="SceneManager-58"><a href="#SceneManager-58"><span class="linenos">58</span></a><span class="k">class</span><span class="w"> </span><span class="nc">SceneManager</span><span class="p">:</span>
+</span><span id="SceneManager-59"><a href="#SceneManager-59"><span class="linenos">59</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Manage a stack of Scene objects.&quot;&quot;&quot;</span>
+</span><span id="SceneManager-60"><a href="#SceneManager-60"><span class="linenos">60</span></a>
+</span><span id="SceneManager-61"><a href="#SceneManager-61"><span class="linenos">61</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="SceneManager-62"><a href="#SceneManager-62"><span class="linenos">62</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize the scene stack.&quot;&quot;&quot;</span>
+</span><span id="SceneManager-63"><a href="#SceneManager-63"><span class="linenos">63</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">__stack</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Scene</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span id="SceneManager-64"><a href="#SceneManager-64"><span class="linenos">64</span></a>
+</span><span id="SceneManager-65"><a href="#SceneManager-65"><span class="linenos">65</span></a>    <span class="nd">@property</span>
+</span><span id="SceneManager-66"><a href="#SceneManager-66"><span class="linenos">66</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">current</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Scene</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="SceneManager-67"><a href="#SceneManager-67"><span class="linenos">67</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the top scene in the stack.&quot;&quot;&quot;</span>
+</span><span id="SceneManager-68"><a href="#SceneManager-68"><span class="linenos">68</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__stack</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__stack</span> <span class="k">else</span> <span class="kc">None</span>
+</span><span id="SceneManager-69"><a href="#SceneManager-69"><span class="linenos">69</span></a>
+</span><span id="SceneManager-70"><a href="#SceneManager-70"><span class="linenos">70</span></a>    <span class="nd">@property</span>
+</span><span id="SceneManager-71"><a href="#SceneManager-71"><span class="linenos">71</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">is_empty</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+</span><span id="SceneManager-72"><a href="#SceneManager-72"><span class="linenos">72</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if stack is empty.</span>
+</span><span id="SceneManager-73"><a href="#SceneManager-73"><span class="linenos">73</span></a>
+</span><span id="SceneManager-74"><a href="#SceneManager-74"><span class="linenos">74</span></a><span class="sd">        Returns:</span>
+</span><span id="SceneManager-75"><a href="#SceneManager-75"><span class="linenos">75</span></a><span class="sd">            bool: True if there are no scenes on the stack, False otherwise.</span>
+</span><span id="SceneManager-76"><a href="#SceneManager-76"><span class="linenos">76</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="SceneManager-77"><a href="#SceneManager-77"><span class="linenos">77</span></a>        <span class="k">return</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">__stack</span>
+</span><span id="SceneManager-78"><a href="#SceneManager-78"><span class="linenos">78</span></a>
+</span><span id="SceneManager-79"><a href="#SceneManager-79"><span class="linenos">79</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">push</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scene</span><span class="p">:</span> <span class="n">Scene</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="SceneManager-80"><a href="#SceneManager-80"><span class="linenos">80</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Overlay scene on top of the current scene.</span>
+</span><span id="SceneManager-81"><a href="#SceneManager-81"><span class="linenos">81</span></a>
+</span><span id="SceneManager-82"><a href="#SceneManager-82"><span class="linenos">82</span></a><span class="sd">        Args:</span>
+</span><span id="SceneManager-83"><a href="#SceneManager-83"><span class="linenos">83</span></a><span class="sd">            scene (Scene): the scene to run next</span>
+</span><span id="SceneManager-84"><a href="#SceneManager-84"><span class="linenos">84</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="SceneManager-85"><a href="#SceneManager-85"><span class="linenos">85</span></a>        <span class="n">scene</span><span class="o">.</span><span class="n">on_enter</span><span class="p">()</span>
+</span><span id="SceneManager-86"><a href="#SceneManager-86"><span class="linenos">86</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">__stack</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">scene</span><span class="p">)</span>
+</span><span id="SceneManager-87"><a href="#SceneManager-87"><span class="linenos">87</span></a>
+</span><span id="SceneManager-88"><a href="#SceneManager-88"><span class="linenos">88</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">pop</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="SceneManager-89"><a href="#SceneManager-89"><span class="linenos">89</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Remove the top scene and return to the one below.&quot;&quot;&quot;</span>
+</span><span id="SceneManager-90"><a href="#SceneManager-90"><span class="linenos">90</span></a>        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__stack</span><span class="p">:</span>
+</span><span id="SceneManager-91"><a href="#SceneManager-91"><span class="linenos">91</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">__stack</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span><span class="o">.</span><span class="n">on_exit</span><span class="p">()</span>
+</span><span id="SceneManager-92"><a href="#SceneManager-92"><span class="linenos">92</span></a>
+</span><span id="SceneManager-93"><a href="#SceneManager-93"><span class="linenos">93</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">exit_all</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="SceneManager-94"><a href="#SceneManager-94"><span class="linenos">94</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Clear the entire stack, causing the game loop to exit cleanly.&quot;&quot;&quot;</span>
+</span><span id="SceneManager-95"><a href="#SceneManager-95"><span class="linenos">95</span></a>        <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">__stack</span><span class="p">:</span>
+</span><span id="SceneManager-96"><a href="#SceneManager-96"><span class="linenos">96</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">__stack</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span><span class="o">.</span><span class="n">on_exit</span><span class="p">()</span>
 </span></pre></div>
 
 
@@ -451,9 +504,9 @@ trigger transitions itself.</p>
 
     </div>
     <a class="headerlink" href="#SceneManager.__init__"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="SceneManager.__init__-49"><a href="#SceneManager.__init__-49"><span class="linenos">49</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="SceneManager.__init__-50"><a href="#SceneManager.__init__-50"><span class="linenos">50</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize the scene stack.&quot;&quot;&quot;</span>
-</span><span id="SceneManager.__init__-51"><a href="#SceneManager.__init__-51"><span class="linenos">51</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">__stack</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Scene</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="SceneManager.__init__-61"><a href="#SceneManager.__init__-61"><span class="linenos">61</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="SceneManager.__init__-62"><a href="#SceneManager.__init__-62"><span class="linenos">62</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize the scene stack.&quot;&quot;&quot;</span>
+</span><span id="SceneManager.__init__-63"><a href="#SceneManager.__init__-63"><span class="linenos">63</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">__stack</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Scene</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
 </span></pre></div>
 
 
@@ -471,10 +524,10 @@ trigger transitions itself.</p>
 
     </div>
     <a class="headerlink" href="#SceneManager.current"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="SceneManager.current-53"><a href="#SceneManager.current-53"><span class="linenos">53</span></a>    <span class="nd">@property</span>
-</span><span id="SceneManager.current-54"><a href="#SceneManager.current-54"><span class="linenos">54</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">current</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Scene</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="SceneManager.current-55"><a href="#SceneManager.current-55"><span class="linenos">55</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the top scene in the stack.&quot;&quot;&quot;</span>
-</span><span id="SceneManager.current-56"><a href="#SceneManager.current-56"><span class="linenos">56</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__stack</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__stack</span> <span class="k">else</span> <span class="kc">None</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="SceneManager.current-65"><a href="#SceneManager.current-65"><span class="linenos">65</span></a>    <span class="nd">@property</span>
+</span><span id="SceneManager.current-66"><a href="#SceneManager.current-66"><span class="linenos">66</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">current</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Scene</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="SceneManager.current-67"><a href="#SceneManager.current-67"><span class="linenos">67</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the top scene in the stack.&quot;&quot;&quot;</span>
+</span><span id="SceneManager.current-68"><a href="#SceneManager.current-68"><span class="linenos">68</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__stack</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__stack</span> <span class="k">else</span> <span class="kc">None</span>
 </span></pre></div>
 
 
@@ -492,14 +545,14 @@ trigger transitions itself.</p>
 
     </div>
     <a class="headerlink" href="#SceneManager.is_empty"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="SceneManager.is_empty-58"><a href="#SceneManager.is_empty-58"><span class="linenos">58</span></a>    <span class="nd">@property</span>
-</span><span id="SceneManager.is_empty-59"><a href="#SceneManager.is_empty-59"><span class="linenos">59</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">is_empty</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-</span><span id="SceneManager.is_empty-60"><a href="#SceneManager.is_empty-60"><span class="linenos">60</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if stack is empty.</span>
-</span><span id="SceneManager.is_empty-61"><a href="#SceneManager.is_empty-61"><span class="linenos">61</span></a>
-</span><span id="SceneManager.is_empty-62"><a href="#SceneManager.is_empty-62"><span class="linenos">62</span></a><span class="sd">        Returns:</span>
-</span><span id="SceneManager.is_empty-63"><a href="#SceneManager.is_empty-63"><span class="linenos">63</span></a><span class="sd">            bool: True if there are no scenes on the stack, False otherwise.</span>
-</span><span id="SceneManager.is_empty-64"><a href="#SceneManager.is_empty-64"><span class="linenos">64</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="SceneManager.is_empty-65"><a href="#SceneManager.is_empty-65"><span class="linenos">65</span></a>        <span class="k">return</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">__stack</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="SceneManager.is_empty-70"><a href="#SceneManager.is_empty-70"><span class="linenos">70</span></a>    <span class="nd">@property</span>
+</span><span id="SceneManager.is_empty-71"><a href="#SceneManager.is_empty-71"><span class="linenos">71</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">is_empty</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+</span><span id="SceneManager.is_empty-72"><a href="#SceneManager.is_empty-72"><span class="linenos">72</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if stack is empty.</span>
+</span><span id="SceneManager.is_empty-73"><a href="#SceneManager.is_empty-73"><span class="linenos">73</span></a>
+</span><span id="SceneManager.is_empty-74"><a href="#SceneManager.is_empty-74"><span class="linenos">74</span></a><span class="sd">        Returns:</span>
+</span><span id="SceneManager.is_empty-75"><a href="#SceneManager.is_empty-75"><span class="linenos">75</span></a><span class="sd">            bool: True if there are no scenes on the stack, False otherwise.</span>
+</span><span id="SceneManager.is_empty-76"><a href="#SceneManager.is_empty-76"><span class="linenos">76</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="SceneManager.is_empty-77"><a href="#SceneManager.is_empty-77"><span class="linenos">77</span></a>        <span class="k">return</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">__stack</span>
 </span></pre></div>
 
 
@@ -522,14 +575,21 @@ trigger transitions itself.</p>
 
     </div>
     <a class="headerlink" href="#SceneManager.push"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="SceneManager.push-67"><a href="#SceneManager.push-67"><span class="linenos">67</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">push</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scene</span><span class="p">:</span> <span class="n">Scene</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="SceneManager.push-68"><a href="#SceneManager.push-68"><span class="linenos">68</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Overlay scene on top of the current scene.&quot;&quot;&quot;</span>
-</span><span id="SceneManager.push-69"><a href="#SceneManager.push-69"><span class="linenos">69</span></a>        <span class="n">scene</span><span class="o">.</span><span class="n">on_enter</span><span class="p">()</span>
-</span><span id="SceneManager.push-70"><a href="#SceneManager.push-70"><span class="linenos">70</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">__stack</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">scene</span><span class="p">)</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="SceneManager.push-79"><a href="#SceneManager.push-79"><span class="linenos">79</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">push</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scene</span><span class="p">:</span> <span class="n">Scene</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="SceneManager.push-80"><a href="#SceneManager.push-80"><span class="linenos">80</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Overlay scene on top of the current scene.</span>
+</span><span id="SceneManager.push-81"><a href="#SceneManager.push-81"><span class="linenos">81</span></a>
+</span><span id="SceneManager.push-82"><a href="#SceneManager.push-82"><span class="linenos">82</span></a><span class="sd">        Args:</span>
+</span><span id="SceneManager.push-83"><a href="#SceneManager.push-83"><span class="linenos">83</span></a><span class="sd">            scene (Scene): the scene to run next</span>
+</span><span id="SceneManager.push-84"><a href="#SceneManager.push-84"><span class="linenos">84</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="SceneManager.push-85"><a href="#SceneManager.push-85"><span class="linenos">85</span></a>        <span class="n">scene</span><span class="o">.</span><span class="n">on_enter</span><span class="p">()</span>
+</span><span id="SceneManager.push-86"><a href="#SceneManager.push-86"><span class="linenos">86</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">__stack</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">scene</span><span class="p">)</span>
 </span></pre></div>
 
 
             <div class="docstring"><p>Overlay scene on top of the current scene.</p>
+
+<p>Args:
+    scene (Scene): the scene to run next</p>
 </div>
 
 
@@ -545,10 +605,10 @@ trigger transitions itself.</p>
 
     </div>
     <a class="headerlink" href="#SceneManager.pop"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="SceneManager.pop-72"><a href="#SceneManager.pop-72"><span class="linenos">72</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">pop</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="SceneManager.pop-73"><a href="#SceneManager.pop-73"><span class="linenos">73</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Remove the top scene and return to the one below.&quot;&quot;&quot;</span>
-</span><span id="SceneManager.pop-74"><a href="#SceneManager.pop-74"><span class="linenos">74</span></a>        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__stack</span><span class="p">:</span>
-</span><span id="SceneManager.pop-75"><a href="#SceneManager.pop-75"><span class="linenos">75</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">__stack</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span><span class="o">.</span><span class="n">on_exit</span><span class="p">()</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="SceneManager.pop-88"><a href="#SceneManager.pop-88"><span class="linenos">88</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">pop</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="SceneManager.pop-89"><a href="#SceneManager.pop-89"><span class="linenos">89</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Remove the top scene and return to the one below.&quot;&quot;&quot;</span>
+</span><span id="SceneManager.pop-90"><a href="#SceneManager.pop-90"><span class="linenos">90</span></a>        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__stack</span><span class="p">:</span>
+</span><span id="SceneManager.pop-91"><a href="#SceneManager.pop-91"><span class="linenos">91</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">__stack</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span><span class="o">.</span><span class="n">on_exit</span><span class="p">()</span>
 </span></pre></div>
 
 
@@ -568,10 +628,10 @@ trigger transitions itself.</p>
 
     </div>
     <a class="headerlink" href="#SceneManager.exit_all"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="SceneManager.exit_all-77"><a href="#SceneManager.exit_all-77"><span class="linenos">77</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">exit_all</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="SceneManager.exit_all-78"><a href="#SceneManager.exit_all-78"><span class="linenos">78</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Clear the entire stack, causing the game loop to exit cleanly.&quot;&quot;&quot;</span>
-</span><span id="SceneManager.exit_all-79"><a href="#SceneManager.exit_all-79"><span class="linenos">79</span></a>        <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">__stack</span><span class="p">:</span>
-</span><span id="SceneManager.exit_all-80"><a href="#SceneManager.exit_all-80"><span class="linenos">80</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">__stack</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span><span class="o">.</span><span class="n">on_exit</span><span class="p">()</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="SceneManager.exit_all-93"><a href="#SceneManager.exit_all-93"><span class="linenos">93</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">exit_all</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="SceneManager.exit_all-94"><a href="#SceneManager.exit_all-94"><span class="linenos">94</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Clear the entire stack, causing the game loop to exit cleanly.&quot;&quot;&quot;</span>
+</span><span id="SceneManager.exit_all-95"><a href="#SceneManager.exit_all-95"><span class="linenos">95</span></a>        <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">__stack</span><span class="p">:</span>
+</span><span id="SceneManager.exit_all-96"><a href="#SceneManager.exit_all-96"><span class="linenos">96</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">__stack</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span><span class="o">.</span><span class="n">on_exit</span><span class="p">()</span>
 </span></pre></div>
 
 

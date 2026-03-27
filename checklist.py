@@ -54,7 +54,11 @@ class Checklist:
         return (self.__cycle + 1) // 2
 
     def complete_task(self, task: str):
-        """Mark a task as complete."""
+        """Mark a task as complete.
+
+        Args:
+            task (str): The name of the task to be marked complete.
+        """
         if task in self.tasks:
             self.tasks[task] = True
             if self.is_phase_complete():
@@ -70,6 +74,11 @@ class Checklist:
         return [task for task, done in self.tasks.items() if not done]
 
     def __set_pool(self, tasks: list[str]):
+        """Stores the pool of tasks.
+
+        Args:
+            tasks (list[str]): The names of the tasks.
+        """
         self.__pool = tasks
         self.__load_phase_tasks()
 

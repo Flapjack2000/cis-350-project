@@ -31,15 +31,27 @@ class Scene(ABC):
 
     @abstractmethod
     def handle_events(self, events: list[pygame.event.Event]) -> None:
-        """Process input events for this frame."""
+        """Process input events for this frame.
+
+        Args:
+            events (list[pygame.event.Event]): The events for this frame.
+        """
 
     @abstractmethod
     def update(self, dt: float) -> None:
-        """Advance game logic. dt is elapsed seconds since the last frame."""
+        """Advance game logic.
+
+        Args:
+            dt (float): Delta time, the time since the last frame.
+        """
 
     @abstractmethod
     def draw(self, screen: pygame.Surface) -> None:
-        """Render everything to screen."""
+        """Render everything to screen.
+
+        Args:
+            screen (pygame.Surface): The main screen to draw on.
+        """
 
 
 class SceneManager:
@@ -64,7 +76,11 @@ class SceneManager:
         return not self.__stack
 
     def push(self, scene: Scene) -> None:
-        """Overlay scene on top of the current scene."""
+        """Overlay scene on top of the current scene.
+
+        Args:
+            scene (Scene): the scene to run next
+        """
         scene.on_enter()
         self.__stack.append(scene)
 

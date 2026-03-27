@@ -80,8 +80,8 @@ class _Fish:
 
 # Unlike the others, FishHabitat inherits directly from Scene instead of HabitatScene
 class FishHabitat(Scene):
-    """A scene representing the aquarium habitat with multiple swimming fish.
-    """
+    """A scene representing the aquarium habitat with multiple swimming fish."""
+
     BACKGROUND_FILE = "aquarium_background.png"
 
     def __init__(self, manager: SceneManager) -> None:
@@ -97,6 +97,7 @@ class FishHabitat(Scene):
 
     def on_enter(self) -> None:
         """Called when entering the FishHabitat scene."""
+
         super().on_enter()
         bg_path = os.path.join(self._base_dir, "assets", "images", self.BACKGROUND_FILE)
         screen_size = Settings().window["size"]
@@ -118,8 +119,8 @@ class FishHabitat(Scene):
             self._fish.append(_Fish(path, faces_right, size_px, x, y, speed, screen_width))
 
     def on_exit(self) -> None:
-        """Called when exiting the FishHabitat scene.
-        """
+        """Called when exiting the FishHabitat scene."""
+
         super().on_exit()
         self._background = None
         self._fish = []
