@@ -21,6 +21,7 @@ class Checklist:
     SEED_OFFSET = 1
 
     def __init__(self, initial_tasks: list[str]):
+        """Load the tasks and create the checklist dictionary"""
 
         tasks_length = len(initial_tasks)
         req_tasks_length = self.DAY_TASKS_REQUIRED + self.NIGHT_TASKS_REQUIRED
@@ -35,23 +36,28 @@ class Checklist:
 
     @property
     def is_day(self) -> bool:
+        """Return whether it is daytime."""
         return self.__cycle % 2 == 1
 
     @property
     def day_count(self) -> int:
+        """Return the number of days that have elapsed (including the current day)."""
         return (self.__cycle + 1) // 2
 
     def complete_task(self, task: str):
+        """Mark a task as complete."""
         if task in self.tasks:
             self.tasks[task] = True
             if self.is_phase_complete():
                 self.__advance_cycle()
 
     def is_phase_complete(self) -> bool:
+        """Return whether the player has completed the tasks for the part of the day it is."""
         tasks_required = self.DAY_TASKS_REQUIRED if self.is_day else self.NIGHT_TASKS_REQUIRED
         return sum(self.tasks.values()) >= tasks_required
 
     def get_available_tasks(self) -> list[str]:
+        """Return the tasks on the checklist that have not been done yet."""
         return [task for task, done in self.tasks.items() if not done]
 
     def __set_pool(self, tasks: list[str]):
@@ -59,7 +65,7 @@ class Checklist:
         self.__load_phase_tasks()
 
     def __get_day_night_split(self) -> tuple[list[str], list[str]]:
-        # use the day number as seed so both phases of the same day share a split
+        """Partition tasks between day and night."""
         rng = random.Random(self.day_count + self.SEED_OFFSET)
         shuffled = rng.sample(self.__pool, len(self.__pool))
         day_tasks = shuffled[:self.DAY_TASKS_REQUIRED]
@@ -67,10 +73,12 @@ class Checklist:
         return day_tasks, night_tasks
 
     def __load_phase_tasks(self):
+        """Load the tasks for the time of day."""
         day_tasks, night_tasks = self.__get_day_night_split()
         tasks = day_tasks if self.is_day else night_tasks
         self.tasks = {task: False for task in tasks}
 
     def __advance_cycle(self):
+        """Move to the next cycle and load tasks."""
         self.__cycle += 1
         self.__load_phase_tasks()
