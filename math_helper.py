@@ -1,12 +1,32 @@
 import numpy as np
+import numpy.typing as npt
 
 type Position = tuple[int | float, int | float]
 
 
 class MathHelper:
     @staticmethod
-    def cross2d(x, y):
-        """Return analog cross product of two 2D vectors."""
+    def cross2d(
+            x: npt.NDArray[np.floating],
+            y: npt.NDArray[np.floating],
+    ) -> npt.NDArray[np.floating]:
+        """Return analog cross product (determinant) of two 2D vectors.
+
+        Args:
+            x (npt.NDArray[np.floating]): first 2D vector
+            y (npt.NDArray[np.floating]): second 2D vector
+
+        Returns:
+            npt.NDArray[np.floating]: scalar cross product
+        """
+
+        # Verify vector dimension
+        if x.ndim != 1 or y.ndim != 1 or x.shape[0] != 2 or y.shape[0] != 2:
+            raise ValueError(
+                "Inputs must be 1D arrays of length 2 (2D vectors)."
+            )
+
+        # Calculate and return 2D cross product
         return x[..., 0] * y[..., 1] - x[..., 1] * y[..., 0]
 
     @staticmethod
@@ -15,6 +35,14 @@ class MathHelper:
             edges: list[tuple[Position, Position]]
     ) -> bool:
         """Return whether a point is inside a polygon via raycasting.
+        Works for convex polygons and polygons with holes.
+
+        Args:
+            point (Position): the point to check, e.g. a mouse click position
+            edges (list[tuple[Position, Position]]): the polygon's edges
+
+        Returns:
+            bool: whether the point is inside the polygon
 
         Solution derived from:
             https://math.stackexchange.com/q/4003918
@@ -40,7 +68,8 @@ class MathHelper:
             [1 - np.random.random(), 1 - np.random.random()]
         )
 
-        for i, edge in enumerate(edges):
+        # Check every edge for an intersection
+        for edge in edges:
 
             # Edge point vectors
             v1 = np.array(edge[0])
@@ -68,10 +97,21 @@ class MathHelper:
         return intersections % 2 == 1
 
     @staticmethod
-    def check_edge_valence(edges):
-        """Verify that all edges have two vertices."""
+    def check_edge_valence(edges: list[tuple[Position, Position]]):
+        """Verify polygon connection.
+
+        Args:
+            edges (list[tuple[Position, Position]]): a list of polygon edges
+
+        Returns:
+              bool: whether the polygon is properly connected
+        """
+
+        # Count vertices
         counts = {}
         for edge in edges:
             for v in edge:
                 counts[v] = counts.get(v, 0) + 1
+
+        # Make sure every vertex shows up exactly twice
         return all(n == 2 for n in counts.values())
