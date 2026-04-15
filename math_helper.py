@@ -30,12 +30,32 @@ class MathHelper:
         return x[..., 0] * y[..., 1] - x[..., 1] * y[..., 0]
 
     @staticmethod
+    def check_edge_valence(edges: list[tuple[Position, Position]]):
+        """Verify polygon connection.
+
+        Args:
+            edges (list[tuple[Position, Position]]): a list of polygon edges
+
+        Returns:
+            bool: whether the polygon is properly connected
+        """
+
+        # Count vertices
+        counts = {}
+        for edge in edges:
+            for v in edge:
+                counts[v] = counts.get(v, 0) + 1
+
+        # Make sure every vertex shows up exactly twice
+        return all(n == 2 for n in counts.values())
+
+    @staticmethod
     def is_within_polygon(
             point: Position,
             edges: list[tuple[Position, Position]]
     ) -> bool:
         """Return whether a point is inside a polygon via raycasting.
-        Works for convex polygons and polygons with holes.
+        Works for convex polygons, concave polygons, and polygons with holes.
 
         Args:
             point (Position): the point to check, e.g. a mouse click position
@@ -59,11 +79,31 @@ class MathHelper:
                 "A vertex cannot be incident to more than 2 edges."
             )
 
+        # Create point vector
+        p = np.array(point)
+
+        # Use faster method for triangles
+        if len(edges) == 3:
+            # Extract vertices from edges
+            vertices = list({v for edge in edges for v in edge})
+            a, b, c = [np.array(v) for v in vertices]
+
+            # Compute cross products
+            pa = p - a
+            pb = p - b
+            o1 = float(MathHelper.cross2d(b - a, pa))
+            o3 = float(MathHelper.cross2d(a - c, pa))
+            o2 = float(MathHelper.cross2d(c - b, pb))
+
+            # Check that point is on same side of all three edges
+            min_o = min(o1, o2, o3)
+            max_o = max(o1, o2, o3)
+            return min_o >= 0 or max_o <= 0
+
         # Count number of intersections
         intersections: int = 0
 
         # Create ray in arbitrary nonzero direction
-        p = np.array(point)
         ray_direction = np.array(
             [1 - np.random.random(), 1 - np.random.random()]
         )
@@ -95,23 +135,3 @@ class MathHelper:
 
         # Point is inside if ray intersects an odd number of edges
         return intersections % 2 == 1
-
-    @staticmethod
-    def check_edge_valence(edges: list[tuple[Position, Position]]):
-        """Verify polygon connection.
-
-        Args:
-            edges (list[tuple[Position, Position]]): a list of polygon edges
-
-        Returns:
-              bool: whether the polygon is properly connected
-        """
-
-        # Count vertices
-        counts = {}
-        for edge in edges:
-            for v in edge:
-                counts[v] = counts.get(v, 0) + 1
-
-        # Make sure every vertex shows up exactly twice
-        return all(n == 2 for n in counts.values())
