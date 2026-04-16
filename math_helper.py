@@ -33,7 +33,7 @@ class MathHelper:
         return x[..., 0] * y[..., 1] - x[..., 1] * y[..., 0]
 
     @staticmethod
-    def check_edge_valence(edges: list[tuple[Position, Position]]):
+    def check_edge_valence(edges: list[tuple[Position, Position]]) -> bool:
         """Verify polygon connection.
 
         Args:
