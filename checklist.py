@@ -38,7 +38,7 @@ class Checklist:
                 f"Checklist initialized with {tasks_length} tasks. Requires at least {req_tasks_length} tasks.")
 
         self.__pool: list[str] = initial_tasks
-        self.tasks: dict[str, bool] = {}
+        self.__tasks: dict[str, bool] = {}
         self.__cycle: int = 1
 
         self.__load_phase_tasks()
@@ -59,19 +59,27 @@ class Checklist:
         Args:
             task (str): The name of the task to be marked complete.
         """
-        if task in self.tasks:
-            self.tasks[task] = True
+        if task in self.__tasks:
+            self.__tasks[task] = True
             if self.is_phase_complete():
                 self.__advance_cycle()
 
     def is_phase_complete(self) -> bool:
         """Return whether the player has completed the tasks for the part of the day it is."""
         tasks_required = self.DAY_TASKS_REQUIRED if self.is_day else self.NIGHT_TASKS_REQUIRED
-        return sum(self.tasks.values()) >= tasks_required
+        return sum(self.__tasks.values()) >= tasks_required
 
-    def get_available_tasks(self) -> list[str]:
+    def get_incomplete_tasks(self) -> list[str]:
         """Return the tasks on the checklist that have not been done yet."""
-        return [task for task, done in self.tasks.items() if not done]
+        return [task for task, done in self.__tasks.items() if not done]
+
+    def get_completed_tasks(self) -> list[str]:
+        """Return the tasks on the checklist that have been done."""
+        return [task for task, done in self.__tasks.items() if done]
+
+    def get_all_tasks(self) -> list[str]:
+        """Return all the tasks on the checklist."""
+        return [task for task in self.__tasks.keys()]
 
     def __set_pool(self, tasks: list[str]):
         """Stores the pool of tasks.
@@ -99,7 +107,7 @@ class Checklist:
         """Load the tasks for the time of day."""
         day_tasks, night_tasks = self.__get_day_night_split()
         tasks = day_tasks if self.is_day else night_tasks
-        self.tasks = {task: False for task in tasks}
+        self.__tasks = {task: False for task in tasks}
 
     def __advance_cycle(self):
         """Move to the next cycle and load tasks."""
