@@ -5,37 +5,44 @@ class Checklist:
     """
         Manages a day/night task checklist that cycles deterministically.
 
-        Tasks are drawn from a pool and split between day and night phases with no
-        overlap. Day gets DAY_TASKS_REQUIRED tasks, night gets NIGHT_TASKS_REQUIRED.
+        Tasks are drawn from a pool and split between day and night
+        phases with no overlap. Day gets DAY_TASKS_REQUIRED tasks.
+        Night gets NIGHT_TASKS_REQUIRED.
 
-        Both phases of the same day share a seeded shuffle (seeded by day number +
-        SEED_OFFSET), so the split is always the same for a given day but differs
-        across days. Adjusting SEED_OFFSET produces a completely different but still
+        Both phases of the same day share a seeded shuffle
+        (seeded by day number + SEED_OFFSET), so the split is
+        always the same for a given day but differs across days.
+        Adjusting SEED_OFFSET produces a completely different but still
         deterministic game.
 
-        A phase completes when enough tasks are marked done, automatically advancing
-        to the next phase and loading a fresh task set.
+        A phase completes when enough tasks are marked done,
+        automatically advancing to the next phase and loading a fresh task set.
     """
 
     DAY_TASKS_REQUIRED = 4
     NIGHT_TASKS_REQUIRED = 3
     SEED_OFFSET = 1
 
-    def __init__(self, initial_tasks: list[str]):
+    def __init__(self, initial_tasks: list[str]) -> None:
         """Load the tasks and create the checklist dictionary.
 
         Args:
-            initial_tasks (list[str]): The pool of task names to draw from each day/night cycle.
+            initial_tasks (list[str]):
+                The pool of task names to draw from each day/night cycle.
 
         Raises:
-            ValueError: If fewer tasks are provided than DAY_TASKS_REQUIRED + NIGHT_TASKS_REQUIRED.
+            ValueError:
+                If fewer tasks are provided than
+                DAY_TASKS_REQUIRED + NIGHT_TASKS_REQUIRED.
         """
 
         tasks_length = len(initial_tasks)
         req_tasks_length = self.DAY_TASKS_REQUIRED + self.NIGHT_TASKS_REQUIRED
         if tasks_length < req_tasks_length:
             raise ValueError(
-                f"Checklist initialized with {tasks_length} tasks. Requires at least {req_tasks_length} tasks.")
+                f"Checklist initialized with {tasks_length} tasks.\n"
+                f"Requires at least {req_tasks_length} tasks."
+            )
 
         self.__pool: list[str] = initial_tasks
         self.__tasks: dict[str, bool] = {}
@@ -50,7 +57,7 @@ class Checklist:
 
     @property
     def day_count(self) -> int:
-        """Return the number of days that have elapsed (including the current day)."""
+        """Return the number of days elapsed (including the current day)."""
         return (self.__cycle + 1) // 2
 
     def complete_task(self, task: str):
@@ -65,8 +72,16 @@ class Checklist:
                 self.__advance_cycle()
 
     def is_phase_complete(self) -> bool:
-        """Return whether the player has completed the tasks for the part of the day it is."""
-        tasks_required = self.DAY_TASKS_REQUIRED if self.is_day else self.NIGHT_TASKS_REQUIRED
+        """Return whether the player has completed current phase's tasks.
+
+        Returns:
+            bool: whether all the phase's tasks are complete
+        """
+        tasks_required = (
+            self.DAY_TASKS_REQUIRED
+            if self.is_day
+            else self.NIGHT_TASKS_REQUIRED
+        )
         return sum(self.__tasks.values()) >= tasks_required
 
     def get_incomplete_tasks(self) -> list[str]:
@@ -94,13 +109,17 @@ class Checklist:
         """Partition tasks between day and night.
 
         Returns:
-            tuple[list[str], list[str]]: A tuple of (day_tasks, night_tasks), each a
-                deterministically shuffled subset of the pool for the current day.
+            tuple[list[str], list[str]]:
+            A tuple of (day_tasks, night_tasks), each a deterministically
+            shuffled subset of the pool for the current day.
         """
         rng = random.Random(self.day_count + self.SEED_OFFSET)
         shuffled = rng.sample(self.__pool, len(self.__pool))
         day_tasks = shuffled[:self.DAY_TASKS_REQUIRED]
-        night_tasks = shuffled[self.DAY_TASKS_REQUIRED:self.DAY_TASKS_REQUIRED + self.NIGHT_TASKS_REQUIRED]
+        night_tasks = shuffled[
+            self.DAY_TASKS_REQUIRED:
+            self.DAY_TASKS_REQUIRED + self.NIGHT_TASKS_REQUIRED
+        ]
         return day_tasks, night_tasks
 
     def __load_phase_tasks(self):
