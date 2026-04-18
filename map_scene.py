@@ -15,6 +15,9 @@ from rattlesnake_habitat import RattlesnakeHabitat
 from tiger_habitat import TigerHabitat
 from zebra_habitat import ZebraHabitat
 from meerkat_habitat import MeerkatHabitat
+from red_panda_habitat import RedPandaHabitat
+from penguin_habitat import PenguinHabitat
+from octopus_habitat import OctopusHabitat
 
 class MapScene(Scene):
     """
@@ -42,7 +45,10 @@ class MapScene(Scene):
             "lion": Button(bx + 250, start_y + 80 * 0, text="Lion", width=bw, height=bh, enabled=True),
             "tiger": Button(bx + 250, start_y + 80 * 1, text="Tiger", width=bw, height=bh, enabled=True),
             "giraffe": Button(bx + 250, start_y + 80 * 2, text="Giraffe", width=bw, height=bh, enabled=True),
-            "fish": Button(bx + 125, start_y + 80 * 3, text="Fish", width=bw, height=bh, enabled=True),
+            "fish": Button(bx, start_y + 80 * 3, text="Fish", width=bw, height=bh, enabled=True),
+            "octopus": Button(bx + 250, start_y + 80 * 3, text="Octopus", width=bw, height=bh, enabled=True),
+            "penguin": Button(bx, start_y + 80 * 4, text="Penguin", width=bw, height=bh, enabled=True),
+            "red panda": Button(bx + 250, start_y + 80 * 4, text="Red Panda", width=bw, height=bh, enabled=True),
         }
 
     def handle_events(self, events: list[pygame.event.Event]) -> None:
@@ -100,3 +106,9 @@ class MapScene(Scene):
             self._manager.push(GiraffeHabitat(self._manager))
         elif action == "fish":
             self._manager.push(FishHabitat(self._manager))
+        elif action == "red panda":
+            self._manager.push(RedPandaHabitat(self._manager))
+        elif action == "octopus":
+            self._manager.push(OctopusHabitat(self._manager))
+        elif action == "penguin":
+            self._manager.push(PenguinHabitat(self._manager))
