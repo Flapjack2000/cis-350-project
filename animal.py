@@ -17,6 +17,7 @@ class Animal:
             default_facing_left: bool = False,
             direction: int = 1,
             speed: float = 1.0,
+            draw_fn: Callable[["Animal", pygame.Surface], None] | None = None,
             animate_fn: Callable[["Animal", float], None] | None = None,  # a function that takes in an Animal and dt
     ) -> None:
         """Initialize an Animal instance.
@@ -43,6 +44,7 @@ class Animal:
         self.facing_left: bool = direction < 0
         self.layers: list[pygame.Surface] = []
         self.layer_angles: list[float] = []  # per-layer rotation in degrees
+        self._draw_fn = draw_fn
         self._animate_fn = animate_fn
         self.time: float = 0.0  # elapsed seconds, available to animate_fn
 
@@ -73,10 +75,14 @@ class Animal:
         """
         self.time += dt
         self.x += self.speed * self.direction
-        width = max((layer.get_width() for layer in self.layers), default=0)
 
-        if self.x > screen_width - width:
-            self.x = screen_width - width
+        body_width = getattr(self, "body_width", None)
+
+        if body_width is None:
+            body_width = self.layers[0].get_width() if self.layers else 0
+
+        if self.x > screen_width - body_width:
+            self.x = screen_width - body_width
             self.direction = -1
         elif self.x < 0:
             self.x = 0
@@ -93,6 +99,12 @@ class Animal:
         Args:
             screen (pygame.Surface): The Pygame surface to draw the animal on.
         """
+        if self._draw_fn:
+            self._draw_fn(self, screen)
+            return
+
+
+
         should_flip = self.facing_left != self.default_facing_left
         for layer, angle in zip(self.layers, self.layer_angles):
             if should_flip:

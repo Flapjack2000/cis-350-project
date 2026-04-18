@@ -1,6 +1,7 @@
 import os
 import pygame
 import random
+import math
 from button import Button
 from scene import SceneManager
 from habitat_scene import HabitatScene
@@ -22,6 +23,80 @@ _LAYER_FILES = [
     "zebra_head.png",
 ]
 
+import math
+from animal_movement import AnimalMovement
+
+movement = AnimalMovement()
+
+def zebra_walk(animal, dt):
+    """
+    Animates zebra walking motion using sinusoidal leg rotation.
+
+    Args:
+        animal (Animal): The zebra instance containing animation state and layer angles.
+    """
+    t = animal.time
+    swing = math.sin(t * 5) * 5
+
+    HBU, HBL = 0, 1
+    HFU, HFL = 2, 3
+    TAIL = 4
+    BODY = 5
+    FBU, FBL = 6, 7
+    FFU, FFL = 8, 9
+    NECK = 10
+    HEAD = 11
+
+    animal.layer_angles[HBU] = swing
+    animal.layer_angles[HBL] = swing * 0.8
+
+    animal.layer_angles[HFU] = -swing
+    animal.layer_angles[HFL] = -swing * 0.8
+
+    animal.layer_angles[FBU] = -swing
+    animal.layer_angles[FBL] = -swing * 0.8
+
+    animal.layer_angles[FFU] = swing
+    animal.layer_angles[FFL] = swing * 0.8
+
+
+def zebra_draw(animal, screen):
+    """
+    Renders a zebra using layered sprite animation with pivot-based rotation.
+
+    Args:
+        animal (Animal): The zebra instance containing sprite layers and animation state.
+        screen (pygame.Surface): The surface to render the zebra onto.
+    """
+    should_flip = animal.facing_left != animal.default_facing_left
+    body_width = animal.layers[5].get_width() if animal.layers else 0
+    body_pos = pygame.Vector2(animal.x + body_width / 2, animal.y)
+
+    for i, (layer, angle) in enumerate(zip(animal.layers, animal.layer_angles)):
+
+        rotated_img, rotated_rect = pygame.transform.rotozoom(
+            layer,
+            angle,
+            1.0
+        ), layer.get_rect()
+
+        pivot = pygame.Vector2(
+            layer.get_width() // 2,
+            layer.get_height() // 2
+        )
+
+        rotated_img, rotated_rect = movement.rotate_image(
+            layer,
+            angle,
+            pivot
+        )
+
+        rotated_rect.center = body_pos
+
+        if should_flip:
+            rotated_img = pygame.transform.flip(rotated_img, True, False)
+
+        screen.blit(rotated_img, rotated_rect)
 
 class ZebraHabitat(HabitatScene):
     """Habitat scene representing a zebra interacting with a water trough.
@@ -30,7 +105,7 @@ class ZebraHabitat(HabitatScene):
     walks back and forth, drinks water when the trough is filled,
     and the player can increment the water level by clicking on the trough.
     """
-    BACKGROUND_FILE = "savanna_background.png"
+    BACKGROUND_FILE = "savanna_background_day.png"
 
     def __init__(self, manager: SceneManager) -> None:
         """Initialize the ZebraHabitat scene and its gameplay elements.
@@ -83,8 +158,8 @@ class ZebraHabitat(HabitatScene):
             list[Animal]: A single zebra configured with sprite layers, starting position, and speed.
         """
         return [
-            Animal(x=120, y=0, layer_files=_LAYER_FILES, subfolder=_SUBFOLDER,
-                   scale=0.45, default_facing_left=True, direction=1, speed=self.__zebra_speed)
+            Animal(x=120, y=300, layer_files=_LAYER_FILES, subfolder=_SUBFOLDER,
+                   scale=0.45, default_facing_left=True, direction=1, speed=self.__zebra_speed, animate_fn=zebra_walk, draw_fn=zebra_draw)
         ]
 
     def draw_instruction(self, screen: pygame.Surface) -> None:
