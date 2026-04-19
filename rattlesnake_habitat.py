@@ -159,7 +159,8 @@ class RattlesnakeHabitat(HabitatScene):
     Handles creating rattlesnake animals with layered sprites and optional
     animation (head bobbing and tail rattling) within the scene.
     """
-    BACKGROUND_FILE = "grassland_background_day.png"
+    BACKGROUND_FILE_DAY = "grassland_background_day.png"
+    BACKGROUND_FILE_NIGHT = "grassland_background_night.png"
 
     def __init__(self, manager: SceneManager) -> None:
         """Initialize the RattlesnakeHabitat scene.
@@ -167,6 +168,7 @@ class RattlesnakeHabitat(HabitatScene):
         Args:
             manager (SceneManager): The scene manager controlling scene transitions.
         """
+        self.BACKGROUND_FILE = self.BACKGROUND_FILE_DAY if manager.context.is_day else self.BACKGROUND_FILE_NIGHT
         super().__init__(manager)
 
     def create_animals(self) -> list[Animal]:

@@ -119,7 +119,8 @@ class TigerHabitat(HabitatScene):
     Handles creating tiger animals with layered sprites,
     movement, and rendering within the scene.
     """
-    BACKGROUND_FILE = "jungle_background_day.png"
+    BACKGROUND_FILE_DAY = "jungle_background_day.png"
+    BACKGROUND_FILE_NIGHT = "jungle_background_night.png"
 
     def __init__(self, manager: SceneManager) -> None:
         """Initialize the TigerHabitat scene.
@@ -127,6 +128,7 @@ class TigerHabitat(HabitatScene):
         Args:
             manager (SceneManager): The object controlling scene transitions.
         """
+        self.BACKGROUND_FILE = self.BACKGROUND_FILE_DAY if manager.context.is_day else self.BACKGROUND_FILE_NIGHT
         super().__init__(manager)
 
     def create_animals(self) -> list[Animal]:

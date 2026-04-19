@@ -2,12 +2,9 @@
 Manages the main game loop.
 """
 
-import os
-os.environ["PYGAME_HIDE_SUPPORT_PROMPT"] = "1"
-
 import pygame
 from checklist import Checklist
-from scene import SceneManager
+from scene import SceneManager, GameContext
 from menu_scene import MenuScene
 from global_settings import Settings
 
@@ -31,10 +28,25 @@ class Game:
         cursor_surface = pygame.image.load(cursor_cfg["image_path"]).convert_alpha()
         self.cursor = pygame.transform.scale(cursor_surface, cursor_cfg["size"])
 
-        initial_tasks = ["Tiger", "Monkey", "Lions", "Zebra", "Fish", "Rattlesnake", "Meerkats"]
+        initial_tasks = [
+            "Tiger",
+            "Lions",
+            "Zebra",
+            "Fish",
+            "Rattlesnake",
+            "Meerkats",
+            "Giraffes",
+            "Octopus",
+            "Penguins",
+            "Red Panda"
+        ]
         self.checklist = Checklist(initial_tasks)
 
-        self.scene_manager = SceneManager()
+        context = GameContext(
+            checklist=self.checklist,
+            cursor=self.cursor
+        )
+        self.scene_manager = SceneManager(context)
         self.scene_manager.push(MenuScene(self.scene_manager))
 
     def run(self) -> None:

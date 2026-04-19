@@ -105,7 +105,8 @@ class ZebraHabitat(HabitatScene):
     walks back and forth, drinks water when the trough is filled,
     and the player can increment the water level by clicking on the trough.
     """
-    BACKGROUND_FILE = "savanna_background_day.png"
+    BACKGROUND_FILE_DAY = "savanna_background_day.png"
+    BACKGROUND_FILE_NIGHT = "savanna_background_night.png"
 
     def __init__(self, manager: SceneManager) -> None:
         """Initialize the ZebraHabitat scene and its gameplay elements.
@@ -113,6 +114,7 @@ class ZebraHabitat(HabitatScene):
         Args:
             manager (SceneManager): The object controlling scene transitions.
         """
+        self.BACKGROUND_FILE = self.BACKGROUND_FILE_DAY if manager.context.is_day else self.BACKGROUND_FILE_NIGHT
         super().__init__(manager)
 
         # Habitat-specific gameplay setup variables
