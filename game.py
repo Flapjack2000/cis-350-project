@@ -8,6 +8,8 @@ from scene import SceneManager, GameContext
 from menu_scene import MenuScene
 from global_settings import Settings
 
+from checklist_scene import ChecklistScene
+
 class Game:
     """Manage the logic of running the game."""
 
@@ -29,16 +31,16 @@ class Game:
         self.cursor = pygame.transform.scale(cursor_surface, cursor_cfg["size"])
 
         initial_tasks = [
-            "Tiger",
-            "Lions",
-            "Zebra",
-            "Fish",
-            "Rattlesnake",
-            "Meerkats",
-            "Giraffes",
-            "Octopus",
-            "Penguins",
-            "Red Panda"
+            "tiger",
+            "lions",
+            "zebra",
+            "fish",
+            "rattlesnake",
+            "meerkat",
+            "giraffe",
+            "octopus",
+            "penguin",
+            "red panda"
         ]
         self.checklist = Checklist(initial_tasks)
 

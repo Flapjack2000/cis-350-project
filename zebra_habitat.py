@@ -6,6 +6,7 @@ from button import Button
 from scene import SceneManager
 from habitat_scene import HabitatScene
 from animal import Animal
+from animal_movement import AnimalMovement
 
 _SUBFOLDER = os.path.join("assets", "animals", "zebra")
 _LAYER_FILES = [
@@ -23,10 +24,8 @@ _LAYER_FILES = [
     "zebra_head.png",
 ]
 
-import math
-from animal_movement import AnimalMovement
-
 movement = AnimalMovement()
+
 
 def zebra_walk(animal, dt):
     """
@@ -98,6 +97,7 @@ def zebra_draw(animal, screen):
 
         screen.blit(rotated_img, rotated_rect)
 
+
 class ZebraHabitat(HabitatScene):
     """Habitat scene representing a zebra interacting with a water trough.
 
@@ -117,6 +117,14 @@ class ZebraHabitat(HabitatScene):
         self.BACKGROUND_FILE = self.BACKGROUND_FILE_DAY if manager.context.is_day else self.BACKGROUND_FILE_NIGHT
         super().__init__(manager)
 
+        self.__zebra_speed: float = 2.5
+
+        # Check if playing minigame or just visiting
+        self.is_game_active = "zebra" in self._manager.context.checklist.get_incomplete_tasks()
+        if self.is_game_active:
+            self.game_init()
+
+    def game_init(self):
         # Habitat-specific gameplay setup variables
         self.__s1: int = 250  # wall height & base width
         self.__s2: int = 20  # wall thickness & base thickness
@@ -129,7 +137,6 @@ class ZebraHabitat(HabitatScene):
         self.__increment_amount: int = 2
         self.__decrement_amount: int = 55
 
-        self.__zebra_speed: float = 1.7
         self.__passes_until_drink: int = 1  # how many trough passes before drinking (zebra drinks on first pass, random later)
         self.__pass_counted: bool = False  # prevents counting the same pass twice
         self.__drink_duration: float = 1.5  # seconds to pause at trough
@@ -159,10 +166,21 @@ class ZebraHabitat(HabitatScene):
         Returns:
             list[Animal]: A single zebra configured with sprite layers, starting position, and speed.
         """
-        return [
-            Animal(x=120, y=300, layer_files=_LAYER_FILES, subfolder=_SUBFOLDER,
-                   scale=0.45, default_facing_left=True, direction=1, speed=self.__zebra_speed, animate_fn=zebra_walk, draw_fn=zebra_draw)
-        ]
+        if self.is_game_active:
+            return [
+                Animal(x=120, y=300, layer_files=_LAYER_FILES, subfolder=_SUBFOLDER,
+                       scale=0.45, default_facing_left=True, direction=1, speed=self.__zebra_speed,
+                       animate_fn=zebra_walk, draw_fn=zebra_draw)
+            ]
+        else:
+            return [
+                Animal(x=120, y=300, layer_files=_LAYER_FILES, subfolder=_SUBFOLDER,
+                       scale=0.45, default_facing_left=True, direction=1, speed=self.__zebra_speed,
+                       animate_fn=zebra_walk, draw_fn=zebra_draw),
+                Animal(x=520, y=500, layer_files=_LAYER_FILES, subfolder=_SUBFOLDER,
+                       scale=0.40, default_facing_left=True, direction=-1, speed=self.__zebra_speed * 1.1,
+                       animate_fn=zebra_walk, draw_fn=zebra_draw)
+            ]
 
     def draw_instruction(self, screen: pygame.Surface) -> None:
         """Render instruction text next to the water trough.
@@ -184,7 +202,10 @@ class ZebraHabitat(HabitatScene):
             screen (pygame.Surface): The surface to draw the trough on.
         """
         # Create trough & water surfaces
-        water_height = int((self.__s1 - self.__s2) * (self.__water_level / self.__max_water_level))
+        water_height = int(
+            (self.__s1 - self.__s2) *
+            (self.__water_level / self.__max_water_level)
+        )
         trough_parts = [
             pygame.Surface((self.__s1 - self.__s2 * 2, water_height)),  # water
             pygame.Surface((self.__s1, self.__s2)),  # base
@@ -212,7 +233,8 @@ class ZebraHabitat(HabitatScene):
             screen.blit(trough_parts[i], part_positions[i])
 
     def draw(self, screen: pygame.Surface) -> None:
-        """Render the entire habitat, including background, zebra, trough, instructions, and buttons.
+        """Render the entire habitat, including background,
+        zebra, trough, instructions, and buttons.
 
         Args:
             screen (pygame.Surface): The surface to render the scene on.
@@ -220,15 +242,16 @@ class ZebraHabitat(HabitatScene):
         # Parent handles zebra and background automatically
         super().draw(screen)
 
-        # Render the trough
-        self.draw_water_trough(screen)
+        if self.is_game_active:
+            # Render the trough
+            self.draw_water_trough(screen)
 
-        # Draw instruction text
-        self.draw_instruction(screen)
+            # Draw instruction text
+            self.draw_instruction(screen)
 
-        # Render the button(s)
-        for button in self.buttons.values():
-            button.draw(screen)
+            # Render the button(s)
+            for button in self.buttons.values():
+                button.draw(screen)
 
     def decrement_water(self) -> None:
         """Lower the water level in the trough if appropriate"""
@@ -298,6 +321,9 @@ class ZebraHabitat(HabitatScene):
         Args:
             dt (float): Delta time since the last frame, in seconds.
         """
+        if not self.is_game_active:
+            super().update(dt)
+            return
 
         # Check win condition and allow the player to use the finish button if done
         if self.__water_level >= self.__max_water_level:
@@ -347,4 +373,5 @@ class ZebraHabitat(HabitatScene):
 
     def handle_finish(self):
         """Handle returning to the map by popping this scene from the SceneManager."""
+        self._manager.context.checklist.complete_task("zebra")
         self._manager.pop()
