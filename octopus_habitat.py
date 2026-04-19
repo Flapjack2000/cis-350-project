@@ -77,7 +77,8 @@ class OctopusHabitat(HabitatScene):
     """
     Habitat scene representing an octopus in an aquatic environment.
     """
-    BACKGROUND_FILE = "aquatic_background_day.png"
+    BACKGROUND_FILE_DAY = "aquatic_background_day.png"
+    BACKGROUND_FILE_NIGHT = "aquatic_background_night.png"
 
     def __init__(self, manager: SceneManager) -> None:
         """
@@ -86,6 +87,7 @@ class OctopusHabitat(HabitatScene):
         Args:
             manager (SceneManager): Scene manager responsible for handling scene transitions.
         """
+        self.BACKGROUND_FILE = self.BACKGROUND_FILE_DAY if manager.context.is_day else self.BACKGROUND_FILE_NIGHT
         super().__init__(manager)
 
     def create_animals(self) -> list[Animal]:

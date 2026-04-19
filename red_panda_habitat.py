@@ -79,7 +79,8 @@ class RedPandaHabitat(HabitatScene):
     """
     Habitat scene representing a red panda in a jungle environment.
     """
-    BACKGROUND_FILE = "jungle_background_day.png"
+    BACKGROUND_FILE_DAY = "jungle_background_day.png"
+    BACKGROUND_FILE_NIGHT = "jungle_background_night.png"
 
     def __init__(self, manager: SceneManager) -> None:
         """
@@ -88,6 +89,7 @@ class RedPandaHabitat(HabitatScene):
         Args:
             manager (SceneManager): Scene manager responsible for handling scene transitions.
         """
+        self.BACKGROUND_FILE = self.BACKGROUND_FILE_DAY if manager.context.is_day else self.BACKGROUND_FILE_NIGHT
         super().__init__(manager)
 
     def create_animals(self) -> list[Animal]:

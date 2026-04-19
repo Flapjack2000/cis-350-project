@@ -115,7 +115,8 @@ def giraffe_draw(animal, screen):
 
 class GiraffeHabitat(HabitatScene):
     """Habitat scene representing giraffes in a savanna environment."""
-    BACKGROUND_FILE = "savanna_background_day.png"
+    BACKGROUND_FILE_DAY = "savanna_background_day.png"
+    BACKGROUND_FILE_NIGHT = "savanna_background_night.png"
 
     def __init__(self, manager: SceneManager) -> None:
         """Initialize the GiraffeHabitat scene.
@@ -123,6 +124,7 @@ class GiraffeHabitat(HabitatScene):
         Args:
             manager (SceneManager): The scene manager controlling scene transitions.
         """
+        self.BACKGROUND_FILE = self.BACKGROUND_FILE_DAY if manager.context.is_day else self.BACKGROUND_FILE_NIGHT
         super().__init__(manager)
 
     def create_animals(self) -> list[Animal]:

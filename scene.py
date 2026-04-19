@@ -1,5 +1,25 @@
 import pygame
 from abc import ABC, abstractmethod
+from checklist import Checklist
+
+
+class GameContext:
+    """Exposes things that need to be modifiable everywhere."""
+
+    def __init__(
+            self,
+            checklist: Checklist,
+            cursor: pygame.Surface,
+            music_player=None,
+    ) -> None:
+        self.checklist = checklist
+        self.music_player = music_player
+        self.cursor = cursor
+
+    @property
+    def is_day(self):
+        """Return whether it's currently daytime."""
+        return self.checklist.is_day
 
 
 class Scene(ABC):
@@ -57,9 +77,10 @@ class Scene(ABC):
 class SceneManager:
     """Manage a stack of Scene objects."""
 
-    def __init__(self) -> None:
+    def __init__(self, context: GameContext) -> None:
         """Initialize the scene stack."""
         self.__stack: list[Scene] = []
+        self.context = context
 
     @property
     def current(self) -> Scene | None:
