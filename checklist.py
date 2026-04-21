@@ -19,7 +19,7 @@ class Checklist:
         automatically advancing to the next phase and loading a fresh task set.
     """
 
-    DAY_TASKS_REQUIRED = 6
+    DAY_TASKS_REQUIRED = 8
     NIGHT_TASKS_REQUIRED = 6
     SEED_OFFSET = 1
 

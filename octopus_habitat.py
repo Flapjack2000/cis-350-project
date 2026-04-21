@@ -94,6 +94,7 @@ class OctopusHabitat(HabitatScene):
         """Mark pet task complete and return to checklist."""
         self._manager.context.checklist.complete_task("octopus_pet")
         from checklist_scene import ChecklistScene
+        self._manager.pop()
         self._manager.push(
             ChecklistScene(self._manager, self._manager.context.checklist)
         )

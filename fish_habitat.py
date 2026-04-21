@@ -187,6 +187,7 @@ class FishHabitat(Scene):
         self._feed_task_active = False
         self._manager.context.checklist.complete_task("fish_feed")
         from checklist_scene import ChecklistScene
+        self._manager.pop()
         self._manager.push(ChecklistScene(self._manager, self._manager.context.checklist))
 
     def draw(self, screen: pygame.Surface) -> None:
