@@ -1,4 +1,7 @@
 import os
+
+from pygame import Rect
+
 os.environ["PYGAME_HIDE_SUPPORT_PROMPT"] = "1"
 
 import pygame
@@ -6,99 +9,110 @@ from abc import abstractmethod
 from scene import Scene, SceneManager
 from animal import Animal
 
-
-PET_RATE   = 0.4
+PET_RATE = 0.4
 DECAY_RATE = 0.05
 ICON_SCALE = 0.18
+ICON_SPACING = 12
+TOOLBAR_PAD = 12
+
+
+class _IconButton:
+    """Clickable icon button.
+
+    Args:
+        image_path: Path to icon image.
+        topleft: Top-left position.
+        scale: Scale factor.
+        enabled: Whether clickable.
+        greyed: Whether dimmed.
+    """
+    rect: Rect
+
+    def __init__(
+            self,
+            image_path: str,
+            topleft: tuple[int, int],
+            scale: float = ICON_SCALE,
+            enabled: bool = True,
+            greyed: bool = False,
+    ) -> None:
+        raw = pygame.image.load(image_path).convert_alpha()
+        w, h = raw.get_size()
+        self._image_normal = pygame.transform.smoothscale(
+            raw, (int(w * scale), int(h * scale))
+        )
+
+        grey = self._image_normal.copy()
+        grey.set_alpha(120)
+        self._image_grey = grey
+
+        self.rect = self._image_normal.get_rect(topleft=topleft)
+        self.enabled = enabled
+        self.greyed = greyed
+
+    def is_clicked(self, mouse_pos: tuple[int, int]) -> bool:
+        """Check if clicked.
+
+        Args:
+            mouse_pos: Mouse position.
+
+        Returns:
+            bool
+        """
+        return self.enabled and self.rect.collidepoint(mouse_pos)
+
+    def draw(self, screen: pygame.Surface) -> None:
+        """Draw button.
+
+        Args:
+            screen: Target surface.
+        """
+        img = self._image_grey if (self.greyed or not self.enabled) else self._image_normal
+        screen.blit(img, self.rect)
 
 
 class HabitatScene(Scene):
-    """Abstract base class for habitat scenes containing multiple animals."""
+    """Base habitat scene with animals, toolbar, and pet minigame."""
+
     BACKGROUND_FILE: str = ""
 
+    _ICON_HEART = "heart_icon.png"
+    _ICON_CHECKLIST = "checklist_icon.png"
+    _ICON_MAP = "map_icon.png"
+
     def __init__(self, manager: SceneManager) -> None:
-        """Initialize the habitat scene with background and animal containers.
+        """Init scene state.
 
         Args:
-            manager (SceneManager): The scene manager controlling scene transitions.
+            manager: Scene manager.
         """
         super().__init__(manager)
+
         self._background: pygame.Surface | None = None
         self._animals: list[Animal] = []
-        self._base_dir: str = os.path.dirname(os.path.abspath(__file__))
+        self._base_dir = os.path.dirname(os.path.abspath(__file__))
 
-        self.petting      = False
-        self.pet_progress = 0.0
-        self.pet_complete = False
+        self._petting = False
+        self._pet_progress = 0.0
+        self._pet_complete = False
+        self._pet_task_active = False
 
-        raw = pygame.image.load(
-            os.path.join("assets", "images", "heart_icon.png")
-        ).convert_alpha()
-        w, h = raw.get_size()
-        self.heart_icon = pygame.transform.smoothscale(
-            raw, (int(w * ICON_SCALE), int(h * ICON_SCALE))
-        )
-        self.heart_icon_rect = self.heart_icon.get_rect(topleft=(20, 20))
-
-        self.waste_active = False
-        self.waste_cleared = False
-        self.waste_positions: list[pygame.Vector2] = []
-        self.waste_clicked: list[bool] = []
-
-        raw_waste = pygame.image.load(
-            os.path.join("assets", "images", "poop.png")
-        ).convert_alpha()
-        w, h = raw_waste.get_size()
-        self.waste_icon = pygame.transform.smoothscale(raw_waste, (int(w * 0.12), int(h * 0.12)))
+        self._btn_pet: _IconButton | None = None
+        self._btn_checklist: _IconButton | None = None
+        self._btn_map: _IconButton | None = None
 
     @abstractmethod
     def create_animals(self) -> list[Animal]:
-        """Create and return a list of animals for this habitat.
+        """Create animals.
 
         Returns:
-            list[Animal]: The animals present in this habitat scene.
+            list[Animal]
         """
-        pass
-
-    def _animal_rect(self, animal: Animal) -> pygame.Rect:
-        """
-        Compute a bounding box for an animal based on its sprite layers.
-
-        Args:
-            animal (Animal): Animal to compute hitbox for.
-
-        Returns:
-            pygame.Rect: Approximate screen-space hitbox.
-        """
-        if animal.rect_size is not None:
-            w, h = animal.rect_size
-            return pygame.Rect(int(animal.x), int(animal.y), w, h)
-        elif animal.layers:
-            w = max(l.get_width() for l in animal.layers)
-            h = max(l.get_height() for l in animal.layers)
-        else:
-            w, h = 64, 64
-
-        return pygame.Rect(int(animal.x), int(animal.y - h / 2), w, h)
-
-    def _mouse_over_any_animal(self, mouse_pos: tuple) -> bool:
-        """
-        Check if mouse is currently over any animal.
-
-        Args:
-            mouse_pos (tuple): Current mouse position.
-
-        Returns:
-            bool: True if hovering over at least one animal.
-        """
-        return any(
-            self._animal_rect(a).collidepoint(mouse_pos)
-            for a in self._animals
-        )
 
     def on_enter(self) -> None:
-        """Called when entering the habitat scene. Loads animals and sprites."""
+        """Load background, animals, toolbar."""
         super().on_enter()
+
         bg_path = os.path.abspath(
             os.path.join(self._base_dir, "assets", "images", self.BACKGROUND_FILE)
         )
@@ -106,131 +120,189 @@ class HabitatScene(Scene):
             pygame.image.load(bg_path).convert()
             if os.path.exists(bg_path) else None
         )
+
         self._animals = self.create_animals()
         for animal in self._animals:
             animal.load(self._base_dir)
 
-        self.petting      = False
-        self.pet_progress = 0.0
-        self.pet_complete = False
+        self._petting = False
+        self._pet_progress = 0.0
+        self._pet_complete = False
 
-        self.waste_active = any(a.has_droppings for a in self._animals)
-        self.waste_cleared = False
-        if self.waste_active:
-            self.waste_positions = [pygame.Vector2(100, 260), pygame.Vector2(900, 650)]
-            self.waste_clicked = [False, False]
+        self._build_toolbar()
 
     def on_exit(self) -> None:
-        """Called when exiting the habitat scene. Clears background and animal lists."""
+        """Clear scene."""
         super().on_exit()
         self._background = None
-        self._animals    = []
+        self._animals = []
 
+    @staticmethod
+    def _icon_path(filename: str) -> str:
+        return os.path.join("assets", "images", filename)
 
-    def handle_events(self, events: list[pygame.event.Event]) -> None:
-        """Handle Pygame events within the habitat scene.
+    def _build_toolbar(self) -> None:
+        """Build toolbar buttons."""
+        pad = TOOLBAR_PAD
+        gap = ICON_SPACING
+
+        self._btn_pet = _IconButton(
+            self._icon_path(self._ICON_HEART),
+            topleft=(pad, pad),
+            enabled=self._pet_task_active and not self._pet_complete,
+            greyed=not self._pet_task_active or self._pet_complete,
+        )
+
+        surf = pygame.display.get_surface()
+        screen_w = surf.get_width() if surf else 1280
+
+        self._btn_map = _IconButton(self._icon_path(self._ICON_MAP), (0, pad))
+        self._btn_checklist = _IconButton(self._icon_path(self._ICON_CHECKLIST), (0, pad))
+
+        if self._btn_map and self._btn_checklist:
+            map_x = screen_w - pad - self._btn_map.rect.width
+            chk_x = map_x - gap - self._btn_checklist.rect.width
+
+            self._btn_map.rect.topleft = (map_x, pad)
+            self._btn_checklist.rect.topleft = (chk_x, pad)
+
+    @abstractmethod
+    def _on_pet_complete(self) -> None:
+        """Handle pet completion."""
+
+    @staticmethod
+    def _animal_rect(animal: Animal) -> pygame.Rect:
+        """Get approximate hitbox.
 
         Args:
-            events (list[pygame.event.Event]): The list of events to process.
+            animal: Animal.
+
+        Returns:
+            pygame.Rect
+        """
+        if animal.rect_size:
+            w, h = animal.rect_size
+            return pygame.Rect(int(animal.x), int(animal.y), w, h)
+
+        if animal.layers:
+            w = max(l.get_width() for l in animal.layers)
+            h = max(l.get_height() for l in animal.layers)
+        else:
+            w, h = 64, 64
+
+        return pygame.Rect(int(animal.x), int(animal.y - h / 2), w, h)
+
+    def _mouse_over_any_animal(self, mouse_pos: tuple[int, int]) -> bool:
+        """Check hover on any animal.
+
+        Args:
+            mouse_pos: Mouse position.
+
+        Returns:
+            bool
+        """
+        return any(self._animal_rect(a).collidepoint(mouse_pos) for a in self._animals)
+
+    def handle_events(self, events: list[pygame.event.Event]) -> None:
+        """Handle input.
+
+        Args:
+            events: Event list.
         """
         mouse_pos = pygame.mouse.get_pos()
 
-        for event in events:
-            if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
-                self.handle_escape()
+        for e in events:
+            if e.type == pygame.KEYDOWN and e.key == pygame.K_ESCAPE:
+                self._handle_escape()
 
-            if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-                if self.heart_icon_rect.collidepoint(mouse_pos):
-                    self.petting      = True
-                    self.pet_progress = 0.0
-                if self.waste_active and not self.waste_cleared:
-                    for i, pos in enumerate(self.waste_positions):
-                        if not self.waste_clicked[i]:
-                            rect = self.waste_icon.get_rect(center=(int(pos.x), int(pos.y)))
-                            if rect.collidepoint(mouse_pos):
-                                self.waste_clicked[i] = True
-                    if all(self.waste_clicked):
-                        self.waste_cleared = True
-                        self.waste_active = False
-                        #FIXME if self._manager.context.checklist.complete_task("Clean Enclosure"):
-                        from checklist_scene import ChecklistScene
-                        self._manager.push(ChecklistScene(self._manager, self._manager.context.checklist))
+            if e.type == pygame.MOUSEBUTTONDOWN and e.button == 1:
+                self._handle_click(mouse_pos)
 
-    def handle_escape(self) -> None:
-        """Handle the ESC key being pressed and pause."""
+    def _handle_click(self, mouse_pos: tuple[int, int]) -> None:
+        if self._btn_map and self._btn_map.is_clicked(mouse_pos):
+            self._manager.pop()
+            return
+
+        if self._btn_checklist and self._btn_checklist.is_clicked(mouse_pos):
+            from checklist_scene import ChecklistScene
+            self._manager.push(ChecklistScene(self._manager, self._manager.context.checklist))
+            return
+
+        if self._btn_pet and self._btn_pet.is_clicked(mouse_pos):
+            if not self._petting:
+                self._petting = True
+                self._pet_progress = 0.0
+
+    def _handle_escape(self) -> None:
         from pause_scene import PauseScene
         self._manager.push(PauseScene(self._manager))
 
     def update(self, dt: float) -> None:
-        """Update all animals in the habitat.
+        """Update animals and pet minigame.
 
         Args:
-            dt (float): Time delta since the last update in seconds.
+            dt: Delta time.
         """
         screen_width = pygame.display.get_surface().get_width()
+
         for animal in self._animals:
             animal.update(screen_width, dt)
 
-        if self.petting:
+        if self._petting:
             mouse_pos = pygame.mouse.get_pos()
+
             if self._mouse_over_any_animal(mouse_pos):
-                self.pet_progress += PET_RATE
+                self._pet_progress = min(100.0, self._pet_progress + PET_RATE)
             else:
-                self.pet_progress -= DECAY_RATE
+                self._pet_progress = max(0.0, self._pet_progress - DECAY_RATE)
 
-            self.pet_progress = max(0.0, min(100.0, self.pet_progress))
+            if self._pet_progress >= 100.0:
+                self._pet_progress = 0.0
+                self._pet_complete = True
+                self._petting = False
 
-            if self.pet_progress >= 100.0:
-                self.pet_progress = 0.0
-                self.pet_complete = True
-                self.petting = False
-                #FIXME if self._manager.context.checklist.complete_task("Pet Animal"):
-                from checklist_scene import ChecklistScene
-                self._manager.push(ChecklistScene(self._manager, self._manager.context.checklist))
+                if self._btn_pet:
+                    self._btn_pet.enabled = False
+                    self._btn_pet.greyed = True
 
+                self._on_pet_complete()
 
     def draw(self, screen: pygame.Surface) -> None:
-        """Render the habitat background and all animals onto the screen.
+        """Render scene.
 
         Args:
-            screen (pygame.Surface): The Pygame surface to draw the scene on.
+            screen: Surface.
         """
         if self._background:
             screen.blit(
                 pygame.transform.scale(self._background, screen.get_size()),
-                (0, 0)
+                (0, 0),
             )
         else:
             screen.fill((180, 160, 120))
 
-        if self.waste_active and not self.waste_cleared:
-            if not self.waste_clicked[0]:
-                rect = self.waste_icon.get_rect(center=(int(self.waste_positions[0].x), int(self.waste_positions[0].y)))
-                screen.blit(self.waste_icon, rect)
-
         for animal in sorted(self._animals, key=lambda a: a.y):
             animal.draw(screen)
 
-        if self.waste_active and not self.waste_cleared:
-            if not self.waste_clicked[1]:
-                rect = self.waste_icon.get_rect(center=(int(self.waste_positions[1].x), int(self.waste_positions[1].y)))
-                screen.blit(self.waste_icon, rect)
+        for btn in (self._btn_pet, self._btn_checklist, self._btn_map):
+            if btn:
+                btn.draw(screen)
 
-        screen.blit(self.heart_icon, self.heart_icon_rect)
+        if self._petting and self._btn_pet:
+            self._draw_pet_bar(screen)
 
-        if self.petting:
+    def _draw_pet_bar(self, screen: pygame.Surface) -> None:
+        """Draw progress bar.
+
+        Args:
+            screen: Surface.
+        """
+        if self._btn_pet:
             bar_w, bar_h = 220, 18
             bar_x = (screen.get_width() - bar_w) // 2
-            bar_y = self.heart_icon_rect.bottom - 50
+            bar_y = self._btn_pet.rect.bottom + 8
 
-            pygame.draw.rect(
-                screen, (60, 60, 60),
-                (bar_x, bar_y, bar_w, bar_h),
-                border_radius=4
-            )
-            fill_w = int(bar_w * (self.pet_progress / 100.0))
-            pygame.draw.rect(
-                screen, (240, 100, 160),
-                (bar_x, bar_y, fill_w, bar_h),
-                border_radius=4
-            )
+            pygame.draw.rect(screen, (60, 60, 60), (bar_x, bar_y, bar_w, bar_h), border_radius=4)
+
+            fill_w = int(bar_w * (self._pet_progress / 100.0))
+            pygame.draw.rect(screen, (240, 100, 160), (bar_x, bar_y, fill_w, bar_h), border_radius=4)

@@ -7,105 +7,93 @@ from habitat_scene import HabitatScene
 from animal import Animal
 from animal_movement import AnimalMovement
 
-movement = AnimalMovement()
-
 _SUBFOLDER = os.path.join("assets", "animals", "octopus")
-
 TENTACLE_PIVOT = pygame.Vector2(100, 400)
 
 
-def octopus_anim(animal, dt):
-    """
-    Animates the octopus by applying a sinusoidal motion to its tentacle.
-
-    Args:
-        animal (Animal): The octopus instance containing animation state variables.
-    """
-    t = animal.time
-    animal.tentacle_angle = math.sin(t * 3) * 25
-
-def octopus_draw(animal, screen):
-    """
-    Renders an octopus using a simple two-part sprite system (body + tentacle).
-
-    Args:
-        animal (Animal): The octopus instance containing position and animation state.
-        screen (pygame.Surface): The surface to render the octopus onto.
-    """
-    if not hasattr(animal, "assets_loaded"):
-
-        animal.body = pygame.image.load(
-            os.path.join(_SUBFOLDER, "octopus_body.png")
-        ).convert_alpha()
-
-        animal.tentacle = pygame.image.load(
-            os.path.join(_SUBFOLDER, "octopus_tentacle.png")
-        ).convert_alpha()
-
-        animal.assets_loaded = True
-
-    screen.blit(animal.body, (int(animal.x), int(animal.y)))
-
-    def draw_part(img, pivot, angle):
-        """
-        Rotates and renders a tentacle segment around a pivot point.
-
-        Args:
-            img (pygame.Surface): Image to rotate and draw.
-            pivot (pygame.Vector2): Pivot point for rotation.
-            angle (float): Rotation angle in degrees.
-        """
-        rotated_img, rect = movement.rotate_image(
-            img,
-            angle,
-            (pivot.x, pivot.y),
-        )
-
-        rect.x += int(animal.x)
-        rect.y += int(animal.y)
-
-        screen.blit(rotated_img, rect)
-
-    draw_part(
-        animal.tentacle,
-        TENTACLE_PIVOT,
-        animal.tentacle_angle,
-    )
-
-
 class OctopusHabitat(HabitatScene):
+    """Habitat scene for an octopus in an aquatic environment.
+
+    Minigames:
+    - Pet: Hold the cursor over the octopus.
     """
-    Habitat scene representing an octopus in an aquatic environment.
-    """
+
     BACKGROUND_FILE_DAY = "aquatic_background_day.png"
     BACKGROUND_FILE_NIGHT = "aquatic_background_night.png"
 
     def __init__(self, manager: SceneManager) -> None:
-        """
-        Initializes the OctopusHabitat scene.
-
-        Args:
-            manager (SceneManager): Scene manager responsible for handling scene transitions.
-        """
-        self.BACKGROUND_FILE = self.BACKGROUND_FILE_DAY if manager.context.is_day else self.BACKGROUND_FILE_NIGHT
+        """Initialize aquatic habitat state."""
+        self.BACKGROUND_FILE = (
+            self.BACKGROUND_FILE_DAY
+            if manager.context.is_day
+            else self.BACKGROUND_FILE_NIGHT
+        )
         super().__init__(manager)
 
+        self._movement = AnimalMovement()
+        incomplete = manager.context.checklist.get_incomplete_tasks()
+
+        # Task activation - Pet only
+        self._pet_task_active = "octopus_pet" in incomplete
+
+        self._build_toolbar()
+
     def create_animals(self) -> list[Animal]:
-        """
-        Creates and returns the octopus animal for this habitat.
-        """
+        """Return a stationary octopus with tentacle animation."""
         return [
             Animal(
                 x=200,
                 y=200,
-                layer_files=[],
+                layer_files=["octopus_body.png", "octopus_tentacle.png"],
                 subfolder=_SUBFOLDER,
-                scale=1,
-                default_facing_left=False,
-                direction=1,
-                speed=0,
-                draw_fn=octopus_draw,
-                animate_fn=octopus_anim,
-                rect_size = (500, 500),
-            ),
+                scale=1.0,
+                speed=0.0,
+                animate_fn=self._animate,
+                draw_fn=self._draw_animal,
+                rect_size=(500, 500)
+            )
         ]
+
+    @staticmethod
+    def _animate(animal: Animal) -> None:
+        """Apply sinusoidal tentacle motion."""
+        animal.tentacle_angle = math.sin(animal.time * 3) * 25
+
+    def _draw_animal(self, animal: Animal, screen: pygame.Surface) -> None:
+        """Render octopus layers (body and tentacle) with pivots."""
+        if not animal.layers:
+            return
+
+        body = animal.layers[0]
+        tentacle = animal.layers[1]
+
+        screen.blit(body, (int(animal.x), int(animal.y)))
+
+        angle = getattr(animal, "tentacle_angle", 0)
+        rotated_tentacle, rect = self._movement.rotate_image(
+            tentacle, angle, (TENTACLE_PIVOT.x, TENTACLE_PIVOT.y)
+        )
+
+        rect.x += int(animal.x)
+        rect.y += int(animal.y)
+        screen.blit(rotated_tentacle, rect)
+
+    def handle_events(self, events: list[pygame.event.Event]) -> None:
+        """Handle standard habitat input."""
+        super().handle_events(events)
+
+    def update(self, dt: float) -> None:
+        """Update animal state and petting progress."""
+        super().update(dt)
+
+    def draw(self, screen: pygame.Surface) -> None:
+        """Render background, octopus, and toolbar."""
+        super().draw(screen)
+
+    def _on_pet_complete(self) -> None:
+        """Mark pet task complete and return to checklist."""
+        self._manager.context.checklist.complete_task("octopus_pet")
+        from checklist_scene import ChecklistScene
+        self._manager.push(
+            ChecklistScene(self._manager, self._manager.context.checklist)
+        )

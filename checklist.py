@@ -19,8 +19,8 @@ class Checklist:
         automatically advancing to the next phase and loading a fresh task set.
     """
 
-    DAY_TASKS_REQUIRED = 4
-    NIGHT_TASKS_REQUIRED = 3
+    DAY_TASKS_REQUIRED = 6
+    NIGHT_TASKS_REQUIRED = 6
     SEED_OFFSET = 1
 
     def __init__(self, initial_tasks: list[str]) -> None:

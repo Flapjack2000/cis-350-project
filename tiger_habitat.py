@@ -1,165 +1,309 @@
 import os
-from scene import SceneManager
-from habitat_scene import HabitatScene
-from animal import Animal
 import math
+import random
 import pygame
+
+from scene import SceneManager
+from habitat_scene import HabitatScene, _IconButton, ICON_SPACING, TOOLBAR_PAD
+from animal import Animal
 from animal_movement import AnimalMovement
-
-movement = AnimalMovement()
-
-_SUBFOLDER = os.path.join("assets", "animals", "tiger")
-
-_LAYER_FILES = [
-    "tiger_hind_back_lower.png",
-    "tiger_hind_back_upper.png",
-    "tiger_hind_back_paw.png",
-    "tiger_hind_front_lower.png",
-    "tiger_hind_front_upper.png",
-    "tiger_hind_front_paw.png",
-    "tiger_tail.png",
-    "tiger_body.png",
-    "tiger_neck.png",
-    "tiger_head.png",
-    "tiger_fore_back_lower.png",
-    "tiger_fore_back_upper.png",
-    "tiger_fore_back_paw.png",
-    "tiger_fore_front_lower.png",
-    "tiger_fore_front_upper.png",
-    "tiger_fore_front_paw.png",
-]
-
-BODY_INDEX = 7
-
-FRONT_LEG_PIVOT = pygame.Vector2(25, 15)
-HIND_LEG_PIVOT = pygame.Vector2(25, 15)
-
-
-def tiger_walk(animal, dt):
-    """
-    Animates a tiger's walking motion by applying sinusoidal rotation to its limb layers.
-
-    Args:
-        animal (Animal): The tiger instance containing animation state and layer angle data.
-    """
-    t = animal.time
-    swing = math.sin(t * 6) * 15
-
-    HBL, HBU = 0, 1
-    HFL, HFU = 3, 4
-    FBL, FBU = 10, 11
-    FFL, FFU = 13, 14
-    PAW_OFF = 1
-
-    animal.layer_angles[HBU] = swing
-    animal.layer_angles[HBL] = swing
-    animal.layer_angles[HBU + PAW_OFF] = swing
-
-    animal.layer_angles[HFU] = -swing
-    animal.layer_angles[HFL] = -swing
-    animal.layer_angles[HFU + PAW_OFF] = -swing
-
-    animal.layer_angles[FBU] = -swing
-    animal.layer_angles[FBL] = -swing
-    animal.layer_angles[FBU + PAW_OFF] = -swing
-
-    animal.layer_angles[FFU] = swing
-    animal.layer_angles[FFL] = swing
-    animal.layer_angles[FFU + PAW_OFF] = swing
-
-
-def tiger_draw(animal, screen):
-    """
-    Renders a tiger using layered sprite animation with pivot-based rotation.
-
-    Args:
-        animal (Animal): The tiger instance containing sprite layers, position, and animation state.
-        screen (pygame.Surface): The surface to render the tiger onto.
-    """
-    should_flip = animal.facing_left != animal.default_facing_left
-    body_width = animal.layers[7].get_width() if animal.layers else 0
-    body_pos = pygame.Vector2(animal.x + body_width / 2, animal.y)
-
-    offsets = [(0, 0)] * len(animal.layers)
-
-    pivots = []
-
-    for i, layer in enumerate(animal.layers):
-        name = _LAYER_FILES[i]
-        if "hind_back_upper" in name or "hind_front_upper" in name:
-            pivots.append(HIND_LEG_PIVOT)
-        elif "fore_back_upper" in name or "fore_front_upper" in name:
-            pivots.append(FRONT_LEG_PIVOT)
-        else:
-            pivots.append(
-                pygame.Vector2(layer.get_width() // 2,
-                               layer.get_height() // 2)
-            )
-
-    for i, (layer, angle) in enumerate(zip(animal.layers, animal.layer_angles)):
-        offset = pygame.Vector2(offsets[i])
-
-        if should_flip:
-            offset.x = -offset.x
-        world_pos = body_pos + offset
-        rotated_img, rotated_rect = movement.rotate_image(
-            layer,
-            angle,
-            pivots[i]
-        )
-        rotated_rect.center = world_pos
-        if should_flip:
-            rotated_img = pygame.transform.flip(rotated_img, True, False)
-        screen.blit(rotated_img, rotated_rect)
 
 
 class TigerHabitat(HabitatScene):
-    """Habitat scene representing tigers in a jungle environment.
+    """Tiger habitat with pet, poop, and water minigames."""
 
-    Handles creating tiger animals with layered sprites,
-    movement, and rendering within the scene.
-    """
     BACKGROUND_FILE_DAY = "jungle_background_day.png"
     BACKGROUND_FILE_NIGHT = "jungle_background_night.png"
 
-    def __init__(self, manager: SceneManager) -> None:
-        """Initialize the TigerHabitat scene.
+    _SUBFOLDER = os.path.join("assets", "animals", "tiger")
 
-        Args:
-            manager (SceneManager): The object controlling scene transitions.
-        """
-        self.BACKGROUND_FILE = self.BACKGROUND_FILE_DAY if manager.context.is_day else self.BACKGROUND_FILE_NIGHT
+    _LAYER_FILES = [
+        "tiger_hind_back_lower.png",
+        "tiger_hind_back_upper.png",
+        "tiger_hind_back_paw.png",
+        "tiger_hind_front_lower.png",
+        "tiger_hind_front_upper.png",
+        "tiger_hind_front_paw.png",
+        "tiger_tail.png",
+        "tiger_body.png",
+        "tiger_neck.png",
+        "tiger_head.png",
+        "tiger_fore_back_lower.png",
+        "tiger_fore_back_upper.png",
+        "tiger_fore_back_paw.png",
+        "tiger_fore_front_lower.png",
+        "tiger_fore_front_upper.png",
+        "tiger_fore_front_paw.png",
+    ]
+
+    _ICON_POOP = "poop_icon.png"
+
+    _TROUGH_S1 = 250
+    _TROUGH_S2 = 20
+    _TROUGH_COLOR = (123, 63, 0)
+    _WATER_COLOR = (0, 94, 209)
+
+    _SPEED = 1.2
+
+    _FRONT_PIVOT = pygame.Vector2(25, 15)
+    _HIND_PIVOT = pygame.Vector2(25, 15)
+
+    def __init__(self, manager: SceneManager) -> None:
+        self.BACKGROUND_FILE = (
+            self.BACKGROUND_FILE_DAY
+            if manager.context.is_day
+            else self.BACKGROUND_FILE_NIGHT
+        )
         super().__init__(manager)
 
-    def create_animals(self) -> list[Animal]:
-        """Return a list of tiger Animal instances for this habitat.
+        self._movement = AnimalMovement()
+        incomplete = manager.context.checklist.get_incomplete_tasks()
 
-        Returns:
-            list[Animal]: The tiger animals in the scene,
-            each with its sprite layers, position, and movement settings.
-        """
+        self._pet_task_active = "tiger_pet" in incomplete
+
+        self._poop_task_active = "tiger_poop" in incomplete
+        self._poop_cleared = False
+        self._waste_positions = []
+        self._waste_clicked = []
+
+        raw = pygame.image.load(os.path.join("assets", "images", "poop_icon.png")).convert_alpha()
+        w, h = raw.get_size()
+        self._waste_sprite = pygame.transform.smoothscale(raw, (int(w * 0.12), int(h * 0.12)))
+
+        if self._poop_task_active:
+            self._waste_positions = [pygame.Vector2(200, 500), pygame.Vector2(800, 600)]
+            self._waste_clicked = [False, False]
+
+        self._water_task_active = "tiger_water" in incomplete
+        if self._water_task_active:
+            self._init_water()
+
+        self._build_toolbar()
+
+    def _init_water(self):
+        """Init water minigame."""
+        self._water_level = 75
+        self._max_water_level = 100
+        self._increment = 2
+        self._decrement = 55
+
+        self._passes_until_drink = 1
+        self._pass_counted = False
+        self._drink_timer = 0.0
+        self._drink_duration = 1.5
+
+        font = pygame.font.SysFont(None, 32)
+        self._instruction_surf = font.render(
+            "Click the trough to fill it with water!", True, (0, 0, 0)
+        )
+
+    def create_animals(self) -> list[Animal]:
+        """Create tiger instances."""
+
+        def make(x, y, direction, speed=None, droppings=False):
+            return Animal(
+                x=x,
+                y=y,
+                layer_files=self._LAYER_FILES,
+                subfolder=self._SUBFOLDER,
+                scale=0.4,
+                default_facing_left=False,
+                direction=direction,
+                speed=speed or self._SPEED,
+                animate_fn=self._animate,
+                draw_fn=self._draw,
+                has_droppings=droppings,
+            )
+
+        if self._water_task_active:
+            return [make(200, 300, 1, droppings=self._poop_task_active)]
+
         return [
-            Animal(
-                x=200, y=300,
-                layer_files=_LAYER_FILES,
-                subfolder=_SUBFOLDER,
-                scale=0.4,
-                default_facing_left=False,
-                direction=1,
-                speed=1.0,
-                draw_fn=tiger_draw,
-                animate_fn=tiger_walk,
-                has_droppings=True,
-            ),
-            Animal(
-                x=600, y=500,
-                layer_files=_LAYER_FILES,
-                subfolder=_SUBFOLDER,
-                scale=0.4,
-                default_facing_left=False,
-                direction=-1,
-                speed=1.4,
-                draw_fn=tiger_draw,
-                animate_fn=tiger_walk,
-            ),
+            make(200, 300, 1, droppings=self._poop_task_active),
+            make(600, 500, -1),
         ]
+
+    @staticmethod
+    def _animate(animal):
+        """Animate tiger walk."""
+        t = animal.time
+        swing = math.sin(t * 6) * 15
+
+        hbl, hbu = 0, 1
+        hfl, hfu = 3, 4
+        fbl, fbu = 10, 11
+        ffl, ffu = 13, 14
+        paw = 1
+
+        animal.layer_angles[hbu] = swing
+        animal.layer_angles[hbl] = swing
+        animal.layer_angles[hbu + paw] = swing
+
+        animal.layer_angles[hfu] = -swing
+        animal.layer_angles[hfl] = -swing
+        animal.layer_angles[hfu + paw] = -swing
+
+        animal.layer_angles[fbu] = -swing
+        animal.layer_angles[fbl] = -swing
+        animal.layer_angles[fbu + paw] = -swing
+
+        animal.layer_angles[ffu] = swing
+        animal.layer_angles[ffl] = swing
+        animal.layer_angles[ffu + paw] = swing
+
+    def _draw(self, animal, screen):
+        """Draw tiger."""
+        should_flip = animal.facing_left != animal.default_facing_left
+        body_w = animal.layers[7].get_width() if animal.layers else 0
+        body_pos = pygame.Vector2(animal.x + body_w / 2, animal.y)
+
+        pivots = []
+        for i, layer in enumerate(animal.layers):
+            name = self._LAYER_FILES[i]
+            if "hind_back_upper" in name or "hind_front_upper" in name:
+                pivots.append(self._HIND_PIVOT)
+            elif "fore_back_upper" in name or "fore_front_upper" in name:
+                pivots.append(self._FRONT_PIVOT)
+            else:
+                pivots.append(pygame.Vector2(layer.get_width() // 2, layer.get_height() // 2))
+
+        for layer, angle, pivot in zip(animal.layers, animal.layer_angles, pivots):
+            img, rect = self._movement.rotate_image(layer, angle, pivot)
+            rect.center = body_pos
+            if should_flip:
+                img = pygame.transform.flip(img, True, False)
+            screen.blit(img, rect)
+
+    def _build_toolbar(self):
+        super()._build_toolbar()
+
+        if not self._poop_task_active:
+            self._btn_poop = None
+            return
+
+        x = self._btn_pet.rect.right + ICON_SPACING
+        self._btn_poop = _IconButton(
+            self._icon_path(self._ICON_POOP),
+            topleft=(x, TOOLBAR_PAD),
+            enabled=not self._poop_cleared,
+            greyed=self._poop_cleared,
+        )
+
+    def _handle_poop_click(self, pos):
+        if not self._poop_task_active or self._poop_cleared:
+            return
+
+        for i, p in enumerate(self._waste_positions):
+            if not self._waste_clicked[i]:
+                rect = self._waste_sprite.get_rect(center=(int(p.x), int(p.y)))
+                if rect.collidepoint(pos):
+                    self._waste_clicked[i] = True
+
+        if all(self._waste_clicked):
+            self._poop_cleared = True
+            if self._btn_poop:
+                self._btn_poop.enabled = False
+                self._btn_poop.greyed = True
+            self._manager.context.checklist.complete_task("tiger_poop")
+            from checklist_scene import ChecklistScene
+            self._manager.push(ChecklistScene(self._manager, self._manager.context.checklist))
+
+    def _trough_rect(self, screen):
+        s1 = self._TROUGH_S1
+        cx = (screen.get_width() // 2) - (s1 // 2)
+        cy = (screen.get_height() // 2) - (s1 // 2) + 220
+        return pygame.Rect(cx, cy, s1, s1)
+
+    def handle_events(self, events):
+        super().handle_events(events)
+        screen = pygame.display.get_surface()
+        trough = self._trough_rect(screen) if self._water_task_active else None
+
+        for e in events:
+            if e.type == pygame.MOUSEBUTTONDOWN and e.button == 1:
+                self._handle_poop_click(e.pos)
+                if trough and trough.collidepoint(e.pos):
+                    self._water_level = min(self._max_water_level, self._water_level + self._increment)
+
+    def update(self, dt):
+        if not self._water_task_active:
+            super().update(dt)
+            return
+
+        tiger = self._animals[0] if self._animals else None
+
+        if self._drink_timer > 0:
+            self._drink_timer -= dt
+            if self._drink_timer <= 0 and tiger:
+                tiger.speed = self._SPEED
+            return
+
+        super().update(dt)
+
+        if not tiger:
+            return
+
+        screen = pygame.display.get_surface()
+        rect = self._trough_rect(screen)
+
+        body_w = tiger.layers[0].get_width() if tiger.layers else 0
+        cx = tiger.x + body_w // 2
+
+        if rect.left <= cx <= rect.right:
+            if not self._pass_counted:
+                self._pass_counted = True
+                self._passes_until_drink -= 1
+                if self._passes_until_drink <= 0 < self._water_level:
+                    tiger.speed = 0
+                    self._drink_timer = self._drink_duration
+                    self._passes_until_drink = random.randint(1, 3)
+                    self._water_level = max(0, self._water_level - self._decrement)
+        else:
+            self._pass_counted = False
+
+    def draw(self, screen):
+        super().draw(screen)
+
+        for i, pos in enumerate(self._waste_positions):
+            if not self._waste_clicked[i]:
+                rect = self._waste_sprite.get_rect(center=(int(pos.x), int(pos.y)))
+                screen.blit(self._waste_sprite, rect)
+
+        if self._btn_poop:
+            self._btn_poop.draw(screen)
+
+        if self._water_task_active:
+            self._draw_trough(screen)
+            self._draw_trough_instruction(screen)
+
+            if self._water_level >= self._max_water_level:
+                self._manager.context.checklist.complete_task("tiger_water")
+                from checklist_scene import ChecklistScene
+                self._manager.push(ChecklistScene(self._manager, self._manager.context.checklist))
+                self._water_task_active = False
+
+    def _draw_trough(self, screen):
+        s1, s2 = self._TROUGH_S1, self._TROUGH_S2
+        water_h = int((s1 - s2) * (self._water_level / self._max_water_level))
+        rect = self._trough_rect(screen)
+        cx, cy = rect.left, rect.top
+
+        parts = [
+            (pygame.Surface((s1 - s2 * 2, water_h)), self._WATER_COLOR, (cx + s2, cy + s1 - s2 - water_h)),
+            (pygame.Surface((s1, s2)), self._TROUGH_COLOR, (cx, cy + s1 - s2)),
+            (pygame.Surface((s2, s1)), self._TROUGH_COLOR, (cx, cy)),
+            (pygame.Surface((s2, s1)), self._TROUGH_COLOR, (cx + s1 - s2, cy)),
+        ]
+
+        for surf, color, pos in parts:
+            surf.fill(color)
+            screen.blit(surf, pos)
+
+    def _draw_trough_instruction(self, screen):
+        rect = self._trough_rect(screen)
+        screen.blit(self._instruction_surf, (rect.right + 20, rect.top + 20))
+
+    def _on_pet_complete(self):
+        self._manager.context.checklist.complete_task("tiger_pet")
+        from checklist_scene import ChecklistScene
+        self._manager.push(ChecklistScene(self._manager, self._manager.context.checklist))

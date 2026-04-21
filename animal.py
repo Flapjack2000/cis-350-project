@@ -4,8 +4,9 @@ from typing import Callable
 
 
 class Animal:
-    """Represents an animated animal with multiple sprite layers that can move and be drawn.
-"""
+    """Represents an animated animal with multiple
+    sprite layers that can move and be drawn.
+    """
 
     def __init__(
             self,
@@ -18,7 +19,9 @@ class Animal:
             direction: int = 1,
             speed: float = 1.0,
             draw_fn: Callable[["Animal", pygame.Surface], None] | None = None,
-            animate_fn: Callable[["Animal", float], None] | None = None,  # a function that takes in an Animal and dt
+
+            # a function that takes in an Animal and dt
+            animate_fn: Callable[["Animal"], None] | None = None,
             rect_size: tuple[int, int] | None = None,
             has_droppings: bool = False,
     ) -> None:
@@ -50,7 +53,7 @@ class Animal:
         self._animate_fn = animate_fn
         self.time: float = 0.0  # elapsed seconds, available to animate_fn
         self.rect_size = rect_size  # optional (w, h) override for hit-testing
-        self.has_droppings = has_droppings #optional for droppings minigame
+        self.has_droppings = has_droppings  # optional for droppings minigame
 
     def load(self, base_dir: str) -> None:
         """Load sprite layers from disk. Called by HabitatScene.on_enter().
@@ -95,7 +98,7 @@ class Animal:
         self.facing_left: bool = self.direction < 0
 
         if self._animate_fn:
-            self._animate_fn(self, dt)
+            self._animate_fn(self)
 
     def draw(self, screen: pygame.Surface) -> None:
         """Draw all sprite layers at the current position, applying rotation and horizontal flipping.
@@ -106,8 +109,6 @@ class Animal:
         if self._draw_fn:
             self._draw_fn(self, screen)
             return
-
-
 
         should_flip = self.facing_left != self.default_facing_left
         for layer, angle in zip(self.layers, self.layer_angles):

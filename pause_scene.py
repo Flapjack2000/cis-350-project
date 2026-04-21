@@ -3,6 +3,7 @@ Pause scene to be overlaid on other scenes via SceneManager.push().
 Press Escape or click Resume to return to the game.
 """
 import os
+
 os.environ["PYGAME_HIDE_SUPPORT_PROMPT"] = "1"
 
 import pygame
@@ -10,6 +11,7 @@ from scene import Scene, SceneManager
 from global_settings import Settings
 from button import Button
 from menu_scene import MenuScene
+
 
 class PauseScene(Scene):
     """The pause menu.
@@ -33,8 +35,8 @@ class PauseScene(Scene):
         start_y = screen_height // 2 - 60
 
         self.buttons = {
-            "resume": Button(bx, start_y,      "Resume",       width=bw, height=bh),
-            "quit":   Button(bx, start_y + 80, "Quit to Menu", width=bw, height=bh),
+            "resume": Button(bx, start_y, "Resume", width=bw, height=bh),
+            "quit": Button(bx, start_y + 80, "Quit to Menu", width=bw, height=bh),
         }
         self.title_font = pygame.font.Font(None, 72)
         self.overlay = pygame.Surface((screen_width, screen_height), pygame.SRCALPHA)

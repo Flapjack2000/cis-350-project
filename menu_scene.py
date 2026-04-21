@@ -11,6 +11,7 @@ from global_settings import Settings
 from button import Button
 from map_scene import MapScene
 
+
 class MenuScene(Scene):
     """Represents the main menu of the game.
 
@@ -32,8 +33,8 @@ class MenuScene(Scene):
         start_y = screen_height // 2 - 140
 
         self.buttons = {
-            "start":       Button(bx,       start_y + 80 * 0, text="Start Game",  width=bw, height=bh, enabled=True),
-            "quit":        Button(bx,       start_y + 80 * 1, text="Quit",        width=bw, height=bh, enabled=True),
+            "start": Button(bx, start_y + 80 * 0, text="Start Game", width=bw, height=bh, enabled=True),
+            "quit": Button(bx, start_y + 80 * 1, text="Quit", width=bw, height=bh, enabled=True),
         }
         self.title_font = pygame.font.Font(None, 72)
 
