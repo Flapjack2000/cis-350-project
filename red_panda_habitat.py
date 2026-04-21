@@ -108,5 +108,7 @@ class RedPandaHabitat(HabitatScene):
                 speed=0,
                 draw_fn=redpanda_draw,
                 animate_fn=redpanda_anim,
+                rect_size = (400, 400),
+                has_droppings=True,
             ),
         ]

@@ -19,6 +19,8 @@ class Animal:
             speed: float = 1.0,
             draw_fn: Callable[["Animal", pygame.Surface], None] | None = None,
             animate_fn: Callable[["Animal", float], None] | None = None,  # a function that takes in an Animal and dt
+            rect_size: tuple[int, int] | None = None,
+            has_droppings: bool = False,
     ) -> None:
         """Initialize an Animal instance.
 
@@ -47,6 +49,8 @@ class Animal:
         self._draw_fn = draw_fn
         self._animate_fn = animate_fn
         self.time: float = 0.0  # elapsed seconds, available to animate_fn
+        self.rect_size = rect_size  # optional (w, h) override for hit-testing
+        self.has_droppings = has_droppings #optional for droppings minigame
 
     def load(self, base_dir: str) -> None:
         """Load sprite layers from disk. Called by HabitatScene.on_enter().

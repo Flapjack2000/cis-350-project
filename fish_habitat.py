@@ -168,6 +168,9 @@ class FishHabitat(Scene):
                 self.feed_progress = 100.0
                 self.feed_complete = True
                 self.feeding = False
+                #FIXME if self._manager.context.checklist.complete_task("Feed Fish"):
+                from checklist_scene import ChecklistScene
+                self._manager.push(ChecklistScene(self._manager, self._manager.context.checklist))
 
     def draw(self, screen: pygame.Surface) -> None:
 

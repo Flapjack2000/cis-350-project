@@ -161,7 +161,8 @@ class ZebraHabitat(HabitatScene):
         """
         return [
             Animal(x=120, y=300, layer_files=_LAYER_FILES, subfolder=_SUBFOLDER,
-                   scale=0.45, default_facing_left=True, direction=1, speed=self.__zebra_speed, animate_fn=zebra_walk, draw_fn=zebra_draw)
+                   scale=0.45, default_facing_left=True, direction=1, speed=self.__zebra_speed, animate_fn=zebra_walk,
+                   draw_fn=zebra_draw, has_droppings=True,)
         ]
 
     def draw_instruction(self, screen: pygame.Surface) -> None:
