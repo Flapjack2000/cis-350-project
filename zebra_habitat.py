@@ -6,7 +6,6 @@ from button import Button
 from scene import SceneManager
 from habitat_scene import HabitatScene
 from animal import Animal
-from animal_movement import AnimalMovement
 
 _SUBFOLDER = os.path.join("assets", "animals", "zebra")
 _LAYER_FILES = [
@@ -24,8 +23,10 @@ _LAYER_FILES = [
     "zebra_head.png",
 ]
 
-movement = AnimalMovement()
+import math
+from animal_movement import AnimalMovement
 
+movement = AnimalMovement()
 
 def zebra_walk(animal, dt):
     """
@@ -96,7 +97,6 @@ def zebra_draw(animal, screen):
             rotated_img = pygame.transform.flip(rotated_img, True, False)
 
         screen.blit(rotated_img, rotated_rect)
-
 
 class ZebraHabitat(HabitatScene):
     """Habitat scene representing a zebra interacting with a water trough.
@@ -170,7 +170,7 @@ class ZebraHabitat(HabitatScene):
             return [
                 Animal(x=120, y=300, layer_files=_LAYER_FILES, subfolder=_SUBFOLDER,
                        scale=0.45, default_facing_left=True, direction=1, speed=self.__zebra_speed,
-                       animate_fn=zebra_walk, draw_fn=zebra_draw)
+                       animate_fn=zebra_walk, draw_fn=zebra_draw, has_droppings=True,)
             ]
         else:
             return [

@@ -128,6 +128,7 @@ class PenguinHabitat(HabitatScene):
                 speed=0.5,
                 draw_fn=penguin_draw,
                 animate_fn=penguin_anim,
+                rect_size = (350, 350),
             ),
             Animal(
                 x=500, y=100,
@@ -139,5 +140,6 @@ class PenguinHabitat(HabitatScene):
                 speed=0.5,
                 draw_fn=penguin_draw,
                 animate_fn=penguin_anim,
+                rect_size = (350, 350),
             ),
         ]

@@ -149,6 +149,7 @@ class TigerHabitat(HabitatScene):
                 speed=1.0,
                 draw_fn=tiger_draw,
                 animate_fn=tiger_walk,
+                has_droppings=True,
             ),
             Animal(
                 x=600, y=500,

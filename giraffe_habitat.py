@@ -155,5 +155,6 @@ class GiraffeHabitat(HabitatScene):
                 speed=1.4,
                 draw_fn=giraffe_draw,
                 animate_fn=giraffe_walk,
+                has_droppings=True,
             ),
         ]

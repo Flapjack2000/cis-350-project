@@ -172,5 +172,6 @@ class LionHabitat(HabitatScene):
                 speed=1.4,
                 draw_fn=lion_draw,
                 animate_fn=lion_walk,
+                has_droppings=True,
             ),
         ]

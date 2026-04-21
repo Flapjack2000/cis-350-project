@@ -106,5 +106,6 @@ class OctopusHabitat(HabitatScene):
                 speed=0,
                 draw_fn=octopus_draw,
                 animate_fn=octopus_anim,
+                rect_size = (500, 500),
             ),
         ]

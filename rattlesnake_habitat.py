@@ -188,6 +188,7 @@ class RattlesnakeHabitat(HabitatScene):
             speed=0,
             draw_fn=rattlesnake_draw,
             animate_fn=rattlesnake_animate,
+            rect_size=(450, 450),
         )
 
         snake.hissing = False

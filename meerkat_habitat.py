@@ -163,5 +163,6 @@ class MeerkatHabitat(HabitatScene):
                 speed=4,
                 animate_fn=meerkat_v3_walk,
                 draw_fn=meerkat_draw,
+                has_droppings=True,
             ),
         ]
