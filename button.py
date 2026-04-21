@@ -1,5 +1,6 @@
 import pygame
 
+
 class Button:
     """Button for use across the game"""
     DEFAULT_WIDTH = 200

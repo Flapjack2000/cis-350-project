@@ -5,7 +5,8 @@ class AnimalMovement:
     def __init__(self):
         pass
 
-    def rotate_image(self, image, angle, pivot):
+    @staticmethod
+    def rotate_image(image, angle, pivot):
         """
         Rotate an image around a pivot point.
 
@@ -26,4 +27,3 @@ class AnimalMovement:
         rotated_rect = rotated_image.get_rect(center=rotated_center)
 
         return rotated_image, rotated_rect
-

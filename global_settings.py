@@ -19,8 +19,8 @@ class Settings:
         }
 
         self.backgrounds = {
-        "Jungle": "jungle_background.png",
-        "Savanna": "savanna_background.png",
-        "Grassland": "grassland_background.png",
-        "Aquarium": "aquarium_background.png",
-    }
+            "Jungle": "jungle_background.png",
+            "Savanna": "savanna_background.png",
+            "Grassland": "grassland_background.png",
+            "Aquarium": "aquarium_background.png",
+        }

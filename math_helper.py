@@ -8,6 +8,7 @@ class MathHelper:
     """
     Math helper functions
     """
+
     @staticmethod
     def cross2d(
             x: npt.NDArray[np.floating],
