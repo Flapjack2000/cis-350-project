@@ -248,7 +248,7 @@ class GiraffeHabitat(HabitatScene):
                 if self._font.size(line + word)[0] < 180:
                     line += (word + ' ')
                 else:
-                    lines.append(line);
+                    lines.append(line)
                     line = word + ' '
             lines.append(line)
 
@@ -264,7 +264,15 @@ class GiraffeHabitat(HabitatScene):
 
         for i, pos in enumerate(self._waste_positions):
             if not self._waste_clicked[i]:
-                screen.blit(self._waste_sprite, self._waste_sprite.get_rect(center=(int(pos.x), int(pos.y))))
+                screen.blit(
+                    self._waste_sprite,
+                    self._waste_sprite.get_rect(
+                        center=(
+                            int(pos.x),
+                            int(pos.y)
+                        )
+                    )
+                )
 
         if self._poop_active and all(self._waste_clicked):
             self._poop_active = False
@@ -279,16 +287,37 @@ class GiraffeHabitat(HabitatScene):
     def _draw_station(self, screen, rect, level, fill_col, border_col):
         s1, s2 = self._STATION_S1, self._STATION_S2
         fill_h = int((s1 - s2) * (level / 100))
-        pygame.draw.rect(screen, fill_col, (rect.x + s2, rect.y + s1 - s2 - fill_h, s1 - s2 * 2, fill_h))
-        pygame.draw.rect(screen, border_col, (rect.x, rect.y + s1 - s2, s1, s2))
-        pygame.draw.rect(screen, border_col, (rect.x, rect.y, s2, s1))
-        pygame.draw.rect(screen, border_col, (rect.x + s1 - s2, rect.y, s2, s1))
+        pygame.draw.rect(
+            screen,
+            fill_col,
+            (rect.x + s2, rect.y + s1 - s2 - fill_h, s1 - s2 * 2, fill_h)
+        )
+        pygame.draw.rect(
+            screen,
+            border_col,
+            (rect.x, rect.y + s1 - s2, s1, s2)
+        )
+        pygame.draw.rect(
+            screen,
+            border_col,
+            (rect.x, rect.y, s2, s1)
+        )
+        pygame.draw.rect(
+            screen,
+            border_col,
+            (rect.x + s1 - s2, rect.y, s2, s1)
+        )
 
     def _complete_task(self, task):
         self._manager.context.checklist.complete_task(task)
         from checklist_scene import ChecklistScene
         self._manager.pop()
-        self._manager.push(ChecklistScene(self._manager, self._manager.context.checklist))
+        self._manager.push(
+            ChecklistScene(
+                self._manager,
+                self._manager.context.checklist
+            )
+        )
 
     def _on_pet_complete(self):
         self._complete_task("giraffe_pet")

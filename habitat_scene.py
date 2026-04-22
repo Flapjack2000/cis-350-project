@@ -1,10 +1,6 @@
 import os
-
-from pygame import Rect
-
-os.environ["PYGAME_HIDE_SUPPORT_PROMPT"] = "1"
-
 import pygame
+from pygame import Rect
 from abc import abstractmethod
 from scene import Scene, SceneManager
 from animal import Animal
@@ -67,7 +63,11 @@ class _IconButton:
         Args:
             screen: Target surface.
         """
-        img = self._image_grey if (self.greyed or not self.enabled) else self._image_normal
+        img = (
+            self._image_grey
+            if (self.greyed or not self.enabled)
+            else self._image_normal
+        )
         screen.blit(img, self.rect)
 
 
@@ -114,7 +114,12 @@ class HabitatScene(Scene):
         super().on_enter()
 
         bg_path = os.path.abspath(
-            os.path.join(self._base_dir, "assets", "images", self.BACKGROUND_FILE)
+            os.path.join(
+                self._base_dir,
+                "assets",
+                "images",
+                self.BACKGROUND_FILE
+            )
         )
         self._background = (
             pygame.image.load(bg_path).convert()
@@ -139,7 +144,11 @@ class HabitatScene(Scene):
 
     @staticmethod
     def _icon_path(filename: str) -> str:
-        return os.path.join("assets", "images", filename)
+        return os.path.join(
+            "assets",
+            "images",
+            filename
+        )
 
     def _build_toolbar(self) -> None:
         """Build toolbar buttons."""
@@ -149,15 +158,27 @@ class HabitatScene(Scene):
         self._btn_pet = _IconButton(
             self._icon_path(self._ICON_HEART),
             topleft=(pad, pad),
-            enabled=self._pet_task_active and not self._pet_complete,
-            greyed=not self._pet_task_active or self._pet_complete,
+            enabled=(
+                    self._pet_task_active
+                    and not self._pet_complete
+            ),
+            greyed=(
+                    not self._pet_task_active or self._pet_complete
+            ),
         )
 
         surf = pygame.display.get_surface()
         screen_w = surf.get_width() if surf else 1280
 
         self._btn_map = _IconButton(self._icon_path(self._ICON_MAP), (0, pad))
-        self._btn_checklist = _IconButton(self._icon_path(self._ICON_CHECKLIST), (0, pad))
+        self._btn_checklist = (
+            _IconButton(
+                self._icon_path(
+                    self._ICON_CHECKLIST
+                ),
+                (0, pad)
+            )
+        )
 
         if self._btn_map and self._btn_checklist:
             map_x = screen_w - pad - self._btn_map.rect.width
@@ -185,8 +206,8 @@ class HabitatScene(Scene):
             return pygame.Rect(int(animal.x), int(animal.y), w, h)
 
         if animal.layers:
-            w = max(l.get_width() for l in animal.layers)
-            h = max(l.get_height() for l in animal.layers)
+            w = max(lay.get_width() for lay in animal.layers)
+            h = max(lay.get_height() for lay in animal.layers)
         else:
             w, h = 64, 64
 
@@ -201,7 +222,12 @@ class HabitatScene(Scene):
         Returns:
             bool
         """
-        return any(self._animal_rect(a).collidepoint(mouse_pos) for a in self._animals)
+        return (
+            any(
+                self._animal_rect(a).collidepoint(mouse_pos)
+                for a in self._animals
+            )
+        )
 
     def handle_events(self, events: list[pygame.event.Event]) -> None:
         """Handle input.
@@ -225,7 +251,12 @@ class HabitatScene(Scene):
 
         if self._btn_checklist and self._btn_checklist.is_clicked(mouse_pos):
             from checklist_scene import ChecklistScene
-            self._manager.push(ChecklistScene(self._manager, self._manager.context.checklist))
+            self._manager.push(
+                ChecklistScene(
+                    self._manager,
+                    self._manager.context.checklist
+                )
+            )
             return
 
         if self._btn_pet and self._btn_pet.is_clicked(mouse_pos):
@@ -252,9 +283,15 @@ class HabitatScene(Scene):
             mouse_pos = pygame.mouse.get_pos()
 
             if self._mouse_over_any_animal(mouse_pos):
-                self._pet_progress = min(100.0, self._pet_progress + PET_RATE)
+                self._pet_progress = min(
+                    100.0,
+                    self._pet_progress + PET_RATE
+                )
             else:
-                self._pet_progress = max(0.0, self._pet_progress - DECAY_RATE)
+                self._pet_progress = max(
+                    0.0,
+                    self._pet_progress - DECAY_RATE
+                )
 
             if self._pet_progress >= 100.0:
                 self._pet_progress = 0.0
@@ -302,7 +339,17 @@ class HabitatScene(Scene):
             bar_x = (screen.get_width() - bar_w) // 2
             bar_y = self._btn_pet.rect.bottom + 8
 
-            pygame.draw.rect(screen, (60, 60, 60), (bar_x, bar_y, bar_w, bar_h), border_radius=4)
+            pygame.draw.rect(
+                screen,
+                (60, 60, 60),
+                (bar_x, bar_y, bar_w, bar_h),
+                border_radius=4
+            )
 
             fill_w = int(bar_w * (self._pet_progress / 100.0))
-            pygame.draw.rect(screen, (240, 100, 160), (bar_x, bar_y, fill_w, bar_h), border_radius=4)
+            pygame.draw.rect(
+                screen,
+                (240, 100, 160),
+                (bar_x, bar_y, fill_w, bar_h),
+                border_radius=4
+            )
