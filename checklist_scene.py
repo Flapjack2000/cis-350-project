@@ -43,7 +43,8 @@ class ChecklistScene(Scene):
     @staticmethod
     def _format_task_text(internal_name: str) -> str:
         """
-        Manually parses internal task names into Title Case habitat instructions.
+        Manually parses internal task names into Title Case
+        habitat instructions.
         Example: 'zebra_water' -> 'Refill the Water in the Zebra Habitat'
         """
         task_map = {
@@ -86,7 +87,8 @@ class ChecklistScene(Scene):
             "fish_feed": "Feed the Fish",
         }
 
-        return task_map.get(internal_name, internal_name.replace("_", " ").title())
+        return task_map.get(internal_name,
+                            internal_name.replace("_", " ").title())
 
     def update(self, dt: float) -> None:
         pass

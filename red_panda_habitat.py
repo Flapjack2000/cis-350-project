@@ -24,7 +24,8 @@ class RedPandaHabitat(HabitatScene):
         Initializes the RedPandaHabitat scene.
 
         Args:
-            manager (SceneManager): Scene manager responsible for handling scene transitions.
+            manager (SceneManager): Scene manager responsible for
+            handling scene transitions.
         """
         self.BACKGROUND_FILE = (
             self.BACKGROUND_FILE_DAY
@@ -96,10 +97,12 @@ class RedPandaHabitat(HabitatScene):
 
     def _draw(self, animal: Animal, screen: pygame.Surface) -> None:
         """
-        Renders a red panda using a simple two-part sprite system (body + tail).
+        Renders a red panda using a simple two-part sprite
+        system (body + tail).
 
         Args:
-            animal (Animal): The red panda instance containing position and animation state.
+            animal (Animal): The red panda instance containing
+            position and animation state.
             screen (pygame.Surface): The surface to render the red panda onto.
         """
         if not animal.layers:
