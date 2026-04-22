@@ -120,7 +120,7 @@ class TigerHabitat(HabitatScene):
             return a
 
         if self._water_active or self._feed_active:
-            return [make(200, 300, 1)]
+            return [make(500, 300, 1)]
         return [make(200, 300, 1), make(600, 500, -1)]
 
     @staticmethod
@@ -236,10 +236,6 @@ class TigerHabitat(HabitatScene):
                 screen.blit(surf, (40, y_offset))
                 y_offset += surf.get_height() + 4
 
-        for i, pos in enumerate(self._waste_positions):
-            if not self._waste_clicked[i]:
-                screen.blit(self._waste_sprite, self._waste_sprite.get_rect(center=(int(pos.x), int(pos.y))))
-
         if self._poop_active and all(self._waste_clicked):
             self._poop_active = False
             self._complete_task("tiger_poop")
@@ -249,6 +245,12 @@ class TigerHabitat(HabitatScene):
         if self._feed_active and self._feed_level >= 100:
             self._feed_active = False
             self._complete_task("tiger_feed")
+
+    def draw_ground_layer(self, screen: pygame.Surface) -> None:
+        """Use the ground layer to draw in the animal waste behind the animals."""
+        for i, pos in enumerate(self._waste_positions):
+            if not self._waste_clicked[i]:
+                screen.blit(self._waste_sprite, self._waste_sprite.get_rect(center=(int(pos.x), int(pos.y))))
 
     def _draw_station(self, screen, rect, level, fill_col, border_col):
         s1, s2 = self._STATION_S1, self._STATION_S2

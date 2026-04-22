@@ -305,6 +305,19 @@ class LionHabitat(HabitatScene):
                 screen.blit(surf, (40, y_off))
                 y_off += surf.get_height() + 4
 
+        if self._poop_active and all(self._waste_clicked):
+            self._poop_active = False
+            self._complete_task("lion_poop")
+        if self._water_active and self._water_level >= 100:
+            self._water_active = False
+            self._complete_task("lion_water")
+        if self._feed_active and self._feed_level >= 100:
+            self._feed_active = False
+            self._complete_task("lion_feed")
+
+    def draw_ground_layer(self, screen: pygame.Surface) -> None:
+        """Use the ground layer to draw in the animal waste
+        behind the animals."""
         for i, pos in enumerate(self._waste_positions):
             if not self._waste_clicked[i]:
                 screen.blit(
@@ -316,16 +329,6 @@ class LionHabitat(HabitatScene):
                         )
                     )
                 )
-
-        if self._poop_active and all(self._waste_clicked):
-            self._poop_active = False
-            self._complete_task("lion_poop")
-        if self._water_active and self._water_level >= 100:
-            self._water_active = False
-            self._complete_task("lion_water")
-        if self._feed_active and self._feed_level >= 100:
-            self._feed_active = False
-            self._complete_task("lion_feed")
 
     def _draw_station(self, screen, rect, level, fill_col, border_col):
         s1, s2 = self._STATION_S1, self._STATION_S2
