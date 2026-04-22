@@ -30,13 +30,20 @@ class Animal:
         Args:
             x (int): Initial x-coordinate of the animal.
             y (int): Initial y-coordinate of the animal.
-            layer_files (list[str]): Filenames of sprite layers for this animal.
-            subfolder (str): Subfolder under base directory where sprites are located.
-            scale (float, optional): Scaling factor for sprite images. Defaults to 1.0.
-            default_facing_left (bool, optional): Whether the animal faces left by default. Defaults to False.
-            direction (int, optional): Initial horizontal direction (1 = right, -1 = left). Defaults to 1.
-            speed (float, optional): Horizontal movement speed. Defaults to 1.0.
-            animate_fn (Callable[[Animal, float], None] | None, optional): Custom animation function called each update. Defaults to None.
+            layer_files (list[str]):
+                Filenames of sprite layers for this animal.
+            subfolder (str):
+                Subfolder under base directory where sprites are located.
+            scale (float, optional):
+                Scaling factor for sprite images. Defaults to 1.0.
+            default_facing_left (bool, optional):
+                Whether the animal faces left by default. Defaults to False.
+            direction (int, optional):
+                Initial hori. direction (1 = right, -1 = left). Default = 1.
+            speed (float, optional):
+                Horizontal movement speed. Defaults to 1.0.
+            animate_fn (Callable[[Animal, float], None] | None, optional):
+                Custom animation function called each update. Defaults to None.
         """
         self.x: float = x
         self.y: float = y
@@ -59,26 +66,34 @@ class Animal:
         """Load sprite layers from disk. Called by HabitatScene.on_enter().
 
         Args:
-            base_dir (str): Base directory containing the animal's sprite subfolder.
+            base_dir (str):
+                Base directory containing the animal's sprite subfolder.
         """
         folder = os.path.join(base_dir, self.subfolder)
         self.layers = []
         for filename in self.layer_files:
-            img = pygame.image.load(os.path.join(folder, filename)).convert_alpha()
+            img = pygame.image.load(
+                os.path.join(folder, filename)
+            ).convert_alpha()
             self.layers.append(
                 pygame.transform.scale(
                     img,
-                    (int(img.get_width() * self.scale), int(img.get_height() * self.scale)),
+                    (
+                        int(img.get_width() * self.scale),
+                        int(img.get_height() * self.scale)
+                    ),
                 )
             )
         self.layer_angles = [0.0] * len(self.layers)
 
     def update(self, screen_width: int, dt: float = 0.0) -> None:
-        """Advance the animal's position, handle screen-edge bouncing, and run custom animation.
+        """Advance the animal's position,
+        handle screen-edge bouncing, and run custom animation.
 
         Args:
             screen_width (int): Width of the screen to handle edge collisions.
-            dt (float, optional): Time delta since last update in seconds. Defaults to 0.0.
+            dt (float, optional):
+                Time delta since last update in seconds. Defaults to 0.0.
         """
         self.time += dt
         self.x += self.speed * self.direction
@@ -101,10 +116,12 @@ class Animal:
             self._animate_fn(self)
 
     def draw(self, screen: pygame.Surface) -> None:
-        """Draw all sprite layers at the current position, applying rotation and horizontal flipping.
+        """Draw all sprite layers at the current position,
+        applying rotation and horizontal flipping.
 
         Args:
-            screen (pygame.Surface): The Pygame surface to draw the animal on.
+            screen (pygame.Surface):
+                The Pygame surface to draw the animal on.
         """
         if self._draw_fn:
             self._draw_fn(self, screen)

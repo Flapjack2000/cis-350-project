@@ -92,8 +92,12 @@ class ChecklistScene(Scene):
         pad = self.PADDING
         cb = self.CHECKBOX_SIZE
 
-        font_header = pygame.font.SysFont("Times New Roman", self.HEADER_FONT_SIZE)
-        font_task = pygame.font.SysFont("Times New Roman", self.TASK_FONT_SIZE)
+        font_header = (
+            pygame.font.SysFont("Times New Roman", self.HEADER_FONT_SIZE)
+        )
+        font_task = (
+            pygame.font.SysFont("Times New Roman", self.TASK_FONT_SIZE)
+        )
 
         panel_x = (screen_w - self.TASK_WIDTH) // 2
 
@@ -106,11 +110,25 @@ class ChecklistScene(Scene):
 
         header_padding = 10
         header_rect = pygame.Rect(
-            panel_x, pad, self.TASK_WIDTH, header_surf.get_height() + header_padding * 2
+            panel_x,
+            pad,
+            self.TASK_WIDTH,
+            header_surf.get_height() + header_padding * 2
         )
 
-        pygame.draw.rect(screen, (255, 220, 185), header_rect, border_radius=6)
-        pygame.draw.rect(screen, (180, 100, 60), header_rect, width=2, border_radius=6)
+        pygame.draw.rect(
+            screen,
+            (255, 220, 185),
+            header_rect,
+            border_radius=6
+        )
+        pygame.draw.rect(
+            screen,
+            (180, 100, 60),
+            header_rect,
+            width=2,
+            border_radius=6
+        )
 
         uline_y = header_rect.bottom - 8
         uline_margin = 120
@@ -125,25 +143,70 @@ class ChecklistScene(Scene):
 
         completed = self.__checklist.get_completed_tasks()
         incomplete = self.__checklist.get_incomplete_tasks()
-        ordered_tasks = [(t, True) for t in completed] + [(t, False) for t in incomplete]
+        ordered_tasks = ([(t, True) for t in completed] +
+                         [(t, False) for t in incomplete])
 
         y = header_rect.bottom + 12
 
         for task_name, done in ordered_tasks:
-            task_rect = pygame.Rect(panel_x, y, self.TASK_WIDTH, self.TASK_HEIGHT)
+            task_rect = pygame.Rect(
+                panel_x,
+                y,
+                self.TASK_WIDTH,
+                self.TASK_HEIGHT
+            )
 
-            pygame.draw.rect(screen, (255, 235, 210), task_rect, border_radius=6)
-            pygame.draw.rect(screen, (180, 100, 60), task_rect, width=2, border_radius=6)
+            pygame.draw.rect(
+                screen,
+                (255, 235, 210),
+                task_rect,
+                border_radius=6
+            )
+            pygame.draw.rect(
+                screen,
+                (180, 100, 60),
+                task_rect,
+                width=2,
+                border_radius=6
+            )
 
             cb_x = panel_x + 10
-            cb_rect = pygame.Rect(cb_x, y + (self.TASK_HEIGHT - cb) // 2, cb, cb)
-            pygame.draw.rect(screen, (242, 153, 115), cb_rect, border_radius=4)
-            pygame.draw.rect(screen, (180, 100, 60), cb_rect, width=2, border_radius=4)
+            cb_rect = pygame.Rect(
+                cb_x,
+                y + (self.TASK_HEIGHT - cb) // 2,
+                cb,
+                cb
+            )
+            pygame.draw.rect(
+                screen,
+                (242, 153, 115),
+                cb_rect,
+                border_radius=4
+            )
+            pygame.draw.rect(
+                screen,
+                (180, 100, 60),
+                cb_rect,
+                width=2,
+                border_radius=4
+            )
 
             if done:
                 cx, cy = cb_rect.centerx, cb_rect.centery
-                pygame.draw.line(screen, (80, 160, 80), (cx - 6, cy), (cx - 1, cy + 5), 3)
-                pygame.draw.line(screen, (80, 160, 80), (cx - 1, cy + 5), (cx + 7, cy - 5), 3)
+                pygame.draw.line(
+                    screen,
+                    (80, 160, 80),
+                    (cx - 6, cy),
+                    (cx - 1, cy + 5),
+                    3
+                )
+                pygame.draw.line(
+                    screen,
+                    (80, 160, 80),
+                    (cx - 1, cy + 5),
+                    (cx + 7, cy - 5),
+                    3
+                )
 
             # Use the new formatter here
             display_text = self._format_task_text(task_name)

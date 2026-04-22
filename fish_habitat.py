@@ -26,7 +26,14 @@ class _Fish:
         raw = pygame.image.load(img_path).convert_alpha()
         w, h = raw.get_size()
         scale = size_px / h
-        self.base_img = pygame.transform.smoothscale(raw, (int(w * scale), size_px))
+        self.base_img = (
+            pygame.transform.smoothscale(
+                raw,
+                (int(w * scale),
+                 size_px
+                 )
+            )
+        )
 
         self.faces_right = faces_right
         self.x = x
@@ -63,7 +70,8 @@ class _Fish:
 
 
 class FishHabitat(Scene):
-    """Aquarium scene with fish feeding minigame and navigation buttons on the right."""
+    """Aquarium scene with fish feeding minigame
+    and navigation buttons on the right."""
 
     BACKGROUND_FILE = "aquarium_background.png"
     FEED_RATE = 40.0
@@ -94,26 +102,40 @@ class FishHabitat(Scene):
         )
         self.feed_icon_grey = self.feed_icon.copy()
         self.feed_icon_grey.set_alpha(120)
-        self.feed_icon_rect = self.feed_icon.get_rect(topleft=(TOOLBAR_PAD, TOOLBAR_PAD))
+        self.feed_icon_rect = (
+            self.feed_icon.get_rect(
+                topleft=(TOOLBAR_PAD, TOOLBAR_PAD)
+            )
+        )
 
         # Cursor Setup
         bottle = pygame.transform.rotate(raw_icon, 180)
         self.feed_bottle = pygame.transform.smoothscale(
             bottle,
-            (int(w * self.ICON_SCALE * 1.1), int(h * self.ICON_SCALE * 1.1))
+            (int(w * self.ICON_SCALE * 1.1),
+             int(h * self.ICON_SCALE * 1.1))
         )
 
         # Map is furthest right
         map_path = os.path.join("assets", "images", "map_icon.png")
-        self._btn_map = _IconButton(map_path, (0, 0))  # Position updated in on_enter
+        self._btn_map = (
+            _IconButton(map_path, (0, 0))  # Position updated in on_enter
+        )
 
         # Checklist is to the left of map
         check_path = os.path.join("assets", "images", "checklist_icon.png")
-        self._btn_checklist = _IconButton(check_path, (0, 0))  # Position updated in on_enter
+        self._btn_checklist = (
+            _IconButton(check_path, (0, 0))  # Position updated in on_enter
+        )
 
     def on_enter(self) -> None:
         super().on_enter()
-        bg_path = os.path.join(self._base_dir, "assets", "images", self.BACKGROUND_FILE)
+        bg_path = os.path.join(
+            self._base_dir,
+            "assets",
+            "images",
+            self.BACKGROUND_FILE
+        )
         screen_size = Settings().window["size"]
         screen_w = screen_size[0]
 
@@ -135,10 +157,18 @@ class FishHabitat(Scene):
         x_gap = (screen_w - margin_x * 2) // 4
 
         self._fish = []
-        for i, (fname, faces_right, size_px, y, speed) in enumerate(_FISH_INFO):
+        for i, (
+                fname,
+                faces_right,
+                size_px,
+                y,
+                speed
+        ) in enumerate(_FISH_INFO):
             path = os.path.join(fish_dir, fname)
             x = margin_x + (i % 4) * x_gap
-            self._fish.append(_Fish(path, faces_right, size_px, x, y, speed, screen_w))
+            self._fish.append(
+                _Fish(path, faces_right, size_px, x, y, speed, screen_w)
+            )
 
     def handle_events(self, events: list[pygame.event.Event]) -> None:
         mouse_pos = pygame.mouse.get_pos()
@@ -149,12 +179,20 @@ class FishHabitat(Scene):
                 self._manager.push(PauseScene(self._manager))
 
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-                if self._feed_task_active and self.feed_icon_rect.collidepoint(mouse_pos):
+                if (
+                        self._feed_task_active
+                        and self.feed_icon_rect.collidepoint(mouse_pos)
+                ):
                     self.feeding = True
 
                 if self._btn_checklist.rect.collidepoint(mouse_pos):
                     from checklist_scene import ChecklistScene
-                    self._manager.push(ChecklistScene(self._manager, self._manager.context.checklist))
+                    self._manager.push(
+                        ChecklistScene(
+                            self._manager,
+                            self._manager.context.checklist
+                        )
+                    )
 
                 if self._btn_map.rect.collidepoint(mouse_pos):
                     from map_scene import MapScene
@@ -188,7 +226,12 @@ class FishHabitat(Scene):
         self._manager.context.checklist.complete_task("fish_feed")
         from checklist_scene import ChecklistScene
         self._manager.pop()
-        self._manager.push(ChecklistScene(self._manager, self._manager.context.checklist))
+        self._manager.push(
+            ChecklistScene(
+                self._manager,
+                self._manager.context.checklist
+            )
+        )
 
     def draw(self, screen: pygame.Surface) -> None:
         if self._background:
@@ -200,7 +243,9 @@ class FishHabitat(Scene):
             fish.draw(screen)
 
         # Draw Interface
-        icon = self.feed_icon if self._feed_task_active else self.feed_icon_grey
+        icon = (
+            self.feed_icon if self._feed_task_active else self.feed_icon_grey
+        )
         screen.blit(icon, self.feed_icon_rect)
         self._btn_checklist.draw(screen)
         self._btn_map.draw(screen)
@@ -217,6 +262,16 @@ class FishHabitat(Scene):
         bar_x = (screen_w - bar_w) // 2
         bar_y = TOOLBAR_PAD
 
-        pygame.draw.rect(screen, (60, 60, 60), (bar_x, bar_y, bar_w, bar_h), border_radius=4)
+        pygame.draw.rect(
+            screen,
+            (60, 60, 60),
+            (bar_x, bar_y, bar_w, bar_h),
+            border_radius=4
+        )
         fill_w = int(bar_w * (self.feed_progress / 100))
-        pygame.draw.rect(screen, (80, 220, 120), (bar_x, bar_y, fill_w, bar_h), border_radius=4)
+        pygame.draw.rect(
+            screen,
+            (80, 220, 120),
+            (bar_x, bar_y, fill_w, bar_h),
+            border_radius=4
+        )

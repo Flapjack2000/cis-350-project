@@ -27,39 +27,67 @@ class Button:
             height: int = DEFAULT_HEIGHT,
             font_size: int = DEFAULT_FONT_SIZE,
             font: pygame.font.Font | None = None,
-            color: tuple[int, int, int] = DEFAULT_COLOR,
-            hover_color: tuple[int, int, int] = DEFAULT_HOVER_COLOR,
-            border_color: tuple[int, int, int] = DEFAULT_BORDER_COLOR,
-            text_color: tuple[int, int, int] = DEFAULT_TEXT_COLOR,
-            border_width: int = DEFAULT_BORDER_WIDTH,
-            border_radius: int = DEFAULT_BORDER_RADIUS,
-            disabled_color: tuple[int, int, int] = DEFAULT_DISABLED_COLOR,
-            disabled_text_color: tuple[int, int, int] = DEFAULT_DISABLED_TEXT_COLOR,
-            hover_border_color: tuple[int, int, int] = DEFAULT_HOVER_BORDER_COLOR,
-            disabled_border_color: tuple[int, int, int] = DEFAULT_DISABLED_BORDER_COLOR,
+            color: tuple[int, int, int] =
+            DEFAULT_COLOR,
+            hover_color: tuple[int, int, int] =
+            DEFAULT_HOVER_COLOR,
+            border_color: tuple[int, int, int] =
+            DEFAULT_BORDER_COLOR,
+            text_color: tuple[int, int, int] =
+            DEFAULT_TEXT_COLOR,
+            border_width: int =
+            DEFAULT_BORDER_WIDTH,
+            border_radius: int =
+            DEFAULT_BORDER_RADIUS,
+            disabled_color: tuple[int, int, int] =
+            DEFAULT_DISABLED_COLOR,
+            disabled_text_color: tuple[int, int, int] =
+            DEFAULT_DISABLED_TEXT_COLOR,
+            hover_border_color: tuple[int, int, int] =
+            DEFAULT_HOVER_BORDER_COLOR,
+            disabled_border_color: tuple[int, int, int] =
+            DEFAULT_DISABLED_BORDER_COLOR,
             enabled: bool = True,
     ) -> None:
         """Create a button using default and custom values.
 
         Args:
-            x (int): The x-coordinate of the button's position.
-            y (int): The y-coordinate of the button's position.
-            text (string): The label displayed on the button.
-            width (int): The width of the button in pixels.
-            height (int): The height of the button in pixels.
-            font_size (int): The font size of the button label.
-            font (pygame.font.Font | None): A custom pygame Font object. If None, the default font is used.
-            color (tuple[int, int, int]): The background color of the button.
-            hover_color (tuple[int, int, int]): The background color when the button is hovered.
-            border_color (tuple[int, int, int]): The border color of the button.
-            text_color (tuple[int, int, int]): The color of the button label text.
-            border_width (int): The thickness of the button border in pixels.
-            border_radius (int): The radius of the button's rounded corners.
-            disabled_color (tuple[int, int, int]): The background color when the button is disabled.
-            disabled_text_color (tuple[int, int, int]): The text color when the button is disabled.
-            hover_border_color (tuple[int, int, int]): The border color when the button is hovered.
-            disabled_border_color (tuple[int, int, int]): The border color when the button is disabled.
-            enabled (bool): Whether the button is interactive. Defaults to True.
+            x (int):
+                The x-coordinate of the button's position.
+            y (int):
+                The y-coordinate of the button's position.
+            text (string):
+                The label displayed on the button.
+            width (int):
+                The width of the button in pixels.
+            height (int):
+                The height of the button in pixels.
+            font_size (int):
+                The font size of the button label.
+            font (pygame.font.Font | None):
+                A custom pygame Font object. If None, the default font is used.
+            color (tuple[int, int, int]):
+                The background color of the button.
+            hover_color (tuple[int, int, int]):
+                The background color when the button is hovered.
+            border_color (tuple[int, int, int]):
+                The border color of the button.
+            text_color (tuple[int, int, int]):
+                The color of the button label text.
+            border_width (int):
+                The thickness of the button border in pixels.
+            border_radius (int):
+                The radius of the button's rounded corners.
+            disabled_color (tuple[int, int, int]):
+                The background color when the button is disabled.
+            disabled_text_color (tuple[int, int, int]):
+                The text color when the button is disabled.
+            hover_border_color (tuple[int, int, int]):
+                The border color when the button is hovered.
+            disabled_border_color (tuple[int, int, int]):
+                The border color when the button is disabled.
+            enabled (bool):
+                Whether the button is interactive. Defaults to True.
         """
 
         self.rect = pygame.Rect(x, y, width, height)
@@ -105,7 +133,12 @@ class Button:
             fg = self.text_color
             bd = self.border_color
 
-        pygame.draw.rect(screen, bg, self.rect, border_radius=self.border_radius)
+        pygame.draw.rect(
+            screen,
+            bg,
+            self.rect,
+            border_radius=self.border_radius
+        )
         if self.border_width > 0:
             pygame.draw.rect(
                 screen, bd, self.rect,
@@ -121,13 +154,18 @@ class Button:
             mouse_pressed: tuple[bool, ...],
             button: int = 0,
     ) -> bool:
-        """Return True when the specified mouse button is pressed over this button.
+        """Return True when the specified mouse button
+        is pressed over this button.
 
         Args:
-            mouse_pos: The current (x, y) position of the mouse cursor.
-            mouse_pressed: A tuple of booleans representing the pressed state
-                of each mouse button, as returned by pygame.mouse.get_pressed().
-            button: The index of the mouse button to check. Defaults to 0 (left click).
+            mouse_pos:
+                The current (x, y) position of the mouse cursor.
+            mouse_pressed:
+                A tuple of booleans representing the pressed state of
+                each mouse button, as returned by pygame.mouse.get_pressed().
+            button:
+                The index of the mouse button to check.
+                Defaults to 0 (left click).
 
         Returns:
             True if the button is enabled, the mouse is over it, and the

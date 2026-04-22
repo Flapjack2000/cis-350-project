@@ -26,8 +26,13 @@ class Game:
         self.clock = pygame.time.Clock()
 
         cursor_cfg = self.settings.cursor
-        cursor_surface = pygame.image.load(cursor_cfg["image_path"]).convert_alpha()
-        self.cursor = pygame.transform.scale(cursor_surface, cursor_cfg["size"])
+        cursor_surface = pygame.image.load(
+            cursor_cfg["image_path"]
+        ).convert_alpha()
+        self.cursor = pygame.transform.scale(
+            cursor_surface,
+            cursor_cfg["size"]
+        )
 
         initial_tasks = [
 

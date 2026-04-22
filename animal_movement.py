@@ -21,7 +21,9 @@ class AnimalMovement:
 
         rotated_offset = offset_center_to_pivot.rotate(-angle)
 
-        rotated_center = (pivot[0] + rotated_offset.x, pivot[1] + rotated_offset.y)
+        rotated_center = (
+            pivot[0] + rotated_offset.x, pivot[1] + rotated_offset.y
+        )
 
         rotated_image = pygame.transform.rotate(image, angle)
         rotated_rect = rotated_image.get_rect(center=rotated_center)

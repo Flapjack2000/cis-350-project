@@ -14,10 +14,18 @@ class GiraffeHabitat(HabitatScene):
 
     _SUBFOLDER = os.path.join("assets", "animals", "giraffe")
     _LAYER_FILES = [
-        "giraffe_neck.png", "giraffe_hind_back_upper.png", "giraffe_hind_back_lower.png",
-        "giraffe_hind_front_upper.png", "giraffe_hind_front_lower.png", "giraffe_tail.png",
-        "giraffe_body.png", "giraffe_fore_back_upper.png", "giraffe_fore_back_lower.png",
-        "giraffe_fore_front_upper.png", "giraffe_fore_front_lower.png", "giraffe_head.png",
+        "giraffe_neck.png",
+        "giraffe_hind_back_upper.png",
+        "giraffe_hind_back_lower.png",
+        "giraffe_hind_front_upper.png",
+        "giraffe_hind_front_lower.png",
+        "giraffe_tail.png",
+        "giraffe_body.png",
+        "giraffe_fore_back_upper.png",
+        "giraffe_fore_back_lower.png",
+        "giraffe_fore_front_upper.png",
+        "giraffe_fore_front_lower.png",
+        "giraffe_head.png",
     ]
 
     _ICON_POOP = "poop_icon.png"
@@ -37,7 +45,9 @@ class GiraffeHabitat(HabitatScene):
 
     def __init__(self, manager: SceneManager) -> None:
         self.BACKGROUND_FILE = (
-            self.BACKGROUND_FILE_DAY if manager.context.is_day else self.BACKGROUND_FILE_NIGHT
+            self.BACKGROUND_FILE_DAY
+            if manager.context.is_day
+            else self.BACKGROUND_FILE_NIGHT
         )
 
         incomplete = manager.context.checklist.get_incomplete_tasks()
@@ -55,11 +65,18 @@ class GiraffeHabitat(HabitatScene):
         self._pass_counted = False
         self._interaction_timer = 0.0
 
-        raw = pygame.image.load(os.path.join("assets", "images", self._ICON_POOP)).convert_alpha()
+        raw = pygame.image.load(
+            os.path.join("assets", "images", self._ICON_POOP)
+        ).convert_alpha()
         self._waste_sprite = pygame.transform.smoothscale(
-            raw, (int(raw.get_width() * 0.12), int(raw.get_height() * 0.12))
+            raw,
+            (int(raw.get_width() * 0.12), int(raw.get_height() * 0.12))
         )
-        self._waste_positions = [pygame.Vector2(200, 500), pygame.Vector2(800, 600)] if self._poop_active else []
+        self._waste_positions = [
+            pygame.Vector2(200, 500),
+            pygame.Vector2(800, 600)
+        ] if self._poop_active else []
+
         self._waste_clicked = [False] * len(self._waste_positions)
         self._font = pygame.font.SysFont(None, 32)
 
@@ -82,9 +99,16 @@ class GiraffeHabitat(HabitatScene):
     def create_animals(self) -> list[Animal]:
         def make(x, y, direction):
             return Animal(
-                x=x, y=y, layer_files=self._LAYER_FILES, subfolder=self._SUBFOLDER,
-                scale=0.5, default_facing_left=True, direction=direction,
-                speed=self._GIRAFFE_SPEED, animate_fn=self._animate, draw_fn=self._draw
+                x=x,
+                y=y,
+                layer_files=self._LAYER_FILES,
+                subfolder=self._SUBFOLDER,
+                scale=0.5,
+                default_facing_left=True,
+                direction=direction,
+                speed=self._GIRAFFE_SPEED,
+                animate_fn=self._animate,
+                draw_fn=self._draw
             )
 
         if self._water_active or self._feed_active:
@@ -101,16 +125,29 @@ class GiraffeHabitat(HabitatScene):
 
     def _draw(self, animal: Animal, screen: pygame.Surface) -> None:
         should_flip = animal.facing_left != animal.default_facing_left
-        body_pos = pygame.Vector2(animal.x + (animal.layers[6].get_width() / 2 if animal.layers else 0), animal.y)
+        body_pos = pygame.Vector2(
+            animal.x + (
+                animal.layers[6].get_width() / 2 if animal.layers else 0
+            ),
+            animal.y
+        )
 
-        for i, (layer, angle) in enumerate(zip(animal.layers, animal.layer_angles)):
+        for i, (layer, angle) in enumerate(
+                zip(animal.layers, animal.layer_angles)
+        ):
             name = self._LAYER_FILES[i]
             pivot = self._HIND_PIVOT if "hind" in name else (
-                self._FRONT_PIVOT if "fore" in name else pygame.Vector2(layer.get_width() // 2,
-                                                                        layer.get_height() // 2))
+                self._FRONT_PIVOT if "fore" in name else pygame.Vector2(
+                    layer.get_width() // 2,
+                    layer.get_height() // 2
+                )
+            )
             img, rect = self._movement.rotate_image(layer, angle, pivot)
             rect.center = (int(body_pos.x), int(body_pos.y))
-            if should_flip: img = pygame.transform.flip(img, True, False)
+            if should_flip:
+                img = pygame.transform.flip(
+                    img, True, False
+                )
             screen.blit(img, rect)
 
     def handle_events(self, events: list[pygame.event.Event]) -> None:
@@ -124,8 +161,14 @@ class GiraffeHabitat(HabitatScene):
                     self._feed_level = min(100, self._feed_level + 2)
                 for i, p in enumerate(self._waste_positions):
                     if not self._waste_clicked[i]:
-                        r = self._waste_sprite.get_rect(center=(int(p.x), int(p.y)))
-                        if r.collidepoint(e.pos): self._waste_clicked[i] = True
+                        r = self._waste_sprite.get_rect(
+                            center=(
+                                int(p.x),
+                                int(p.y)
+                            )
+                        )
+                        if r.collidepoint(e.pos):
+                            self._waste_clicked[i] = True
 
     def update(self, dt: float) -> None:
         if self._interaction_timer > 0:
@@ -136,11 +179,15 @@ class GiraffeHabitat(HabitatScene):
             return
 
         super().update(dt)
-        if not self._animals or not (self._water_active or self._feed_active): return
+        if not self._animals or not (self._water_active or self._feed_active):
+            return
 
         giraffe = self._animals[0]
         w_rect, f_rect = self._get_station_rects()
-        gx = giraffe.x + (giraffe.layers[6].get_width() // 2 if giraffe.layers else 0)
+        gx = (
+                giraffe.x +
+                (giraffe.layers[6].get_width() // 2 if giraffe.layers else 0)
+        )
 
         current_zone = None
         if self._water_active and w_rect.left <= gx <= w_rect.right:
@@ -151,7 +198,11 @@ class GiraffeHabitat(HabitatScene):
         if current_zone:
             if not self._pass_counted:
                 self._pass_counted = True
-                level = self._water_level if current_zone == "water" else self._feed_level
+                level = (
+                    self._water_level
+                    if current_zone == "water"
+                    else self._feed_level
+                )
                 if level > 0:
                     giraffe.speed = 0
                     self._interaction_timer = 1.5
@@ -167,25 +218,47 @@ class GiraffeHabitat(HabitatScene):
         w_rect, f_rect = self._get_station_rects()
 
         if self._water_active:
-            self._draw_station(screen, w_rect, self._water_level, self._WATER_COLOR, self._TROUGH_COLOR)
+            self._draw_station(
+                screen,
+                w_rect,
+                self._water_level,
+                self._WATER_COLOR,
+                self._TROUGH_COLOR
+            )
         if self._feed_active:
-            self._draw_station(screen, f_rect, self._feed_level, self._FOOD_COLOR, self._BOWL_COLOR)
+            self._draw_station(
+                screen,
+                f_rect,
+                self._feed_level,
+                self._FOOD_COLOR,
+                self._BOWL_COLOR
+            )
 
         if self._water_active or self._feed_active:
-            raw_txt = "Click the trough to fill it with water!" if self._water_active else "Click the bowl to fill it with food!"
-            if self._water_active and self._feed_active: raw_txt = "Click the stations to refill them!"
+            raw_txt = (
+                "Click the trough to fill it with water!"
+                if self._water_active
+                else "Click the bowl to fill it with food!"
+            )
+            if self._water_active and self._feed_active:
+                raw_txt = "Click the stations to refill them!"
 
             words, lines, line = raw_txt.split(' '), [], ''
             for word in words:
                 if self._font.size(line + word)[0] < 180:
                     line += (word + ' ')
                 else:
-                    lines.append(line); line = word + ' '
+                    lines.append(line);
+                    line = word + ' '
             lines.append(line)
 
             y_off = w_rect.top + 20
             for ln in lines:
-                surf = self._font.render(ln.strip(), True, (0, 0, 0))
+                surf = self._font.render(
+                    ln.strip(),
+                    True,
+                    (0, 0, 0)
+                )
                 screen.blit(surf, (40, y_off))
                 y_off += surf.get_height() + 4
 
