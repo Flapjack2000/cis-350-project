@@ -3,7 +3,7 @@ import math
 import pygame
 
 from scene import SceneManager
-from habitat_scene import HabitatScene
+from habitat_scene import HabitatScene, _IconButton
 from animal import Animal
 from animal_movement import AnimalMovement
 
@@ -38,6 +38,8 @@ class LionHabitat(HabitatScene):
     _LAYERS_FEMALE = _LAYERS_BASE + ["lion_head.png"]
 
     _ICON_POOP = "poop_icon.png"
+    _ICON_WATER = "water_icon.png"
+    _ICON_FOOD = "food_icon.png"
 
     _SPEED = 1.2
 
@@ -75,6 +77,9 @@ class LionHabitat(HabitatScene):
         self._pass_counted = False
         self._interaction_timer = 0.0
 
+        self._btn_water = None
+        self._btn_food = None
+
         raw = pygame.image.load(
             os.path.join("assets", "images", "poop_icon.png")
         ).convert_alpha()
@@ -96,12 +101,18 @@ class LionHabitat(HabitatScene):
 
     def _get_station_rects(self):
         sw, sh = pygame.display.get_surface().get_size()
-        w_rect = pygame.Rect(sw // 2 - self._X_OFFSET - self._STATION_S1 // 2,
-                             sh // 2 + self._Y_OFFSET - self._STATION_S1 // 2,
-                             self._STATION_S1, self._STATION_S1)
-        f_rect = pygame.Rect(sw // 2 + self._X_OFFSET - self._STATION_S1 // 2,
-                             sh // 2 + self._Y_OFFSET - self._STATION_S1 // 2,
-                             self._STATION_S1, self._STATION_S1)
+        w_rect = pygame.Rect(
+            sw // 2 - self._X_OFFSET - self._STATION_S1 // 2,
+            sh // 2 + self._Y_OFFSET - self._STATION_S1 // 2,
+            self._STATION_S1,
+            self._STATION_S1
+        )
+        f_rect = pygame.Rect(
+            sw // 2 + self._X_OFFSET - self._STATION_S1 // 2,
+            sh // 2 + self._Y_OFFSET - self._STATION_S1 // 2,
+            self._STATION_S1,
+            self._STATION_S1
+        )
         return w_rect, f_rect
 
     def create_animals(self) -> list[Animal]:
@@ -190,19 +201,58 @@ class LionHabitat(HabitatScene):
                 )
 
         for layer, angle, pivot in (
-                zip(animal.layers, animal.layer_angles, pivots)
-        ):
+                zip(animal.layers, animal.layer_angles, pivots)):
             img, rect = self._movement.rotate_image(layer, angle, pivot)
             rect.center = body_pos
             if should_flip:
                 img = pygame.transform.flip(img, True, False)
             screen.blit(img, rect)
 
+    def _build_toolbar(self) -> None:
+        super()._build_toolbar()
+
+        pad = 12
+        gap = 12
+
+        heart_x = self._btn_pet.rect.right if self._btn_pet else pad
+
+        self._btn_water = _IconButton(
+            os.path.join("assets", "images", self._ICON_WATER),
+            topleft=(heart_x + gap, pad),
+            enabled=self._water_active,
+            greyed=not self._water_active,
+        )
+
+        self._btn_food = _IconButton(
+            os.path.join("assets", "images", self._ICON_FOOD),
+            topleft=(self._btn_water.rect.right + gap, pad),
+            enabled=self._feed_active,
+            greyed=not self._feed_active,
+        )
+
     def handle_events(self, events: list[pygame.event.Event]) -> None:
         super().handle_events(events)
         w_rect, f_rect = self._get_station_rects()
+
         for e in events:
             if e.type == pygame.MOUSEBUTTONDOWN and e.button == 1:
+
+                if self._btn_water and self._btn_water.is_clicked(e.pos):
+                    prev_mode = self._water_active or self._feed_active
+                    self._water_active = True
+                    self._feed_active = False
+                    new_mode = self._water_active or self._feed_active
+                    if new_mode != prev_mode:
+                        self._rebuild_animals_if_needed()
+
+                elif self._btn_food and self._btn_food.is_clicked(e.pos):
+                    prev_mode = self._water_active or self._feed_active
+                    self._feed_active = True
+                    self._water_active = False
+                    new_mode = self._water_active or self._feed_active
+                    if new_mode != prev_mode:
+                        self._rebuild_animals_if_needed()
+
                 if self._water_active and w_rect.collidepoint(e.pos):
                     self._water_level = min(100, self._water_level + 2)
                 elif self._feed_active and f_rect.collidepoint(e.pos):
@@ -211,57 +261,20 @@ class LionHabitat(HabitatScene):
                 for i, p in enumerate(self._waste_positions):
                     if not self._waste_clicked[i]:
                         r = self._waste_sprite.get_rect(
-                            center=(
-                                int(p.x),
-                                int(p.y)
-                            )
+                            center=(int(p.x), int(p.y))
                         )
                         if r.collidepoint(e.pos):
                             self._waste_clicked[i] = True
 
-    def update(self, dt: float) -> None:
-        if self._interaction_timer > 0:
-            self._interaction_timer -= dt
-            if self._interaction_timer <= 0 and self._animals:
-                self._animals[0].speed = self._SPEED
-            super().update(dt)
-            return
-
-        super().update(dt)
-        if not self._animals or not (self._water_active or self._feed_active):
-            return
-
-        lion = self._animals[0]
-        w_rect, f_rect = self._get_station_rects()
-        body_w = lion.layers[0].get_width() if lion.layers else 0
-        lx = lion.x + body_w // 2
-
-        current_zone = None
-        if self._water_active and w_rect.left <= lx <= w_rect.right:
-            current_zone = "water"
-        elif self._feed_active and f_rect.left <= lx <= f_rect.right:
-            current_zone = "feed"
-
-        if current_zone:
-            if not self._pass_counted:
-                self._pass_counted = True
-                level = (
-                    self._water_level
-                    if current_zone == "water"
-                    else self._feed_level
-                )
-                if level > 0:
-                    lion.speed = 0
-                    self._interaction_timer = 1.5
-                    if current_zone == "water":
-                        self._water_level = max(0, self._water_level - 40)
-                    else:
-                        self._feed_level = max(0, self._feed_level - 40)
-        else:
-            self._pass_counted = False
-
     def draw(self, screen: pygame.Surface) -> None:
         super().draw(screen)
+
+        if self._btn_water:
+            self._btn_water.draw(screen)
+
+        if self._btn_food:
+            self._btn_food.draw(screen)
+
         w_rect, f_rect = self._get_station_rects()
 
         if self._water_active:
@@ -281,51 +294,26 @@ class LionHabitat(HabitatScene):
                 self._BOWL_COLOR
             )
 
-        if self._water_active or self._feed_active:
-            raw_txt = (
-                "Click the trough to fill it with water!"
-                if self._water_active
-                else "Click the bowl to fill it with food!"
-            )
-            if self._water_active and self._feed_active:
-                raw_txt = "Click the stations to refill them!"
+        if self._poop_active and all(self._waste_clicked):
+            self._poop_active = False
+            self._complete_task("lion_poop")
 
-            words, lines, line = raw_txt.split(' '), [], ''
-            for word in words:
-                if self._font.size(line + word)[0] < 180:
-                    line += (word + ' ')
-                else:
-                    lines.append(line)
-                    line = word + ' '
-            lines.append(line)
+        if self._water_active and self._water_level >= 100:
+            self._water_active = False
+            self._complete_task("lion_water")
 
-            y_off = w_rect.top + 20
-            for ln in lines:
-                surf = self._font.render(ln.strip(), True, (0, 0, 0))
-                screen.blit(surf, (40, y_off))
-                y_off += surf.get_height() + 4
+        if self._feed_active and self._feed_level >= 100:
+            self._feed_active = False
+            self._complete_task("lion_feed")
 
+    def draw_ground_layer(self, screen: pygame.Surface) -> None:
         for i, pos in enumerate(self._waste_positions):
             if not self._waste_clicked[i]:
                 screen.blit(
                     self._waste_sprite,
-                    self._waste_sprite.get_rect(
-                        center=(
-                            int(pos.x),
-                            int(pos.y)
-                        )
-                    )
+                    self._waste_sprite.get_rect
+                    (center=(int(pos.x), int(pos.y)))
                 )
-
-        if self._poop_active and all(self._waste_clicked):
-            self._poop_active = False
-            self._complete_task("lion_poop")
-        if self._water_active and self._water_level >= 100:
-            self._water_active = False
-            self._complete_task("lion_water")
-        if self._feed_active and self._feed_level >= 100:
-            self._feed_active = False
-            self._complete_task("lion_feed")
 
     def _draw_station(self, screen, rect, level, fill_col, border_col):
         s1, s2 = self._STATION_S1, self._STATION_S2
@@ -335,32 +323,26 @@ class LionHabitat(HabitatScene):
             fill_col,
             (rect.x + s2, rect.y + s1 - s2 - fill_h, s1 - s2 * 2, fill_h)
         )
-        pygame.draw.rect(
-            screen,
-            border_col,
-            (rect.x, rect.y + s1 - s2, s1, s2)
-        )
-        pygame.draw.rect(
-            screen,
-            border_col,
-            (rect.x, rect.y, s2, s1)
-        )
-        pygame.draw.rect(
-            screen,
-            border_col,
-            (rect.x + s1 - s2, rect.y, s2, s1)
-        )
+        pygame.draw.rect(screen, border_col,
+                         (rect.x, rect.y + s1 - s2, s1, s2))
+        pygame.draw.rect(screen, border_col,
+                         (rect.x, rect.y, s2, s1))
+        pygame.draw.rect(screen, border_col,
+                         (rect.x + s1 - s2, rect.y, s2, s1))
 
     def _complete_task(self, task):
         self._manager.context.checklist.complete_task(task)
         from checklist_scene import ChecklistScene
         self._manager.pop()
         self._manager.push(
-            ChecklistScene(
-                self._manager,
-                self._manager.context.checklist
-            )
+            ChecklistScene(self._manager, self._manager.context.checklist)
         )
 
     def _on_pet_complete(self):
         self._complete_task("lion_pet")
+
+    def _rebuild_animals_if_needed(self) -> None:
+        """Recreate animals when habitat mode changes."""
+        self._animals = self.create_animals()
+        for animal in self._animals:
+            animal.load(self._base_dir)

@@ -43,28 +43,52 @@ class ChecklistScene(Scene):
     @staticmethod
     def _format_task_text(internal_name: str) -> str:
         """
-        Parses internal task names into Title Case habitat instructions.
+        Manually parses internal task names into Title Case
+        habitat instructions.
         Example: 'zebra_water' -> 'Refill the Water in the Zebra Habitat'
         """
-        parts = internal_name.split("_")
-        if len(parts) < 2:
-            return internal_name.replace("_", " ").title()
+        task_map = {
+            "zebra_pet": "Pet the Zebras",
+            "zebra_poop": "Clean Up the Zebra Habitat",
+            "zebra_feed": "Feed the Zebras",
+            "zebra_water": "Refill the Water in the Zebra Habitat",
 
-        # Extract animal name (handling multi-word names like red_panda)
-        # .title() handles the "pseudo title case" requirement
-        animal = " ".join(parts[:-1]).title()
-        action = parts[-1].lower()
+            "giraffe_pet": "Pet the Giraffes",
+            "giraffe_poop": "Clean Up the Giraffe Habitat",
+            "giraffe_feed": "Feed the Giraffes",
+            "giraffe_water": "Refill the Water in the Giraffe Habitat",
 
-        # Define the instruction templates
-        action_map = {
-            "pet": f"Pet the {animal}(s)",
-            "poop": f"Clean Up the {animal} Habitat",
-            "feed": f"Feed the {animal}(s)",
-            "water": f"Refill the Water in the {animal} Habitat"
+            "tiger_pet": "Pet the Tigers",
+            "tiger_poop": "Clean Up the Tiger Habitat",
+            "tiger_feed": "Feed the Tigers",
+            "tiger_water": "Refill the Water in the Tiger Habitat",
+
+            "lion_pet": "Pet the Lions",
+            "lion_poop": "Clean Up the Lion Habitat",
+            "lion_feed": "Feed the Lions",
+            "lion_water": "Refill the Water in the Lion Habitat",
+
+            "meerkat_pet": "Pet the Meerkats",
+            "meerkat_poop": "Clean Up the Meerkat Habitat",
+            "meerkat_feed": "Feed the Meerkats",
+            "meerkat_water": "Refill the Water in the Meerkat Habitat",
+
+            "red_panda_pet": "Pet the Red Panda",
+            "red_panda_poop": "Clean Up the Red Panda Habitat",
+
+            "penguin_pet": "Pet the Penguins",
+            "penguin_feed": "Feed the Penguins",
+            "penguin_water": "Refill the Water in the Penguin Habitat",
+
+            "rattlesnake_pet": "Pet the Rattlesnake",
+
+            "octopus_pet": "Pet the Octopus",
+
+            "fish_feed": "Feed the Fish",
         }
 
-        # Fallback for any unmapped actions
-        return action_map.get(action, f"{action.title()} {animal} Habitat")
+        return task_map.get(internal_name,
+                            internal_name.replace("_", " ").title())
 
     def update(self, dt: float) -> None:
         pass

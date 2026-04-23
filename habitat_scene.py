@@ -5,7 +5,7 @@ from abc import abstractmethod
 from scene import Scene, SceneManager
 from animal import Animal
 
-PET_RATE = 0.4
+PET_RATE = 0.1
 DECAY_RATE = 0.05
 ICON_SCALE = 0.18
 ICON_SPACING = 12
@@ -318,6 +318,8 @@ class HabitatScene(Scene):
         else:
             screen.fill((180, 160, 120))
 
+        self.draw_ground_layer(screen)
+
         for animal in sorted(self._animals, key=lambda a: a.y):
             animal.draw(screen)
 
@@ -353,3 +355,7 @@ class HabitatScene(Scene):
                 (bar_x, bar_y, fill_w, bar_h),
                 border_radius=4
             )
+
+    def draw_ground_layer(self, screen: pygame.Surface) -> None:
+        """Override to draw things above background but below animals."""
+        pass
