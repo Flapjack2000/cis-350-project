@@ -118,3 +118,7 @@ class SceneManager:
         """Clear the entire stack, causing the game loop to exit cleanly."""
         while self.__stack:
             self.__stack.pop().on_exit()
+
+    def __len__(self) -> int:
+        """Return the number of scenes in the stack."""
+        return len(self.__stack)

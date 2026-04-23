@@ -1,6 +1,7 @@
 import random
 from pygame import mixer
 
+
 class Checklist:
     """
         Manages a day/night task checklist that cycles deterministically.
@@ -93,9 +94,13 @@ class Checklist:
         """Return the tasks on the checklist that have been done."""
         return [task for task, done in self.__tasks.items() if done]
 
-    def get_all_tasks(self) -> list[str]:
-        """Return all the tasks on the checklist."""
+    def get_phase_tasks(self) -> list[str]:
+        """Return all the tasks currently on the checklist."""
         return [task for task in self.__tasks.keys()]
+
+    def get_task_pool(self):
+        """Return every possible checklist task."""
+        return self.__pool
 
     def __set_pool(self, tasks: list[str]):
         """Stores the pool of tasks.
