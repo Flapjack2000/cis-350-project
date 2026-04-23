@@ -4,6 +4,7 @@ from pygame.surface import Surface
 
 from checklist import Checklist
 from scene import Scene, SceneManager, GameContext
+from audio_player import AudioPlayer
 
 
 class TestChecklist(unittest.TestCase):
@@ -185,48 +186,129 @@ class TestSceneManager(unittest.TestCase):
         context = GameContext(
             checklist=Checklist(self.tasks),
             cursor=Surface((1, 1)),
-            music_player=None
+            music_player=AudioPlayer()
         )
 
         # Create manager
         manager = SceneManager(context)
 
         # Scene stack is empty
-        self.assertEqual(
-            0,
-            len(manager)
-        )
+        self.assertTrue(manager.is_empty)
+        self.assertEqual(0, len(manager))
+        self.assertIsNone(manager.current)
 
         # Push first scene
         manager.push(self.BlankScene(manager))
 
         # Scene stack has one scene
-        self.assertEqual(
-            1,
-            len(manager)
-        )
+        self.assertFalse(manager.is_empty)
+        self.assertEqual(1, len(manager))
 
         # Push second scene
         manager.push(self.BlankScene(manager))
 
         # Scene stack has two scenes
-        self.assertEqual(
-            1,
-            len(manager)
-        )
+        self.assertFalse(manager.is_empty)
+        self.assertEqual(2, len(manager))
 
-        # Push second scene
+        # Push third scene
         manager.push(self.BlankScene(manager))
 
-        # Scene stack has two scenes
-        self.assertEqual(
-            1,
-            len(manager)
+        # Scene stack has three scenes
+        self.assertFalse(manager.is_empty)
+        self.assertEqual(3, len(manager))
+
+    def test_pop(self):
+        """Verify that popping scenes works correctly."""
+
+        # Example context for SceneManager initialization
+        context = GameContext(
+            checklist=Checklist(self.tasks),
+            cursor=Surface((1, 1)),
+            music_player=AudioPlayer()
         )
 
+        # Create empty manager
+        manager = SceneManager(context)
+        self.assertTrue(manager.is_empty)
+        self.assertEqual(len(manager), 0)
+        self.assertIsNone(manager.current)
 
+        # Push five scenes
+        manager.push(self.BlankScene(manager))
+        manager.push(self.BlankScene(manager))
+        manager.push(self.BlankScene(manager))
+        manager.push(self.BlankScene(manager))
+        manager.push(self.BlankScene(manager))
 
+        # Check stack length
+        self.assertFalse(manager.is_empty)
+        self.assertEqual(len(manager), 5)
+        self.assertIsNotNone(manager.current)
 
+        # Pop scene 5
+        manager.pop()
+        self.assertFalse(manager.is_empty)
+        self.assertEqual(len(manager), 4)
+        self.assertIsNotNone(manager.current)
+
+        # Pop scene 4
+        manager.pop()
+        self.assertFalse(manager.is_empty)
+        self.assertEqual(len(manager), 3)
+        self.assertIsNotNone(manager.current)
+
+        # Pop scene 3
+        manager.pop()
+        self.assertFalse(manager.is_empty)
+        self.assertEqual(len(manager), 2)
+        self.assertIsNotNone(manager.current)
+
+        # Pop scene 2
+        manager.pop()
+        self.assertFalse(manager.is_empty)
+        self.assertEqual(len(manager), 1)
+        self.assertIsNotNone(manager.current)
+
+        # Pop scene 1
+        manager.pop()
+        self.assertTrue(manager.is_empty)
+        self.assertEqual(len(manager), 0)
+        self.assertIsNone(manager.current)
+
+    def test_exit_all(self):
+        """Verify that exiting all scenes works correctly."""
+
+        # Example context for SceneManager initialization
+        context = GameContext(
+            checklist=Checklist(self.tasks),
+            cursor=Surface((1, 1)),
+            music_player=AudioPlayer()
+        )
+
+        # Create empty manager
+        manager = SceneManager(context)
+        self.assertTrue(manager.is_empty)
+        self.assertEqual(len(manager), 0)
+        self.assertIsNone(manager.current)
+
+        # Push five scenes
+        manager.push(self.BlankScene(manager))
+        manager.push(self.BlankScene(manager))
+        manager.push(self.BlankScene(manager))
+        manager.push(self.BlankScene(manager))
+        manager.push(self.BlankScene(manager))
+
+        # Check stack length
+        self.assertFalse(manager.is_empty)
+        self.assertEqual(len(manager), 5)
+        self.assertIsNotNone(manager.current)
+
+        # Empty manager
+        manager.exit_all()
+        self.assertTrue(manager.is_empty)
+        self.assertEqual(len(manager), 0)
+        self.assertIsNone(manager.current)
 
 
 if __name__ == '__main__':
