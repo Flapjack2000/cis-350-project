@@ -1,5 +1,6 @@
 import os
 import math
+import random
 import pygame
 
 from scene import SceneManager
@@ -41,7 +42,7 @@ class LionHabitat(HabitatScene):
     _ICON_WATER = "water_icon.png"
     _ICON_FOOD = "food_icon.png"
 
-    _SPEED = 1.2
+    _SPEED = 1.8
 
     _FRONT_PIVOT = pygame.Vector2(25, 15)
     _HIND_PIVOT = pygame.Vector2(25, 15)
@@ -76,6 +77,11 @@ class LionHabitat(HabitatScene):
         self._feed_level = 75
         self._pass_counted = False
         self._interaction_timer = 0.0
+
+        self._water_passes = 0
+        self._water_threshold = random.randint(1, 3)
+        self._feed_passes = 0
+        self._feed_threshold = random.randint(1, 3)
 
         self._btn_water = None
         self._btn_food = None
@@ -265,6 +271,58 @@ class LionHabitat(HabitatScene):
                         )
                         if r.collidepoint(e.pos):
                             self._waste_clicked[i] = True
+
+    def update(self, dt: float) -> None:
+        if self._interaction_timer > 0:
+            self._interaction_timer -= dt
+            if self._interaction_timer <= 0 and self._animals:
+                self._animals[0].speed = self._SPEED
+            super().update(dt)
+            return
+
+        super().update(dt)
+        if not self._animals or not (self._water_active or self._feed_active):
+            return
+
+        lion = self._animals[0]
+        w_rect, f_rect = self._get_station_rects()
+        body_w = lion.layers[7].get_width() if lion.layers else 0
+        mx = lion.x + body_w // 2
+
+        current_zone = None
+        if self._water_active and w_rect.left <= mx <= w_rect.right:
+            current_zone = "water"
+        elif self._feed_active and f_rect.left <= mx <= f_rect.right:
+            current_zone = "feed"
+
+        if current_zone:
+            if not self._pass_counted:
+                self._pass_counted = True
+                if current_zone == "water":
+                    self._water_passes += 1
+                    should_stop = self._water_passes >= self._water_threshold
+                else:
+                    self._feed_passes += 1
+                    should_stop = self._feed_passes >= self._feed_threshold
+
+                level = self._water_level if (
+                        current_zone == "water") else self._feed_level
+
+                if should_stop and level > 0:
+                    lion.speed = 0
+                    self._interaction_timer = 1.5
+                    if current_zone == "water":
+                        self._water_level = max(0, self._water_level - 40)
+                        self._water_passes = 0
+                        self._water_threshold = random.randint(1, 3)
+                    else:
+                        self._feed_level = max(0, self._feed_level - 40)
+                        self._feed_passes = 0
+                        self._feed_threshold = random.randint(1, 3)
+                else:
+                    lion.speed = self._SPEED
+        else:
+            self._pass_counted = False
 
     def draw(self, screen: pygame.Surface) -> None:
         super().draw(screen)

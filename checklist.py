@@ -21,7 +21,7 @@ class Checklist:
 
     DAY_TASKS_REQUIRED = 8
     NIGHT_TASKS_REQUIRED = 6
-    SEED_OFFSET = 1
+    SEED_OFFSET = 111
 
     def __init__(self, initial_tasks: list[str]) -> None:
         """Load the tasks and create the checklist dictionary.

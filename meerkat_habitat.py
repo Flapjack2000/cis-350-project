@@ -1,5 +1,7 @@
 import os
 import math
+import random
+
 import pygame
 
 from scene import SceneManager
@@ -64,6 +66,11 @@ class MeerkatHabitat(HabitatScene):
         self._feed_level = 75
         self._pass_counted = False
         self._interaction_timer = 0.0
+
+        self._water_passes = 0
+        self._water_threshold = random.randint(1, 3)
+        self._feed_passes = 0
+        self._feed_threshold = random.randint(1, 3)
 
         self._btn_water = None
         self._btn_food = None
@@ -239,16 +246,16 @@ class MeerkatHabitat(HabitatScene):
 
                 if self._btn_water and self._btn_water.is_clicked(e.pos):
                     prev = self._water_active or self._feed_active
-                    self._water_active = True
-                    self._feed_active = False
-                    if prev != (self._water_active or self._feed_active):
+                    self._water_active = not self._water_active
+                    now = self._water_active or self._feed_active
+                    if prev != now:
                         self._rebuild_animals_if_needed()
 
                 elif self._btn_food and self._btn_food.is_clicked(e.pos):
                     prev = self._water_active or self._feed_active
-                    self._feed_active = True
-                    self._water_active = False
-                    if prev != (self._water_active or self._feed_active):
+                    self._feed_active = not self._feed_active
+                    now = self._water_active or self._feed_active
+                    if prev != now:
                         self._rebuild_animals_if_needed()
 
                 if self._water_active and w_rect.collidepoint(e.pos):
@@ -289,15 +296,29 @@ class MeerkatHabitat(HabitatScene):
         if current_zone:
             if not self._pass_counted:
                 self._pass_counted = True
+                if current_zone == "water":
+                    self._water_passes += 1
+                    should_stop = self._water_passes >= self._water_threshold
+                else:
+                    self._feed_passes += 1
+                    should_stop = self._feed_passes >= self._feed_threshold
+
                 level = self._water_level if (
                         current_zone == "water") else self._feed_level
-                if level > 0:
+
+                if should_stop and level > 0:
                     meerkat.speed = 0
                     self._interaction_timer = 1.5
                     if current_zone == "water":
                         self._water_level = max(0, self._water_level - 40)
+                        self._water_passes = 0
+                        self._water_threshold = random.randint(1, 3)
                     else:
                         self._feed_level = max(0, self._feed_level - 40)
+                        self._feed_passes = 0
+                        self._feed_threshold = random.randint(1, 3)
+                else:
+                    meerkat.speed = self._SPEED
         else:
             self._pass_counted = False
 
