@@ -104,11 +104,15 @@ class SceneManager:
         """
         scene.on_enter()
         self.__stack.append(scene)
+        self.context.music_player.update_scene(scene)
 
     def pop(self) -> None:
         """Remove the top scene and return to the one below."""
         if self.__stack:
             self.__stack.pop().on_exit()
+
+        if self.__stack:
+            self.context.music_player.update_scene(self.__stack[-1])
 
     def exit_all(self) -> None:
         """Clear the entire stack, causing the game loop to exit cleanly."""

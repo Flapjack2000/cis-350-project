@@ -1,5 +1,5 @@
 import random
-
+from pygame import mixer
 
 class Checklist:
     """
@@ -68,6 +68,7 @@ class Checklist:
         """
         if task in self.__tasks:
             self.__tasks[task] = True
+            mixer.Sound("assets/sounds/Success.ogg").play()
             if self.is_phase_complete():
                 self.__advance_cycle()
 
