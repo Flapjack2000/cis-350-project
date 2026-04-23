@@ -11,7 +11,7 @@ class AudioPlayer:
         self.sounds = {
             "FishHabitat": ["Water1.ogg", "Water2.ogg", "Water3.ogg", "Water4.ogg"],
             "LionHabitat": ["LionRoar1.ogg", "LionRoar2.ogg", "LionRoar3.ogg"],
-            "MeerkatHabitat": ["Meerkat1.ogg", "Meerkat2.ogg", "Meerkat3.ogg", "Meerkat4.ogg"],
+            "MeerkatHabitat": ["Meerkat1.ogg", "Meerkat2.ogg", "Meerkat3.ogg"],
             "RattlesnakeHabitat": ["SnakeHiss1.ogg", "SnakeHiss2.ogg", "SnakeRattle.ogg"],
             "TigerHabitat": ["TigerGrowl1.ogg", "TigerGrowl2.ogg"],
             "ZebraHabitat": ["ZebraAnnoyed.ogg", "ZebraAnxious.ogg", "ZebraCasual.ogg"],
