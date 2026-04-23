@@ -7,6 +7,7 @@ from checklist import Checklist
 from scene import SceneManager, GameContext
 from menu_scene import MenuScene
 from global_settings import Settings
+from audio_player import audioPlayer
 
 
 class Game:
@@ -76,9 +77,12 @@ class Game:
         ]
         self.checklist = Checklist(initial_tasks)
 
+        self.audio = audioPlayer()
+
         context = GameContext(
             checklist=self.checklist,
-            cursor=self.cursor
+            cursor=self.cursor,
+            music_player = self.audio
         )
         self.scene_manager = SceneManager(context)
         self.scene_manager.push(MenuScene(self.scene_manager))
@@ -99,6 +103,8 @@ class Game:
                 scene.handle_events(events)
                 scene.update(dt)
                 scene.draw(self.screen)
+
+            self.scene_manager.context.music_player.update_sounds(dt)
 
             self.screen.blit(self.cursor, pygame.mouse.get_pos())
 
