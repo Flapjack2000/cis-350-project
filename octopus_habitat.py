@@ -1,7 +1,6 @@
 import os
 import math
 import pygame
-
 from scene import SceneManager
 from habitat_scene import HabitatScene
 from animal import Animal

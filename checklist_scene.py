@@ -110,7 +110,11 @@ class ChecklistScene(Scene):
             self._manager.pop()
 
     def draw(self, screen: pygame.Surface) -> None:
-        screen.fill((242, 153, 115))
+        screen.fill(
+            (242, 153, 115)
+            if self.__checklist.is_day
+            else (37, 46, 90)
+        )
 
         screen_w = self.__settings.window["size"][0]
         pad = self.PADDING

@@ -1,7 +1,7 @@
 import os
 import math
+import random
 import pygame
-
 from scene import SceneManager
 from habitat_scene import HabitatScene, _IconButton
 from animal import Animal
@@ -51,6 +51,12 @@ class PenguinHabitat(HabitatScene):
 
         self._pass_counted = False
         self._interaction_timer = 0.0
+
+        self._water_passes = 0
+        self._water_threshold = random.randint(1, 3)
+        self._feed_passes = 0
+        self._feed_threshold = random.randint(1, 3)
+
         self._font = pygame.font.SysFont(None, 32)
 
         self._btn_water = None
@@ -58,9 +64,6 @@ class PenguinHabitat(HabitatScene):
 
         self._build_toolbar()
 
-    # ----------------------------
-    # TOOLBAR (ADDED)
-    # ----------------------------
     def _build_toolbar(self) -> None:
         super()._build_toolbar()
 
@@ -238,16 +241,30 @@ class PenguinHabitat(HabitatScene):
 
         if current_zone:
             if not self._pass_counted:
+                self._pass_counted = True
+                if current_zone == "water":
+                    self._water_passes += 1
+                    should_stop = self._water_passes >= self._water_threshold
+                else:
+                    self._feed_passes += 1
+                    should_stop = self._feed_passes >= self._feed_threshold
+
                 level = self._water_level if (
                         current_zone == "water") else self._feed_level
-                if level > 0:
-                    self._pass_counted = True
+
+                if should_stop and level > 0:
                     penguin.speed = 0
                     self._interaction_timer = 2.0
                     if current_zone == "water":
                         self._water_level = max(0, self._water_level - 35)
+                        self._water_passes = 0
+                        self._water_threshold = random.randint(1, 3)
                     else:
                         self._feed_level = max(0, self._feed_level - 35)
+                        self._feed_passes = 0
+                        self._feed_threshold = random.randint(1, 3)
+                else:
+                    penguin.speed = 0.5
         else:
             self._pass_counted = False
 

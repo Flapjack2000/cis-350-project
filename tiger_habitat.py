@@ -1,5 +1,6 @@
 import os
 import math
+import random
 import pygame
 
 from scene import SceneManager
@@ -79,6 +80,11 @@ class TigerHabitat(HabitatScene):
         self._pass_counted = False
         self._interaction_timer = 0.0
 
+        self._water_passes = 0
+        self._water_threshold = random.randint(1, 3)
+        self._feed_passes = 0
+        self._feed_threshold = random.randint(1, 3)
+
         self._btn_water = None
         self._btn_food = None
 
@@ -103,9 +109,6 @@ class TigerHabitat(HabitatScene):
 
         self._build_toolbar()
 
-    # ----------------------------
-    # FIXED: TOOLBAR (MISSING PIECE)
-    # ----------------------------
     def _build_toolbar(self) -> None:
         super()._build_toolbar()
 
@@ -282,15 +285,29 @@ class TigerHabitat(HabitatScene):
         if current_zone:
             if not self._pass_counted:
                 self._pass_counted = True
+                if current_zone == "water":
+                    self._water_passes += 1
+                    should_stop = self._water_passes >= self._water_threshold
+                else:
+                    self._feed_passes += 1
+                    should_stop = self._feed_passes >= self._feed_threshold
+
                 level = self._water_level if (
                         current_zone == "water") else self._feed_level
-                if level > 0:
+
+                if should_stop and level > 0:
                     tiger.speed = 0
                     self._interaction_timer = 1.5
                     if current_zone == "water":
                         self._water_level = max(0, self._water_level - 40)
+                        self._water_passes = 0
+                        self._water_threshold = random.randint(1, 3)
                     else:
                         self._feed_level = max(0, self._feed_level - 40)
+                        self._feed_passes = 0
+                        self._feed_threshold = random.randint(1, 3)
+                else:
+                    tiger.speed = self._SPEED
         else:
             self._pass_counted = False
 
@@ -369,8 +386,12 @@ class TigerHabitat(HabitatScene):
         self._manager.context.checklist.complete_task(task)
         from checklist_scene import ChecklistScene
         self._manager.pop()
-        self._manager.push(ChecklistScene(self._manager,
-                                          self._manager.context.checklist))
+        self._manager.push(
+            ChecklistScene(
+                self._manager,
+                self._manager.context.checklist
+            )
+        )
 
     def _on_pet_complete(self):
         self._complete_task("tiger_pet")

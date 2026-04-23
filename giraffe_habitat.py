@@ -81,7 +81,7 @@ class GiraffeHabitat(HabitatScene):
 
         self._waste_positions = [
             pygame.Vector2(200, 500),
-            pygame.Vector2(800, 600)
+            pygame.Vector2(800, 300)
         ] if self._poop_active else []
 
         self._waste_clicked = [False] * len(self._waste_positions)
@@ -89,9 +89,6 @@ class GiraffeHabitat(HabitatScene):
 
         self._build_toolbar()
 
-    # ----------------------------
-    # TOOLBAR FIX (MATCH LION PATTERN)
-    # ----------------------------
     def _build_toolbar(self) -> None:
         super()._build_toolbar()
 

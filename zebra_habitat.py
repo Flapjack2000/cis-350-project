@@ -222,6 +222,34 @@ class ZebraHabitat(HabitatScene):
             return
 
         super().update(dt)
+        if not self._animals or not (self._water_active or self._feed_active):
+            return
+
+        zebra = self._animals[0]
+        w_rect, f_rect = self._get_station_rects()
+        body_w = zebra.layers[0].get_width() if zebra.layers else 0
+        mx = zebra.x + body_w // 2
+
+        current_zone = None
+        if self._water_active and w_rect.left <= mx <= w_rect.right:
+            current_zone = "water"
+        elif self._feed_active and f_rect.left <= mx <= f_rect.right:
+            current_zone = "feed"
+
+        if current_zone:
+            if not self._pass_counted:
+                self._pass_counted = True
+                level = self._water_level if (
+                        current_zone == "water") else self._feed_level
+                if level > 0:
+                    zebra.speed = 0
+                    self._interaction_timer = 1.5
+                    if current_zone == "water":
+                        self._water_level = max(0, self._water_level - 40)
+                    else:
+                        self._feed_level = max(0, self._feed_level - 40)
+        else:
+            self._pass_counted = False
 
     def draw(self, screen: pygame.Surface) -> None:
         super().draw(screen)
