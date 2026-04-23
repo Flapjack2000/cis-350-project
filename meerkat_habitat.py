@@ -84,16 +84,19 @@ class MeerkatHabitat(HabitatScene):
             (int(w * 0.12), int(h * 0.12))
         )
 
-        self._waste_positions = [pygame.Vector2(850, 450)] \
-            if self._poop_active else []
+        self._waste_positions = (
+            [
+                pygame.Vector2(850, 450),
+                pygame.Vector2(200, 500)
+            ]
+            if self._poop_active
+            else []
+        )
         self._waste_clicked = [False] * len(self._waste_positions)
 
         self._font = pygame.font.SysFont(None, 32)
         self._build_toolbar()
 
-    # ----------------------------
-    # TOOLBAR (ADDED FIX)
-    # ----------------------------
     def _build_toolbar(self) -> None:
         super()._build_toolbar()
 

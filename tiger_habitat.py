@@ -100,7 +100,10 @@ class TigerHabitat(HabitatScene):
         )
 
         self._waste_positions = (
-            [pygame.Vector2(200, 500), pygame.Vector2(800, 600)]
+            [
+                pygame.Vector2(200, 500),
+                pygame.Vector2(800, 400)
+            ]
             if self._poop_active else []
         )
         self._waste_clicked = [False] * len(self._waste_positions)
