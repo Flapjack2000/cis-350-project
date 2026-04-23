@@ -21,8 +21,6 @@ class TestChecklist(unittest.TestCase):
         "26", "27"
     ]
 
-    tasks_set = set(tasks)
-
     def test_task_completion(self):
         """Verify that the checklist updates when tasks are marked complete."""
 
