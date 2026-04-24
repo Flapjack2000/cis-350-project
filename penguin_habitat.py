@@ -198,14 +198,22 @@ class PenguinHabitat(HabitatScene):
 
                 if self._btn_water and self._btn_water.is_clicked(e.pos):
                     prev = self._water_active or self._feed_active
-                    self._water_active = "penguin_water" in self._manager.context.checklist.get_incomplete_tasks()  # <- fix
+                    self._water_active = (
+                            "penguin_water" in
+                            self._manager.context.checklist.
+                            get_incomplete_tasks()
+                    )
                     self._feed_active = False
                     if prev != (self._water_active or self._feed_active):
                         self._rebuild_animals_if_needed()
 
                 elif self._btn_food and self._btn_food.is_clicked(e.pos):
                     prev = self._water_active or self._feed_active
-                    self._feed_active = "penguin_feed" in self._manager.context.checklist.get_incomplete_tasks()  # <- fix
+                    self._feed_active = (
+                            "penguin_feed" in
+                            self._manager.context.checklist.
+                            get_incomplete_tasks()
+                    )
                     self._water_active = False
                     if prev != (self._water_active or self._feed_active):
                         self._rebuild_animals_if_needed()

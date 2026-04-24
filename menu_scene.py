@@ -1,10 +1,3 @@
-"""
-Main menu scene.
-"""
-import os
-
-os.environ["PYGAME_HIDE_SUPPORT_PROMPT"] = "1"
-
 import pygame
 from scene import Scene, SceneManager
 from global_settings import Settings
@@ -23,7 +16,8 @@ class MenuScene(Scene):
         """Initialize the MenuScene.
 
         Args:
-            manager (SceneManager): The scene manager controlling scene transitions.
+            manager (SceneManager):
+            The scene manager controlling scene transitions.
         """
         super().__init__(manager)
 
@@ -33,8 +27,22 @@ class MenuScene(Scene):
         start_y = screen_height // 2 - 140
 
         self.buttons = {
-            "start": Button(bx, start_y + 80 * 0, text="Start Game", width=bw, height=bh, enabled=True),
-            "quit": Button(bx, start_y + 80 * 1, text="Quit", width=bw, height=bh, enabled=True),
+            "start": Button(
+                bx,
+                start_y + 80 * 0,
+                text="Start Game",
+                width=bw,
+                height=bh,
+                enabled=True
+            ),
+            "quit": Button(
+                bx,
+                start_y + 80 * 1,
+                text="Quit",
+                width=bw,
+                height=bh,
+                enabled=True
+            )
         }
         self.title_font = pygame.font.Font(None, 72)
 
@@ -47,7 +55,8 @@ class MenuScene(Scene):
         """Handle user input events.
 
         Args:
-            events (list[pygame.event.Event]): A list of pygame events to process.
+            events (list[pygame.event.Event]):
+                A list of pygame events to process.
         """
         mouse_pos = pygame.mouse.get_pos()
         for event in events:
@@ -72,8 +81,15 @@ class MenuScene(Scene):
             screen (pygame.Surface): The surface to draw the scene on.
         """
         screen.fill((255, 230, 230))
-        title = self.title_font.render("Welcome to the Zoo", True, (150, 100, 100))
-        screen.blit(title, title.get_rect(center=(screen.get_width() // 2, 150)))
+        title = self.title_font.render(
+            "Welcome to the Zoo", True, (150, 100, 100)
+        )
+        screen.blit(
+            title,
+            title.get_rect(
+                center=(screen.get_width() // 2, 150)
+            )
+        )
         for button in self.buttons.values():
             button.draw(screen)
 

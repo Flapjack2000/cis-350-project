@@ -36,7 +36,9 @@ class MapZone:
 
 
 class MapScene(Scene):
-    """Scene that displays the zoo map and handles navigation via polygon zones."""
+    """Scene that displays the zoo map
+    and handles navigation via polygon zones.
+    """
 
     HABITAT_MAP = {
         "rattlesnake": RattlesnakeHabitat,
@@ -142,7 +144,10 @@ class MapScene(Scene):
                 if self._btn_checklist.rect.collidepoint(mouse_pos):
                     from checklist_scene import ChecklistScene
                     self._manager.push(
-                        ChecklistScene(self._manager, self._manager.context.checklist)
+                        ChecklistScene(
+                            self._manager,
+                            self._manager.context.checklist
+                        )
                     )
                     return
 

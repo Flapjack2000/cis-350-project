@@ -9,6 +9,7 @@ from menu_scene import MenuScene
 from global_settings import Settings
 from audio_player import AudioPlayer
 
+
 class Game:
     """Manage the logic of running the game."""
 

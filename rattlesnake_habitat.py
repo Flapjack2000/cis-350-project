@@ -106,14 +106,23 @@ class RattlesnakeHabitat(HabitatScene):
         rotated_tail, t_rect = self._movement.rotate_image(
             tail, state["tail_angle"], (TAIL_PIVOT.x, TAIL_PIVOT.y)
         )
-        screen.blit(rotated_tail, (int(animal.x) + t_rect.x, int(animal.y) + t_rect.y))
+        screen.blit(
+            rotated_tail,
+            (int(animal.x) + t_rect.x, int(animal.y) + t_rect.y)
+        )
 
         # Draw Head
         h_angle = state["head_angle"]
         rotated_head, h_rect = self._movement.rotate_image(
             head, h_angle, (HEAD_PIVOT.x, HEAD_PIVOT.y)
         )
-        screen.blit(rotated_head, (int(animal.x) + h_rect.x, int(animal.y) + h_rect.y))
+        screen.blit(
+            rotated_head,
+            (
+                int(animal.x) + h_rect.x,
+                int(animal.y) + h_rect.y
+            )
+        )
 
         # Draw Tongue (only when hissing)
         if state["hissing"]:
@@ -121,7 +130,13 @@ class RattlesnakeHabitat(HabitatScene):
             rotated_tongue, tg_rect = self._movement.rotate_image(
                 tongue, tg_angle, (HEAD_PIVOT.x, HEAD_PIVOT.y)
             )
-            screen.blit(rotated_tongue, (int(animal.x) + tg_rect.x, int(animal.y) + tg_rect.y))
+            screen.blit(
+                rotated_tongue,
+                (
+                    int(animal.x) + tg_rect.x,
+                    int(animal.y) + tg_rect.y
+                )
+            )
 
     def handle_events(self, events: list[pygame.event.Event]) -> None:
         """Handle standard habitat input."""

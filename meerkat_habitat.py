@@ -326,6 +326,13 @@ class MeerkatHabitat(HabitatScene):
             self._pass_counted = False
 
     def draw(self, screen: pygame.Surface) -> None:
+        """
+
+
+        Args:
+            screen (pygame.Surface): the screen to draw on
+        """
+
         super().draw(screen)
 
         if self._btn_water:
@@ -354,11 +361,22 @@ class MeerkatHabitat(HabitatScene):
 
     def draw_ground_layer(self, screen: pygame.Surface) -> None:
         """Use the ground layer to draw in the animal waste
-        behind the animals."""
+        behind the animals.
+
+        Args:
+            screen (pygame.Surface): the screen to draw on
+        """
         for i, pos in enumerate(self._waste_positions):
             if not self._waste_clicked[i]:
-                screen.blit(self._waste_sprite, self._waste_sprite.get_rect
-                (center=(int(pos.x), int(pos.y))))
+                screen.blit(
+                    self._waste_sprite,
+                    self._waste_sprite.get_rect(
+                        center=(
+                            int(pos.x),
+                            int(pos.y)
+                        )
+                    )
+                )
 
     def _draw_station(self, screen, rect, level, fill_col, border_col):
         s1, s2 = self._STATION_S1, self._STATION_S2

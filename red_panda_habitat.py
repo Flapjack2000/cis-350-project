@@ -7,7 +7,6 @@ from habitat_scene import HabitatScene
 from animal import Animal
 from animal_movement import AnimalMovement
 
-
 _SUBFOLDER = os.path.join("assets", "animals", "redpanda")
 TAIL_PIVOT = pygame.Vector2(300, 150)
 

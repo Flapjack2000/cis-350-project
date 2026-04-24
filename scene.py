@@ -37,7 +37,8 @@ class Scene(ABC):
         """Store a reference to the scene manager for use in transitions.
 
         Args:
-            manager (SceneManager): The scene manager controlling scene transitions.
+            manager (SceneManager):
+                The scene manager controlling scene transitions.
         """
         self._manager = manager
 
