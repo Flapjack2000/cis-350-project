@@ -93,6 +93,7 @@ class PenguinHabitat(HabitatScene):
             animal.load(self._base_dir)
 
     def _get_station_rects(self):
+        """Return the Rect objects that represent the food/water stations."""
         sw, sh = pygame.display.get_surface().get_size()
         w_rect = pygame.Rect(
             sw // 2 - self._X_OFFSET - self._STATION_S1 // 2,

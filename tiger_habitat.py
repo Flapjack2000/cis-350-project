@@ -145,6 +145,7 @@ class TigerHabitat(HabitatScene):
         self._build_toolbar()
 
     def _get_station_rects(self):
+        """Return the Rect objects that represent the food/water stations."""
         screen = pygame.display.get_surface()
         sw, sh = screen.get_size()
 

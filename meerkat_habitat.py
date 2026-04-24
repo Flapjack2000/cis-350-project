@@ -97,6 +97,7 @@ class MeerkatHabitat(HabitatScene):
         self._build_toolbar()
 
     def _build_toolbar(self) -> None:
+        """Create minigame toolbar icons."""
         super()._build_toolbar()
 
         pad = 12
@@ -124,7 +125,8 @@ class MeerkatHabitat(HabitatScene):
         for animal in self._animals:
             animal.load(self._base_dir)
 
-    def _get_station_rects(self):
+    def _get_station_rects(self) -> tuple[pygame.Rect, pygame.Rect]:
+        """Return the Rect objects that represent the food/water stations."""
         sw, sh = pygame.display.get_surface().get_size()
         w_rect = pygame.Rect(
             sw // 2 - self._X_OFFSET - self._STATION_S1 // 2,

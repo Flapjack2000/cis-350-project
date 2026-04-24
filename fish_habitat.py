@@ -21,8 +21,10 @@ _SUBFOLDER = os.path.join("assets", "animals", "fish")
 class _Fish:
     """Represents a single fish in the aquarium habitat."""
 
-    def __init__(self, img_path: str, faces_right: bool, size_px: int,
-                 x: float, y: float, speed: float, screen_width: int) -> None:
+    def __init__(
+            self, img_path: str, faces_right: bool, size_px: int,
+            x: float, y: float, speed: float, screen_width: int
+    ) -> None:
         raw = pygame.image.load(img_path).convert_alpha()
         w, h = raw.get_size()
         scale = size_px / h
@@ -45,14 +47,21 @@ class _Fish:
 
     @property
     def width(self) -> int:
+        """Return the width of the fish's image."""
         return self.base_img.get_width()
 
     def _respawn(self) -> None:
+        """Respawn fish."""
         self.moving_right = random.choice([True, False])
         self.x = -self.width if self.moving_right else float(self.screen_width)
         self.y = self.home_y
 
     def update(self, dt: float) -> None:
+        """Update the position of the fish.
+
+        Args:
+            dt (float): time since last frame
+        """
         move = self.speed * dt * 60
         if self.moving_right:
             self.x += move
@@ -64,6 +73,11 @@ class _Fish:
                 self._respawn()
 
     def draw(self, surface: pygame.Surface) -> None:
+        """Render fish on the screen.
+
+        Args:
+            surface (pygame.Surface): the surface to draw on
+        """
         should_flip = self.moving_right != self.faces_right
         img = pygame.transform.flip(self.base_img, should_flip, False)
         surface.blit(img, (int(self.x), int(self.y)))
@@ -129,6 +143,8 @@ class FishHabitat(Scene):
         )
 
     def on_enter(self) -> None:
+        """Spawn fish upon entering scene."""
+
         super().on_enter()
         bg_path = os.path.join(
             self._base_dir,
@@ -171,6 +187,12 @@ class FishHabitat(Scene):
             )
 
     def handle_events(self, events: list[pygame.event.Event]) -> None:
+        """Handle mouse events and pausing.
+
+        Args:
+            events (list[pygame.event.Event]):
+                the events to handle
+        """
         mouse_pos = pygame.mouse.get_pos()
 
         for event in events:
@@ -202,9 +224,17 @@ class FishHabitat(Scene):
                 self.feeding = False
 
     def update(self, dt: float) -> None:
+        """Update fish positions and game state.
+
+        Args:
+            dt (float): time since last frame
+        """
+
+        # Update fish positions
         for fish in self._fish:
             fish.update(dt)
 
+        # Handle feeding updates
         if self.feeding:
             if pygame.mouse.get_pressed()[0]:
                 self.feed_progress += self.FEED_RATE * dt
@@ -215,15 +245,23 @@ class FishHabitat(Scene):
 
             if self.feed_progress >= 100.0:
                 self._handle_feed_complete()
+
         elif self.feed_progress > 0:
             self.feed_progress -= self.DECAY_RATE * dt
             self.feed_progress = max(0.0, self.feed_progress)
 
     def _handle_feed_complete(self) -> None:
+        """Handle completion of feeding game."""
+
+        # Update game state
         self.feed_progress = 100.0
         self.feeding = False
         self._feed_task_active = False
+
+        # Mark task complete
         self._manager.context.checklist.complete_task("fish_feed")
+
+        # Exit to map and superimpose the checklist
         from checklist_scene import ChecklistScene
         self._manager.pop()
         self._manager.push(
@@ -239,11 +277,13 @@ class FishHabitat(Scene):
             screen (pygame.Surface): the screen to draw on
         """
 
+        # Draw background
         if self._background:
             screen.blit(self._background, (0, 0))
         else:
             screen.fill((30, 100, 180))
 
+        # Render fish
         for fish in self._fish:
             fish.draw(screen)
 
@@ -255,6 +295,7 @@ class FishHabitat(Scene):
         self._btn_checklist.draw(screen)
         self._btn_map.draw(screen)
 
+        # Drag food can
         if self.feeding:
             mouse_pos = pygame.mouse.get_pos()
             cursor_rect = self.feed_bottle.get_rect(center=mouse_pos)
