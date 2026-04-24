@@ -118,6 +118,7 @@ class GiraffeHabitat(HabitatScene):
             animal.load(self._base_dir)
 
     def on_enter(self) -> None:
+        """Handle entering the scene."""
         super().on_enter()
         incomplete = self._manager.context.checklist.get_incomplete_tasks()
         self._pet_task_active = "giraffe_pet" in incomplete
@@ -135,6 +136,12 @@ class GiraffeHabitat(HabitatScene):
         return w_rect, f_rect
 
     def create_animals(self) -> list[Animal]:
+        """Create the giraffes.
+
+        Returns:
+            list[Animal]: the giraffes
+        """
+
         def make(x, y, direction):
             return Animal(
                 x=x,
@@ -146,7 +153,7 @@ class GiraffeHabitat(HabitatScene):
                 direction=direction,
                 speed=self._GIRAFFE_SPEED,
                 animate_fn=self._animate,
-                draw_fn=self._draw
+                draw_fn=self._draw_animal
             )
 
         if self._water_active or self._feed_active:
@@ -155,13 +162,25 @@ class GiraffeHabitat(HabitatScene):
 
     @staticmethod
     def _animate(animal: Animal) -> None:
+        """Animate a giraffe.
+
+        Args:
+            animal (Animal): the giraffe
+        """
         swing = math.sin(animal.time * 4) * 10
         animal.layer_angles[1] = animal.layer_angles[2] = swing
         animal.layer_angles[9] = animal.layer_angles[10] = swing
         animal.layer_angles[3] = animal.layer_angles[4] = -swing
         animal.layer_angles[7] = animal.layer_angles[8] = -swing
 
-    def _draw(self, animal: Animal, screen: pygame.Surface) -> None:
+    def _draw_animal(self, animal: Animal, screen: pygame.Surface) -> None:
+        """Draw a giraffe.
+
+        Args:
+            animal (Animal): the giraffe
+            screen (pygame.Surface): the screen to draw on
+        """
+
         should_flip = animal.facing_left != animal.default_facing_left
         body_pos = pygame.Vector2(
             animal.x + (animal.layers[6].get_width() / 2 if
@@ -188,6 +207,12 @@ class GiraffeHabitat(HabitatScene):
             screen.blit(img, rect)
 
     def handle_events(self, events: list[pygame.event.Event]) -> None:
+        """Handle mouse events and pausing.
+
+        Args:
+            events (list[pygame.event.Event]): the events to handle
+        """
+
         super().handle_events(events)
         w_rect, f_rect = self._get_station_rects()
 
@@ -221,6 +246,11 @@ class GiraffeHabitat(HabitatScene):
                             self._waste_clicked[i] = True
 
     def update(self, dt: float) -> None:
+        """Update game state.
+
+        Args:
+            dt (float): the time since the last frame
+        """
         if self._interaction_timer > 0:
             self._interaction_timer -= dt
             if self._interaction_timer <= 0 and self._animals:
@@ -260,6 +290,11 @@ class GiraffeHabitat(HabitatScene):
             self._pass_counted = False
 
     def draw(self, screen: pygame.Surface) -> None:
+        """Render the scene.
+
+        Args:
+            screen (pygame.Surface): the screen to draw on
+        """
         super().draw(screen)
 
         if self._btn_water:
@@ -287,6 +322,12 @@ class GiraffeHabitat(HabitatScene):
             self._complete_task("giraffe_feed")
 
     def draw_ground_layer(self, screen: pygame.Surface) -> None:
+        """Draw the ground layer.
+
+        Args:
+            screen (pygame.Surface): the screen to draw on
+        """
+
         for i, pos in enumerate(self._waste_positions):
             if not self._waste_clicked[i]:
                 screen.blit(
@@ -295,7 +336,24 @@ class GiraffeHabitat(HabitatScene):
                                                         int(pos.y)))
                 )
 
-    def _draw_station(self, screen, rect, level, fill_col, border_col):
+    def _draw_station(
+            self,
+            screen: pygame.Surface,
+            rect: pygame.Rect,
+            level: float | int,
+            fill_col: tuple[int, int, int],
+            border_col: tuple[int, int, int]
+    ) -> None:
+        """Draw a station.
+
+        Args:
+            screen (pygame.Surface): the screen to draw on
+            rect (pygame.Rect): the rect of the station
+            level (float | int): the station contents level
+            fill_col (tuple[int, int, int]): the station fill color
+            border_col (tuple[int, int, int]): the station border color
+        """
+
         s1, s2 = self._STATION_S1, self._STATION_S2
         fill_h = int((s1 - s2) * (level / 100))
         pygame.draw.rect(screen, fill_col, (rect.x + s2, rect.y + s1 - s2 -
@@ -306,12 +364,18 @@ class GiraffeHabitat(HabitatScene):
         pygame.draw.rect(screen, border_col, (rect.x + s1 - s2, rect.y,
                                               s2, s1))
 
-    def _complete_task(self, task):
+    def _complete_task(self, task: str) -> None:
+        """Handle task completion.
+
+        Args:
+            task (str): the task to handle completion for
+        """
         self._manager.context.checklist.complete_task(task)
         from checklist_scene import ChecklistScene
         self._manager.pop()
         self._manager.push(ChecklistScene
                            (self._manager, self._manager.context.checklist))
 
-    def _on_pet_complete(self):
+    def _on_pet_complete(self) -> None:
+        """Mark the petting task as complete."""
         self._complete_task("giraffe_pet")

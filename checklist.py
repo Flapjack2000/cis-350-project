@@ -61,7 +61,7 @@ class Checklist:
         """Return the number of days elapsed (including the current day)."""
         return (self.__cycle + 1) // 2
 
-    def complete_task(self, task: str):
+    def complete_task(self, task: str) -> None:
         """Mark a task as complete.
 
         Args:

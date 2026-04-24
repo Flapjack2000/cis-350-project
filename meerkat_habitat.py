@@ -143,11 +143,10 @@ class MeerkatHabitat(HabitatScene):
         return w_rect, f_rect
 
     def create_animals(self) -> list[Animal]:
-        """
-
+        """Create a list of meerkat animals.
 
         Returns:
-            list[Animal]:
+            list[Animal]: the list of meerkats
         """
 
         def v3(x, y, direction, droppings=False):
@@ -264,6 +263,12 @@ class MeerkatHabitat(HabitatScene):
             screen.blit(img, rect)
 
     def handle_events(self, events: list[pygame.event.Event]) -> None:
+        """Handle mouse events and pausing.
+
+        Args:
+            events (list[pygame.event.Event]): the events to handle
+        """
+
         super().handle_events(events)
         w_rect, f_rect = self._get_station_rects()
 
@@ -297,6 +302,11 @@ class MeerkatHabitat(HabitatScene):
                             self._waste_clicked[i] = True
 
     def update(self, dt: float) -> None:
+        """Update game state.
+
+        Args:
+            dt (float): the time since the last frame
+        """
         if self._interaction_timer > 0:
             self._interaction_timer -= dt
             if self._interaction_timer <= 0 and self._animals:
@@ -349,8 +359,7 @@ class MeerkatHabitat(HabitatScene):
             self._pass_counted = False
 
     def draw(self, screen: pygame.Surface) -> None:
-        """
-
+        """Render the scene.
 
         Args:
             screen (pygame.Surface): the screen to draw on
@@ -401,7 +410,24 @@ class MeerkatHabitat(HabitatScene):
                     )
                 )
 
-    def _draw_station(self, screen, rect, level, fill_col, border_col):
+    def _draw_station(
+            self,
+            screen: pygame.Surface,
+            rect: pygame.Rect,
+            level: float | int,
+            fill_col: tuple[int, int, int],
+            border_col: tuple[int, int, int]
+    ) -> None:
+        """Draw the station on the screen.
+
+        Args:
+            screen (pygame.Surface): the screen to draw on
+            rect (pygame.Rect): the rect of the station
+            level (float | int): the level of the station's contents
+            fill_col (tuple[int, int, int]): the fill color of the station
+            border_col (tuple[int, int, int]): the border color of the station
+        """
+
         s1, s2 = self._STATION_S1, self._STATION_S2
         fill_h = int((s1 - s2) * (level / 100))
         pygame.draw.rect(screen, fill_col, (rect.x + s2,
@@ -414,12 +440,21 @@ class MeerkatHabitat(HabitatScene):
         pygame.draw.rect(screen, border_col,
                          (rect.x + s1 - s2, rect.y, s2, s1))
 
-    def _complete_task(self, task):
+    def _complete_task(self, task: str) -> None:
+        """Handle task completion.
+        Args:
+            task (str): the task to complete
+        """
         self._manager.context.checklist.complete_task(task)
         from checklist_scene import ChecklistScene
         self._manager.pop()
-        (self._manager.push
-         (ChecklistScene(self._manager, self._manager.context.checklist)))
+        self._manager.push(
+            ChecklistScene(
+                self._manager,
+                self._manager.context.checklist
+            )
+        )
 
-    def _on_pet_complete(self):
+    def _on_pet_complete(self) -> None:
+        """Mark petting task complete."""
         self._complete_task("meerkat_pet")

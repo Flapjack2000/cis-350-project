@@ -6,9 +6,7 @@ type Position = tuple[int | float, int | float]
 
 
 class MathHelper:
-    """
-    Math helper functions
-    """
+    """Math helper functions."""
 
     @staticmethod
     def cross2d(

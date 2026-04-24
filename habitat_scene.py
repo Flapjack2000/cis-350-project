@@ -144,6 +144,11 @@ class HabitatScene(Scene):
 
     @staticmethod
     def _icon_path(filename: str) -> str:
+        """Create path to icon image.
+
+        Args:
+            filename: Icon filename.
+        """
         return os.path.join(
             "assets",
             "images",
@@ -220,7 +225,7 @@ class HabitatScene(Scene):
             mouse_pos: Mouse position.
 
         Returns:
-            bool
+            bool: True if mouse over.
         """
         return (
             any(
@@ -245,6 +250,11 @@ class HabitatScene(Scene):
                 self._handle_click(mouse_pos)
 
     def _handle_click(self, mouse_pos: tuple[int, int]) -> None:
+        """Handle click event.
+
+        Args:
+            mouse_pos: Mouse position.
+        """
         if self._btn_map and self._btn_map.is_clicked(mouse_pos):
             self._manager.pop()
             return
@@ -265,6 +275,8 @@ class HabitatScene(Scene):
                 self._pet_progress = 0.0
 
     def _handle_escape(self) -> None:
+        """Handle escape event, pausing."""
+
         from pause_scene import PauseScene
         self._manager.push(PauseScene(self._manager))
 

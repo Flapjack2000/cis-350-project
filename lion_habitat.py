@@ -122,7 +122,13 @@ class LionHabitat(HabitatScene):
         return w_rect, f_rect
 
     def create_animals(self) -> list[Animal]:
-        def make(x, y, layers, direction, speed=None, droppings=False):
+        """Create the lions in the habitat.
+
+        Returns:
+            list[Animal]: the lions
+        """
+
+        def make(x, y, layers, direction, speed=None, droppings=False) -> Animal:
             return Animal(
                 x=x,
                 y=y,
@@ -133,7 +139,7 @@ class LionHabitat(HabitatScene):
                 direction=direction,
                 speed=speed or self._SPEED,
                 animate_fn=self._animate,
-                draw_fn=self._draw,
+                draw_fn=self._draw_lion,
                 has_droppings=droppings,
             )
 
@@ -160,7 +166,12 @@ class LionHabitat(HabitatScene):
         ]
 
     @staticmethod
-    def _animate(animal):
+    def _animate(animal: Animal) -> None:
+        """Animate a lion.
+
+        Args:
+            animal (Animal): the lion
+        """
         t = animal.time
         swing = math.sin(t * 6) * 10
 
@@ -186,7 +197,13 @@ class LionHabitat(HabitatScene):
         animal.layer_angles[ffl] = swing
         animal.layer_angles[ffu + paw] = swing
 
-    def _draw(self, animal, screen):
+    def _draw_lion(self, animal: Animal, screen: pygame.Surface) -> None:
+        """Draw the lion on the screen.
+
+        Args:
+            animal (Animal): the lion
+            screen (pygame.Surface): the screen to draw on
+        """
         should_flip = animal.facing_left != animal.default_facing_left
         body_w = animal.layers[7].get_width() if animal.layers else 0
         body_pos = pygame.Vector2(animal.x + body_w / 2, animal.y)
@@ -215,6 +232,8 @@ class LionHabitat(HabitatScene):
             screen.blit(img, rect)
 
     def _build_toolbar(self) -> None:
+        """Draw the task icons."""
+
         super()._build_toolbar()
 
         pad = 12
@@ -237,6 +256,11 @@ class LionHabitat(HabitatScene):
         )
 
     def handle_events(self, events: list[pygame.event.Event]) -> None:
+        """Handle mouse events and pausing.
+
+        Args:
+            events (list[pygame.event.Event]): the events to handle
+        """
         super().handle_events(events)
         w_rect, f_rect = self._get_station_rects()
 
@@ -273,6 +297,12 @@ class LionHabitat(HabitatScene):
                             self._waste_clicked[i] = True
 
     def update(self, dt: float) -> None:
+        """Update the game state.
+
+        Args:
+            dt (float): the time since the last frame
+        """
+
         if self._interaction_timer > 0:
             self._interaction_timer -= dt
             if self._interaction_timer <= 0 and self._animals:
@@ -325,6 +355,12 @@ class LionHabitat(HabitatScene):
             self._pass_counted = False
 
     def draw(self, screen: pygame.Surface) -> None:
+        """Draw the scene.
+
+        Args:
+            screen (pygame.Surface): the screen to draw on
+        """
+
         super().draw(screen)
 
         if self._btn_water:
@@ -365,6 +401,12 @@ class LionHabitat(HabitatScene):
             self._complete_task("lion_feed")
 
     def draw_ground_layer(self, screen: pygame.Surface) -> None:
+        """Draw the droppings.
+
+        Args:
+            screen (pygame.Surface): the screen to draw on
+        """
+
         for i, pos in enumerate(self._waste_positions):
             if not self._waste_clicked[i]:
                 screen.blit(
@@ -373,7 +415,24 @@ class LionHabitat(HabitatScene):
                     (center=(int(pos.x), int(pos.y)))
                 )
 
-    def _draw_station(self, screen, rect, level, fill_col, border_col):
+    def _draw_station(
+            self,
+            screen: pygame.Surface,
+            rect: pygame.Rect,
+            level: float | int,
+            fill_col: tuple[int, int, int],
+            border_col: tuple[int, int, int]
+    ) -> None:
+        """Draw a station.
+
+        Args:
+            screen (pygame.Surface): the screen to draw on
+            rect (pygame.Rect): the rect of the station
+            level (float | int): the station contents level
+            fill_col (tuple[int, int, int]): the station fill color
+            border_col (tuple[int, int, int]): the station border color
+        """
+
         s1, s2 = self._STATION_S1, self._STATION_S2
         fill_h = int((s1 - s2) * (level / 100))
         pygame.draw.rect(
@@ -388,7 +447,13 @@ class LionHabitat(HabitatScene):
         pygame.draw.rect(screen, border_col,
                          (rect.x + s1 - s2, rect.y, s2, s1))
 
-    def _complete_task(self, task):
+    def _complete_task(self, task: str) -> None:
+        """Handle task completion.
+
+        Args:
+            task (str): the task to complete
+        """
+
         self._manager.context.checklist.complete_task(task)
         from checklist_scene import ChecklistScene
         self._manager.pop()
@@ -397,6 +462,7 @@ class LionHabitat(HabitatScene):
         )
 
     def _on_pet_complete(self):
+        """Mark petting task complete."""
         self._complete_task("lion_pet")
 
     def _rebuild_animals_if_needed(self) -> None:

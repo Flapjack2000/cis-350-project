@@ -6,6 +6,10 @@ from button import Button
 
 
 class ChecklistScene(Scene):
+    """Displays the list of tasks on the checklist
+    and whether they've been completed.
+    """
+
     PADDING = 75
     HEADER_FONT_SIZE = 32
     TASK_FONT_SIZE = 28
@@ -42,10 +46,13 @@ class ChecklistScene(Scene):
 
     @staticmethod
     def _format_task_text(internal_name: str) -> str:
-        """
-        Manually parses internal task names into Title Case
-        habitat instructions.
-        Example: 'zebra_water' -> 'Refill the Water in the Zebra Habitat'
+        """Parse task names into text for the checklist.
+
+        Args:
+            internal_name (str): Task name
+
+        Returns:
+            str: Task name
         """
         task_map = {
             "zebra_pet": "Pet the Zebras",
@@ -91,9 +98,20 @@ class ChecklistScene(Scene):
                             internal_name.replace("_", " ").title())
 
     def update(self, dt: float) -> None:
+        """Do nothing. This scene doesn't change after initialization.
+
+        Args:
+            dt (float): the time since the last frame
+        """
         pass
 
     def handle_events(self, events: list[pygame.event.Event]) -> None:
+        """Handle mouse events and pausing.
+
+        Args:
+            events (list[pygame.event.Event]): the events to handle
+        """
+
         mouse_pos = pygame.mouse.get_pos()
         for event in events:
             if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
@@ -106,10 +124,20 @@ class ChecklistScene(Scene):
                         self._handle_action(name)
 
     def _handle_action(self, action: str) -> None:
+        """Handle return button click.
+
+        Args:
+            action (str): the action to take
+        """
         if action == "return":
             self._manager.pop()
 
     def draw(self, screen: pygame.Surface) -> None:
+        """Draw the scene.
+
+        Args:
+            screen (pygame.Surface): the screen to draw on
+        """
         screen.fill(
             (242, 153, 115)
             if self.__checklist.is_day

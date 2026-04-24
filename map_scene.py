@@ -169,7 +169,11 @@ class MapScene(Scene):
             self._manager.push(habitat_class(self._manager))
 
     def update(self, dt: float) -> None:
-        """Update logic for the map scene."""
+        """Do nothing. The map does not update after initialization.
+
+        Args:
+            dt (float): the time since the last frame
+        """
         pass
 
     def draw(self, screen: pygame.Surface) -> None:

@@ -1,7 +1,3 @@
-"""
-Manages the main game loop.
-"""
-
 import pygame
 from checklist import Checklist
 from scene import SceneManager, GameContext
