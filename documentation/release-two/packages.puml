@@ -1,0 +1,143 @@
+@startuml packages
+set namespaceSeparator none
+package "animal" as animal {
+}
+package "audio_player" as audio_player {
+}
+package "button" as button {
+}
+package "checklist" as checklist {
+}
+package "checklist_scene" as checklist_scene {
+}
+package "fish_habitat" as fish_habitat {
+}
+package "game" as game {
+}
+package "giraffe_habitat" as giraffe_habitat {
+}
+package "global_settings" as global_settings {
+}
+package "habitat_scene" as habitat_scene {
+}
+package "lion_habitat" as lion_habitat {
+}
+package "main" as main {
+}
+package "map_scene" as map_scene {
+}
+package "math_helper" as math_helper {
+}
+package "meerkat_habitat" as meerkat_habitat {
+}
+package "menu_scene" as menu_scene {
+}
+package "octopus_habitat" as octopus_habitat {
+}
+package "pause_scene" as pause_scene {
+}
+package "penguin_habitat" as penguin_habitat {
+}
+package "rattlesnake_habitat" as rattlesnake_habitat {
+}
+package "red_panda_habitat" as red_panda_habitat {
+}
+package "scene" as scene {
+}
+package "tiger_habitat" as tiger_habitat {
+}
+package "zebra_habitat" as zebra_habitat {
+}
+audio_player --> scene
+checklist_scene --> button
+checklist_scene --> checklist
+checklist_scene --> global_settings
+checklist_scene --> pause_scene
+checklist_scene --> scene
+fish_habitat --> checklist_scene
+fish_habitat --> global_settings
+fish_habitat --> habitat_scene
+fish_habitat --> map_scene
+fish_habitat --> pause_scene
+fish_habitat --> scene
+game --> audio_player
+game --> checklist
+game --> global_settings
+game --> menu_scene
+game --> scene
+giraffe_habitat --> animal
+giraffe_habitat --> checklist_scene
+giraffe_habitat --> habitat_scene
+giraffe_habitat --> math_helper
+giraffe_habitat --> scene
+habitat_scene --> animal
+habitat_scene --> checklist_scene
+habitat_scene --> pause_scene
+habitat_scene --> scene
+lion_habitat --> animal
+lion_habitat --> checklist_scene
+lion_habitat --> habitat_scene
+lion_habitat --> math_helper
+lion_habitat --> scene
+main --> game
+map_scene --> checklist_scene
+map_scene --> fish_habitat
+map_scene --> giraffe_habitat
+map_scene --> global_settings
+map_scene --> habitat_scene
+map_scene --> lion_habitat
+map_scene --> math_helper
+map_scene --> meerkat_habitat
+map_scene --> octopus_habitat
+map_scene --> pause_scene
+map_scene --> penguin_habitat
+map_scene --> rattlesnake_habitat
+map_scene --> red_panda_habitat
+map_scene --> scene
+map_scene --> tiger_habitat
+map_scene --> zebra_habitat
+meerkat_habitat --> animal
+meerkat_habitat --> checklist_scene
+meerkat_habitat --> habitat_scene
+meerkat_habitat --> math_helper
+meerkat_habitat --> scene
+menu_scene --> button
+menu_scene --> global_settings
+menu_scene --> map_scene
+menu_scene --> scene
+octopus_habitat --> animal
+octopus_habitat --> checklist_scene
+octopus_habitat --> habitat_scene
+octopus_habitat --> math_helper
+octopus_habitat --> scene
+pause_scene --> button
+pause_scene --> global_settings
+pause_scene --> menu_scene
+pause_scene --> scene
+penguin_habitat --> animal
+penguin_habitat --> checklist_scene
+penguin_habitat --> habitat_scene
+penguin_habitat --> math_helper
+penguin_habitat --> scene
+rattlesnake_habitat --> animal
+rattlesnake_habitat --> checklist_scene
+rattlesnake_habitat --> habitat_scene
+rattlesnake_habitat --> math_helper
+rattlesnake_habitat --> scene
+red_panda_habitat --> animal
+red_panda_habitat --> checklist_scene
+red_panda_habitat --> habitat_scene
+red_panda_habitat --> math_helper
+red_panda_habitat --> scene
+scene --> checklist
+tiger_habitat --> animal
+tiger_habitat --> checklist_scene
+tiger_habitat --> habitat_scene
+tiger_habitat --> math_helper
+tiger_habitat --> scene
+zebra_habitat --> animal
+zebra_habitat --> checklist_scene
+zebra_habitat --> habitat_scene
+zebra_habitat --> math_helper
+zebra_habitat --> scene
+@enduml
