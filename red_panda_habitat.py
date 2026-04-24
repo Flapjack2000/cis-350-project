@@ -56,18 +56,16 @@ class RedPandaHabitat(HabitatScene):
         self._waste_clicked = [False] * len(self._waste_positions)
 
     def on_enter(self) -> None:
-        """
-        Refresh task state when entering the scene.
-
-        Ensures pet task availability reflects the current checklist.
-        """
+        """Refresh task state when entering the scene."""
         super().on_enter()
         incomplete = self._manager.context.checklist.get_incomplete_tasks()
         self._pet_task_active = "red_panda_pet" in incomplete
 
     def create_animals(self) -> list[Animal]:
-        """
-        Creates and returns the red panda animal for this habitat.
+        """Creates and returns the red panda animal for this habitat.
+
+        Returns:
+            list[Animal]: the red panda
         """
         return [
             Animal(

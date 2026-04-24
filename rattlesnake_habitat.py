@@ -44,7 +44,11 @@ class RattlesnakeHabitat(HabitatScene):
         self._build_toolbar()
 
     def create_animals(self) -> list[Animal]:
-        """Return a stationary rattlesnake with procedural animation."""
+        """Return a stationary rattlesnake with procedural animation.
+
+        Returns:
+            list[Animal]: the snake
+        """
         snake = Animal(
             x=300,
             y=300,
@@ -74,7 +78,11 @@ class RattlesnakeHabitat(HabitatScene):
 
     @staticmethod
     def _animate(animal: Animal) -> None:
-        """Update rattlesnake animation cycles using the state map."""
+        """Update rattlesnake animation cycles using the state map.
+
+        Args:
+            animal (Animal): the rattlesnake to animate
+        """
         if animal not in _snake_states:
             return
 
@@ -90,7 +98,12 @@ class RattlesnakeHabitat(HabitatScene):
 
     @staticmethod
     def _draw_animal(animal: Animal, screen: pygame.Surface) -> None:
-        """Render layered snake parts using values from the state map."""
+        """Render layered snake parts using values from the state map.
+
+        Args:
+            animal (Animal): the rattlesnake to draw
+            screen (pygame.Surface): the screen to draw on
+        """
         if not animal.layers or animal not in _snake_states:
             return
 
@@ -140,15 +153,28 @@ class RattlesnakeHabitat(HabitatScene):
             )
 
     def handle_events(self, events: list[pygame.event.Event]) -> None:
-        """Handle standard habitat input."""
+        """Handle mouse events and pausing.
+
+        Args:
+            events (list[pygame.event.Event]): the events to handle
+        """
+
         super().handle_events(events)
 
     def update(self, dt: float) -> None:
-        """Update animal state and petting progress."""
+        """Update game state.
+
+        Args:
+            dt (float): the time since the last frame
+        """
         super().update(dt)
 
     def draw(self, screen: pygame.Surface) -> None:
-        """Render background, rattlesnake, and toolbar."""
+        """Render the scene.
+
+        Args:
+            screen (pygame.Surface): the screen to draw on
+        """
         super().draw(screen)
 
     def _on_pet_complete(self) -> None:

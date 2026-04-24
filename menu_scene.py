@@ -17,7 +17,7 @@ class MenuScene(Scene):
 
         Args:
             manager (SceneManager):
-            The scene manager controlling scene transitions.
+                The scene manager controlling scene transitions.
         """
         super().__init__(manager)
 

@@ -126,7 +126,11 @@ class MeerkatHabitat(HabitatScene):
             animal.load(self._base_dir)
 
     def _get_station_rects(self) -> tuple[pygame.Rect, pygame.Rect]:
-        """Return the Rect objects that represent the food/water stations."""
+        """Return the Rect objects that represent the food/water stations.
+
+        Returns:
+            tuple[pygame.Rect, pygame.Rect]: the station rects
+        """
         sw, sh = pygame.display.get_surface().get_size()
         w_rect = pygame.Rect(
             sw // 2 - self._X_OFFSET - self._STATION_S1 // 2,
@@ -198,7 +202,7 @@ class MeerkatHabitat(HabitatScene):
         ]
 
     @staticmethod
-    def _animate(animal: Animal):
+    def _animate(animal: Animal) -> None:
         """Animate a meerkat.
 
         Args:

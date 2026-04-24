@@ -38,7 +38,11 @@ class OctopusHabitat(HabitatScene):
         self._build_toolbar()
 
     def create_animals(self) -> list[Animal]:
-        """Return a stationary octopus with tentacle animation."""
+        """Return a stationary octopus with tentacle animation.
+
+        Returns:
+            list[Animal]: the octopus
+        """
         return [
             Animal(
                 x=200,
@@ -55,12 +59,21 @@ class OctopusHabitat(HabitatScene):
 
     @staticmethod
     def _animate(animal: Animal) -> None:
-        """Apply sinusoidal tentacle motion."""
+        """Apply sinusoidal tentacle motion.
+
+        Args:
+            animal: the animal to animate
+        """
         animal.tentacle_angle = math.sin(animal.time * 3) * 25
 
     @staticmethod
     def _draw_animal(animal: Animal, screen: pygame.Surface) -> None:
-        """Render octopus layers (body and tentacle) with pivots."""
+        """Render octopus layers (body and tentacle) with pivots.
+
+        Args:
+            animal: the animal to animate
+            screen: the screen to draw on
+        """
         if not animal.layers:
             return
 
@@ -79,15 +92,27 @@ class OctopusHabitat(HabitatScene):
         screen.blit(rotated_tentacle, rect)
 
     def handle_events(self, events: list[pygame.event.Event]) -> None:
-        """Handle standard habitat input."""
+        """Handle standard habitat input.
+
+        Args:
+            events: the events to handle
+        """
         super().handle_events(events)
 
     def update(self, dt: float) -> None:
-        """Update animal state and petting progress."""
+        """Update animal state and petting progress.
+
+        Args:
+            dt: the time since the last frame
+        """
         super().update(dt)
 
     def draw(self, screen: pygame.Surface) -> None:
-        """Render background, octopus, and toolbar."""
+        """Render background, octopus, and toolbar.
+
+        Args:
+            screen: the screen to draw on
+        """
         super().draw(screen)
 
     def _on_pet_complete(self) -> None:

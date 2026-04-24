@@ -111,6 +111,7 @@ class TigerHabitat(HabitatScene):
         self._build_toolbar()
 
     def _build_toolbar(self) -> None:
+        """Create minigame toolbar icons."""
         super()._build_toolbar()
 
         pad = 12
@@ -139,13 +140,19 @@ class TigerHabitat(HabitatScene):
             animal.load(self._base_dir)
 
     def on_enter(self) -> None:
+        """Handle entering the scene."""
         super().on_enter()
         incomplete = self._manager.context.checklist.get_incomplete_tasks()
         self._pet_task_active = "tiger_pet" in incomplete
         self._build_toolbar()
 
-    def _get_station_rects(self):
-        """Return the Rect objects that represent the food/water stations."""
+    def _get_station_rects(self) -> tuple[pygame.Rect, pygame.Rect]:
+        """Return the Rect objects that represent the food/water stations.
+
+        Returns:
+            tuple[pygame.Rect, pygame.Rect]: the rects
+        """
+
         screen = pygame.display.get_surface()
         sw, sh = screen.get_size()
 
@@ -162,6 +169,12 @@ class TigerHabitat(HabitatScene):
         return w_rect, f_rect
 
     def create_animals(self) -> list[Animal]:
+        """Create the tigers.
+
+        Returns:
+            list[Animal]: the tigers
+        """
+
         def make(x, y, direction):
             a = Animal(
                 x=x, y=y,
@@ -172,7 +185,7 @@ class TigerHabitat(HabitatScene):
                 direction=direction,
                 speed=self._SPEED,
                 animate_fn=self._animate,
-                draw_fn=self._draw
+                draw_fn=self._draw_tiger
             )
             _tiger_states[a] = {"angles": [0.0] * len(self._LAYER_FILES)}
             return a
@@ -184,6 +197,11 @@ class TigerHabitat(HabitatScene):
 
     @staticmethod
     def _animate(animal: Animal) -> None:
+        """Animate a tiger.
+
+        Args:
+            animal (Animal): the tiger
+        """
         t = animal.time
         swing = math.sin(t * 6) * 15
         state = _tiger_states.get(animal)
@@ -196,7 +214,13 @@ class TigerHabitat(HabitatScene):
         for i in [3, 4, 5, 10, 11, 12]:
             angles[i] = -swing
 
-    def _draw(self, animal: Animal, screen: pygame.Surface) -> None:
+    def _draw_tiger(self, animal: Animal, screen: pygame.Surface) -> None:
+        """Draw a giraffe.
+
+        Args:
+            animal (Animal): the giraffe
+            screen (pygame.Surface): the screen to draw on
+        """
         state = _tiger_states.get(animal)
         if state is None or not animal.layers:
             return
@@ -228,6 +252,11 @@ class TigerHabitat(HabitatScene):
             screen.blit(img, rect)
 
     def handle_events(self, events: list[pygame.event.Event]) -> None:
+        """Handle mouse events and pausing.
+
+        Args:
+            events (list[pygame.event.Event]): the events to handle
+        """
         super().handle_events(events)
         w_rect, f_rect = self._get_station_rects()
 
@@ -261,6 +290,11 @@ class TigerHabitat(HabitatScene):
                             self._waste_clicked[i] = True
 
     def update(self, dt: float) -> None:
+        """Update game state.
+
+        Args:
+            dt (float): the time since the last frame
+        """
         if self._interaction_timer > 0:
             self._interaction_timer -= dt
             if self._interaction_timer <= 0 and self._animals:
@@ -314,6 +348,11 @@ class TigerHabitat(HabitatScene):
             self._pass_counted = False
 
     def draw(self, screen: pygame.Surface) -> None:
+        """Render the scene.
+
+        Args:
+            screen (pygame.Surface): the screen to draw on
+        """
         super().draw(screen)
 
         if self._btn_water:
@@ -364,8 +403,11 @@ class TigerHabitat(HabitatScene):
             self._complete_task("tiger_feed")
 
     def draw_ground_layer(self, screen: pygame.Surface) -> None:
-        """Use the ground layer to draw in the
-        animal waste behind the animals."""
+        """Draw the droppings.
+
+        Args:
+            screen (pygame.Surface): the screen to draw on
+        """
         for i, pos in enumerate(self._waste_positions):
             if not self._waste_clicked[i]:
                 screen.blit(
@@ -374,7 +416,23 @@ class TigerHabitat(HabitatScene):
                     (center=(int(pos.x), int(pos.y)))
                 )
 
-    def _draw_station(self, screen, rect, level, fill_col, border_col):
+    def _draw_station(
+            self,
+            screen: pygame.Surface,
+            rect: pygame.Rect,
+            level: float | int,
+            fill_col: tuple[int, int, int],
+            border_col: tuple[int, int, int]
+    ) -> None:
+        """Draw a station.
+
+        Args:
+            screen (pygame.Surface): the screen to draw on
+            rect (pygame.Rect): the rect of the station
+            level (float | int): the station contents level
+            fill_col (tuple[int, int, int]): the station fill color
+            border_col (tuple[int, int, int]): the station border color
+        """
         s1, s2 = self._STATION_S1, self._STATION_S2
         fill_h = int((s1 - s2) * (level / 100))
         cx, cy = rect.topleft
@@ -384,7 +442,12 @@ class TigerHabitat(HabitatScene):
         pygame.draw.rect(screen, border_col, (cx, cy, s2, s1))
         pygame.draw.rect(screen, border_col, (cx + s1 - s2, cy, s2, s1))
 
-    def _complete_task(self, task):
+    def _complete_task(self, task: str):
+        """Handle task completion.
+
+        Args:
+            task (str): the task to handle completion for
+        """
         self._manager.context.checklist.complete_task(task)
         from checklist_scene import ChecklistScene
         self._manager.pop()
@@ -396,4 +459,5 @@ class TigerHabitat(HabitatScene):
         )
 
     def _on_pet_complete(self):
+        """Mark the petting task as complete."""
         self._complete_task("tiger_pet")

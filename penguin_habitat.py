@@ -65,6 +65,7 @@ class PenguinHabitat(HabitatScene):
         self._build_toolbar()
 
     def _build_toolbar(self) -> None:
+        """Create minigame toolbar icons."""
         super()._build_toolbar()
 
         pad = 12
@@ -92,8 +93,12 @@ class PenguinHabitat(HabitatScene):
         for animal in self._animals:
             animal.load(self._base_dir)
 
-    def _get_station_rects(self):
-        """Return the Rect objects that represent the food/water stations."""
+    def _get_station_rects(self) -> tuple[pygame.Rect, pygame.Rect]:
+        """Return the Rect objects that represent the food/water stations.
+
+        Returns:
+            tuple[pygame.Rect, pygame.Rect]: the station rects
+        """
         sw, sh = pygame.display.get_surface().get_size()
         w_rect = pygame.Rect(
             sw // 2 - self._X_OFFSET - self._STATION_S1 // 2,
@@ -110,6 +115,11 @@ class PenguinHabitat(HabitatScene):
         return w_rect, f_rect
 
     def create_animals(self) -> list[Animal]:
+        """Create a list of penguin animals.
+
+       Returns:
+           list[Animal]: the list of penguins
+       """
         if self._water_active or self._feed_active:
             return [
                 Animal(
@@ -155,6 +165,11 @@ class PenguinHabitat(HabitatScene):
 
     @staticmethod
     def _animate(animal: Animal) -> None:
+        """Animate a penguin.
+
+        Args:
+           animal (Animal): The penguin to animate.
+        """
         t = animal.time
         speed_factor = abs(animal.direction * animal.speed)
 
@@ -165,6 +180,13 @@ class PenguinHabitat(HabitatScene):
 
     @staticmethod
     def _draw_animal(animal: Animal, screen: pygame.Surface) -> None:
+        """Draw a penguin on the screen.
+
+        Args:
+            animal (Animal): the animal to render
+            screen (pygame.Surface): the screen to render on
+        """
+
         if not animal.layers:
             return
 
@@ -192,6 +214,11 @@ class PenguinHabitat(HabitatScene):
         screen.blit(rotated_img, rect)
 
     def handle_events(self, events: list[pygame.event.Event]) -> None:
+        """Handle mouse events and pausing.
+
+        Args:
+            events (list[pygame.event.Event]): the events to handle
+        """
         super().handle_events(events)
         w_rect, f_rect = self._get_station_rects()
 
@@ -226,6 +253,11 @@ class PenguinHabitat(HabitatScene):
                     self._feed_level = min(100, self._feed_level + 2)
 
     def update(self, dt: float) -> None:
+        """Update game state.
+
+        Args:
+            dt (float): the time since the last frame
+        """
         if self._interaction_timer > 0:
             self._interaction_timer -= dt
             if self._interaction_timer <= 0 and self._animals:
@@ -287,6 +319,11 @@ class PenguinHabitat(HabitatScene):
             self._complete_task("penguin_feed")
 
     def draw(self, screen: pygame.Surface) -> None:
+        """Render the scene.
+
+        Args:
+            screen (pygame.Surface): the screen to draw on
+        """
         super().draw(screen)
 
         if self._btn_water:
@@ -331,7 +368,23 @@ class PenguinHabitat(HabitatScene):
                 screen.blit(surf, (40, y_off))
                 y_off += surf.get_height() + 4
 
-    def _draw_station(self, screen, rect, level, fill_col, border_col):
+    def _draw_station(
+            self,
+            screen: pygame.Surface,
+            rect: pygame.Rect,
+            level: float | int,
+            fill_col: tuple[int, int, int],
+            border_col: tuple[int, int, int]
+    ) -> None:
+        """Draw the station on the screen.
+
+        Args:
+            screen (pygame.Surface): the screen to draw on
+            rect (pygame.Rect): the rect of the station
+            level (float | int): the level of the station's contents
+            fill_col (tuple[int, int, int]): the fill color of the station
+            border_col (tuple[int, int, int]): the border color of the station
+        """
         s1, s2 = self._STATION_S1, self._STATION_S2
         fill_h = int((s1 - s2) * (level / 100))
         (pygame.draw.rect
@@ -344,7 +397,11 @@ class PenguinHabitat(HabitatScene):
         (pygame.draw.rect
          (screen, border_col, (rect.x + s1 - s2, rect.y, s2, s1)))
 
-    def _complete_task(self, task):
+    def _complete_task(self, task: str) -> None:
+        """Handle task completion.
+        Args:
+            task (str): the task to complete
+        """
         self._manager.context.checklist.complete_task(task)
         from checklist_scene import ChecklistScene
         self._manager.pop()
@@ -352,4 +409,5 @@ class PenguinHabitat(HabitatScene):
                            (self._manager, self._manager.context.checklist))
 
     def _on_pet_complete(self):
+        """Mark petting task complete."""
         self._complete_task("penguin_pet")

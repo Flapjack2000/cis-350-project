@@ -124,8 +124,12 @@ class GiraffeHabitat(HabitatScene):
         self._pet_task_active = "giraffe_pet" in incomplete
         self._build_toolbar()
 
-    def _get_station_rects(self):
-        """Return the Rect objects that represent the food/water stations."""
+    def _get_station_rects(self) -> tuple[pygame.Rect, pygame.Rect]:
+        """Return the Rect objects that represent the food/water stations.
+
+        Returns:
+            tuple[pygame.Rect, pygame.Rect]: the rects
+        """
         sw, sh = pygame.display.get_surface().get_size()
         w_rect = pygame.Rect(sw // 2 - self._X_OFFSET - self._STATION_S1 // 2,
                              sh // 2 + self._Y_OFFSET - self._STATION_S1 // 2,
@@ -322,7 +326,7 @@ class GiraffeHabitat(HabitatScene):
             self._complete_task("giraffe_feed")
 
     def draw_ground_layer(self, screen: pygame.Surface) -> None:
-        """Draw the ground layer.
+        """Draw the droppings.
 
         Args:
             screen (pygame.Surface): the screen to draw on

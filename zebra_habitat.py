@@ -77,6 +77,7 @@ class ZebraHabitat(HabitatScene):
         self._build_toolbar()
 
     def _build_toolbar(self) -> None:
+        """Create minigame toolbar icons."""
         super()._build_toolbar()
 
         pad = 12
@@ -109,6 +110,7 @@ class ZebraHabitat(HabitatScene):
             animal.load(self._base_dir)
 
     def on_enter(self) -> None:
+        """Handle entering the scene."""
         super().on_enter()
         incomplete = self._manager.context.checklist.get_incomplete_tasks()
         self._pet_task_active = "zebra_pet" in incomplete
@@ -117,8 +119,13 @@ class ZebraHabitat(HabitatScene):
             self._btn_pet.enabled = self._pet_task_active
             self._btn_pet.greyed = not self._pet_task_active
 
-    def _get_station_rects(self):
-        """Return the Rect objects that represent the food/water stations."""
+    def _get_station_rects(self) -> tuple[pygame.Rect, pygame.Rect]:
+        """Return the Rect objects that represent the food/water stations.
+
+        Returns:
+            tuple[pygame.Rect, pygame.Rect]: the rects
+        """
+
         sw, sh = pygame.display.get_surface().get_size()
         w_rect = pygame.Rect(sw // 2 - self._X_OFFSET - self._STATION_S1 // 2,
                              sh // 2 + self._Y_OFFSET - self._STATION_S1 // 2,
@@ -129,6 +136,12 @@ class ZebraHabitat(HabitatScene):
         return w_rect, f_rect
 
     def create_animals(self) -> list[Animal]:
+        """Create the zebras.
+
+        Returns:
+            list[Animal]: the zebras
+        """
+
         def make(x, y, direction, scale=0.45):
             a = Animal(
                 x=x,
@@ -140,7 +153,7 @@ class ZebraHabitat(HabitatScene):
                 direction=direction,
                 speed=self._ZEBRA_SPEED,
                 animate_fn=self._animate,
-                draw_fn=self._draw,
+                draw_fn=self._draw_zebra,
             )
             _zebra_states[a] = {"angles": [0.0] * len(self._LAYER_FILES)}
             return a
@@ -152,6 +165,11 @@ class ZebraHabitat(HabitatScene):
 
     @staticmethod
     def _animate(animal: Animal) -> None:
+        """Animate a zebra.
+
+        Args:
+            animal (Animal): the zebra
+        """
         swing = math.sin(animal.time * 5) * 5
         state = _zebra_states.get(animal)
         if not state:
@@ -164,7 +182,13 @@ class ZebraHabitat(HabitatScene):
             angles[i] = -swing
 
     @staticmethod
-    def _draw(animal: Animal, screen: pygame.Surface) -> None:
+    def _draw_zebra(animal: Animal, screen: pygame.Surface) -> None:
+        """Draw a zebra.
+
+        Args:
+            animal (Animal): the zebra
+            screen (pygame.Surface): the screen to draw on
+        """
         state = _zebra_states.get(animal)
         if state is None or not animal.layers:
             return
@@ -190,6 +214,11 @@ class ZebraHabitat(HabitatScene):
             screen.blit(img, rect)
 
     def handle_events(self, events: list[pygame.event.Event]) -> None:
+        """Handle mouse events and pausing.
+
+        Args:
+            events (list[pygame.event.Event]): the events to handle
+        """
         super().handle_events(events)
         w_rect, f_rect = self._get_station_rects()
 
@@ -223,6 +252,11 @@ class ZebraHabitat(HabitatScene):
                             self._waste_clicked[i] = True
 
     def update(self, dt: float) -> None:
+        """Update game state.
+
+        Args:
+            dt (float): the time since the last frame
+        """
         if self._interaction_timer > 0:
             self._interaction_timer -= dt
             if self._interaction_timer <= 0 and self._animals:
@@ -261,6 +295,11 @@ class ZebraHabitat(HabitatScene):
             self._pass_counted = False
 
     def draw(self, screen: pygame.Surface) -> None:
+        """Render the scene.
+
+        Args:
+            screen (pygame.Surface): the screen to draw on
+        """
         super().draw(screen)
 
         if self._btn_water:
@@ -288,31 +327,85 @@ class ZebraHabitat(HabitatScene):
             self._complete_task("zebra_feed")
 
     def draw_ground_layer(self, screen: pygame.Surface) -> None:
+        """Draw the droppings.
+
+        Args:
+            screen (pygame.Surface): the screen to draw on
+        """
         for i, pos in enumerate(self._waste_positions):
             if not self._waste_clicked[i]:
                 screen.blit(self._waste_sprite,
                             self._waste_sprite.get_rect(center=(int(pos.x),
                                                                 int(pos.y))))
 
-    def _draw_station(self, screen, rect, level, fill_col, border_col):
+    def _draw_station(
+            self,
+            screen: pygame.Surface,
+            rect: pygame.Rect,
+            level: float | int,
+            fill_col: tuple[int, int, int],
+            border_col: tuple[int, int, int]
+    ) -> None:
         s1, s2 = self._STATION_S1, self._STATION_S2
         fill_h = int((s1 - s2) * (level / 100))
         cx, cy = rect.topleft
-        pygame.draw.rect(screen, fill_col,
-                         (cx + s2, cy + s1 - s2 - fill_h, s1 - s2 * 2, fill_h))
-        pygame.draw.rect(screen, border_col,
-                         (cx, cy + s1 - s2, s1, s2))
-        pygame.draw.rect(screen, border_col,
-                         (cx, cy, s2, s1))
-        pygame.draw.rect(screen, border_col,
-                         (cx + s1 - s2, cy, s2, s1))
+        pygame.draw.rect(
+            screen,
+            fill_col,
+            (
+                cx + s2,
+                cy + s1 - s2 - fill_h,
+                s1 - s2 * 2,
+                fill_h
+            )
+        )
+        pygame.draw.rect(
+            screen,
+            border_col,
+            (
+                cx,
+                cy + s1 - s2,
+                s1,
+                s2
+            )
+        )
+        pygame.draw.rect(
+            screen,
+            border_col,
+            (
+                cx,
+                cy,
+                s2,
+                s1
+            )
+        )
+        pygame.draw.rect(
+            screen,
+            border_col,
+            (
+                cx + s1 - s2,
+                cy,
+                s2,
+                s1
+            )
+        )
 
-    def _complete_task(self, task):
+    def _complete_task(self, task: str):
+        """Handle task completion.
+
+        Args:
+            task (str): the task to handle completion for
+        """
         self._manager.context.checklist.complete_task(task)
         from checklist_scene import ChecklistScene
         self._manager.pop()
-        self._manager.push(ChecklistScene
-                           (self._manager, self._manager.context.checklist))
+        self._manager.push(
+            ChecklistScene(
+                self._manager,
+                self._manager.context.checklist
+            )
+        )
 
     def _on_pet_complete(self):
+        """Mark the petting task as complete."""
         self._complete_task("zebra_pet")
