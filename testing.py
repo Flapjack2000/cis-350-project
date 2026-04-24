@@ -1,6 +1,5 @@
 import unittest
 import pygame
-from pygame.surface import Surface
 
 from checklist import Checklist
 from scene import Scene, SceneManager, GameContext
@@ -183,7 +182,7 @@ class TestSceneManager(unittest.TestCase):
         # Example context for SceneManager initialization
         context = GameContext(
             checklist=Checklist(self.tasks),
-            cursor=Surface((1, 1)),
+            cursor=pygame.Surface((1, 1)),
             music_player=AudioPlayer()
         )
 
@@ -222,7 +221,7 @@ class TestSceneManager(unittest.TestCase):
         # Example context for SceneManager initialization
         context = GameContext(
             checklist=Checklist(self.tasks),
-            cursor=Surface((1, 1)),
+            cursor=pygame.Surface((1, 1)),
             music_player=AudioPlayer()
         )
 
@@ -280,7 +279,7 @@ class TestSceneManager(unittest.TestCase):
         # Example context for SceneManager initialization
         context = GameContext(
             checklist=Checklist(self.tasks),
-            cursor=Surface((1, 1)),
+            cursor=pygame.Surface((1, 1)),
             music_player=AudioPlayer()
         )
 
