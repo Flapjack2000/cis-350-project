@@ -128,7 +128,14 @@ class LionHabitat(HabitatScene):
             list[Animal]: the lions
         """
 
-        def make(x, y, layers, direction, speed=None, droppings=False) -> Animal:
+        def make(
+                x,
+                y,
+                layers,
+                direction,
+                speed=None,
+                droppings=False
+        ) -> Animal:
             return Animal(
                 x=x,
                 y=y,
