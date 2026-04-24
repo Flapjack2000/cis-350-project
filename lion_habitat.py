@@ -3,10 +3,10 @@ import math
 import random
 import pygame
 
+from math_helper import MathHelper
 from scene import SceneManager
 from habitat_scene import HabitatScene, _IconButton
 from animal import Animal
-from animal_movement import AnimalMovement
 
 
 class LionHabitat(HabitatScene):
@@ -65,7 +65,6 @@ class LionHabitat(HabitatScene):
         )
         super().__init__(manager)
 
-        self._movement = AnimalMovement()
         incomplete = manager.context.checklist.get_incomplete_tasks()
 
         self._pet_task_active = "lion_pet" in incomplete
@@ -208,7 +207,7 @@ class LionHabitat(HabitatScene):
 
         for layer, angle, pivot in (
                 zip(animal.layers, animal.layer_angles, pivots)):
-            img, rect = self._movement.rotate_image(layer, angle, pivot)
+            img, rect = MathHelper.rotate_image(layer, angle, pivot)
             rect.center = int(body_pos[0]), int(body_pos[1])
             if should_flip:
                 img = pygame.transform.flip(img, True, False)

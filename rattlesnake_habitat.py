@@ -2,10 +2,10 @@ import os
 import math
 import pygame
 
+from math_helper import MathHelper
 from scene import SceneManager
 from habitat_scene import HabitatScene
 from animal import Animal
-from animal_movement import AnimalMovement
 
 _SUBFOLDER = os.path.join("assets", "animals", "rattlesnake")
 TAIL_PIVOT = pygame.Vector2(250, 335)
@@ -36,7 +36,6 @@ class RattlesnakeHabitat(HabitatScene):
         )
         super().__init__(manager)
 
-        self._movement = AnimalMovement()
         incomplete = manager.context.checklist.get_incomplete_tasks()
 
         # Task activation - Pet only
@@ -89,7 +88,8 @@ class RattlesnakeHabitat(HabitatScene):
         state["head_angle"] = math.sin(t * 5) * 10
         state["tongue_angle"] = math.sin(t * 30 + math.pi / 4) * 15
 
-    def _draw_animal(self, animal: Animal, screen: pygame.Surface) -> None:
+    @staticmethod
+    def _draw_animal(animal: Animal, screen: pygame.Surface) -> None:
         """Render layered snake parts using values from the state map."""
         if not animal.layers or animal not in _snake_states:
             return
@@ -103,8 +103,9 @@ class RattlesnakeHabitat(HabitatScene):
         screen.blit(body, (int(animal.x), int(animal.y)))
 
         # Draw Tail
-        rotated_tail, t_rect = self._movement.rotate_image(
-            tail, state["tail_angle"], (TAIL_PIVOT.x, TAIL_PIVOT.y)
+        rotated_tail, t_rect = MathHelper.rotate_image(
+            tail, state["tail_angle"],
+            pygame.Vector2(TAIL_PIVOT.x, TAIL_PIVOT.y)
         )
         screen.blit(
             rotated_tail,
@@ -113,8 +114,8 @@ class RattlesnakeHabitat(HabitatScene):
 
         # Draw Head
         h_angle = state["head_angle"]
-        rotated_head, h_rect = self._movement.rotate_image(
-            head, h_angle, (HEAD_PIVOT.x, HEAD_PIVOT.y)
+        rotated_head, h_rect = MathHelper.rotate_image(
+            head, h_angle, pygame.Vector2(HEAD_PIVOT.x, HEAD_PIVOT.y)
         )
         screen.blit(
             rotated_head,
@@ -127,8 +128,8 @@ class RattlesnakeHabitat(HabitatScene):
         # Draw Tongue (only when hissing)
         if state["hissing"]:
             tg_angle = state["tongue_angle"] + h_angle
-            rotated_tongue, tg_rect = self._movement.rotate_image(
-                tongue, tg_angle, (HEAD_PIVOT.x, HEAD_PIVOT.y)
+            rotated_tongue, tg_rect = MathHelper.rotate_image(
+                tongue, tg_angle, pygame.Vector2(HEAD_PIVOT.x, HEAD_PIVOT.y)
             )
             screen.blit(
                 rotated_tongue,

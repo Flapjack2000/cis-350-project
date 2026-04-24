@@ -2,10 +2,10 @@ import os
 import math
 import pygame
 
+from math_helper import MathHelper
 from scene import SceneManager
 from habitat_scene import HabitatScene, _IconButton
 from animal import Animal
-from animal_movement import AnimalMovement
 
 _zebra_states: dict[Animal, dict[str, list[float]]] = {}
 
@@ -50,7 +50,6 @@ class ZebraHabitat(HabitatScene):
 
         super().__init__(manager)
 
-        self._movement = AnimalMovement()
         self._poop_active = "zebra_poop" in incomplete
         self._water_active = "zebra_water" in incomplete
         self._feed_active = "zebra_feed" in incomplete
@@ -163,7 +162,8 @@ class ZebraHabitat(HabitatScene):
         for i in [2, 3, 6, 7]:
             angles[i] = -swing
 
-    def _draw(self, animal: Animal, screen: pygame.Surface) -> None:
+    @staticmethod
+    def _draw(animal: Animal, screen: pygame.Surface) -> None:
         state = _zebra_states.get(animal)
         if state is None or not animal.layers:
             return
@@ -174,7 +174,7 @@ class ZebraHabitat(HabitatScene):
                                   animal.layers[5].get_width() / 2, animal.y)
 
         for i, (layer, angle) in enumerate(zip(animal.layers, angles)):
-            img, rect = self._movement.rotate_image(
+            img, rect = MathHelper.rotate_image(
                 layer,
                 angle,
                 pygame.Vector2(layer.get_width()

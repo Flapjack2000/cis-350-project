@@ -2,10 +2,10 @@ import os
 import math
 import pygame
 
+from math_helper import MathHelper
 from scene import SceneManager
 from habitat_scene import HabitatScene
 from animal import Animal
-from animal_movement import AnimalMovement
 
 _SUBFOLDER = os.path.join("assets", "animals", "redpanda")
 TAIL_PIVOT = pygame.Vector2(300, 150)
@@ -34,7 +34,6 @@ class RedPandaHabitat(HabitatScene):
 
         super().__init__(manager)
 
-        self._movement = AnimalMovement()
         incomplete = manager.context.checklist.get_incomplete_tasks()
 
         self._pet_task_active = "red_panda_pet" in incomplete
@@ -94,7 +93,8 @@ class RedPandaHabitat(HabitatScene):
         """
         animal.tail_angle = math.sin(animal.time * 2) * 15
 
-    def _draw(self, animal: Animal, screen: pygame.Surface) -> None:
+    @staticmethod
+    def _draw(animal: Animal, screen: pygame.Surface) -> None:
         """
         Renders a red panda using a simple two-part sprite
         system (body + tail).
@@ -113,10 +113,10 @@ class RedPandaHabitat(HabitatScene):
         screen.blit(body, (int(animal.x), int(animal.y)))
 
         angle = getattr(animal, "tail_angle", 0)
-        rotated_tail, rect = self._movement.rotate_image(
+        rotated_tail, rect = MathHelper.rotate_image(
             tail,
             angle,
-            (TAIL_PIVOT.x, TAIL_PIVOT.y)
+            pygame.Vector2(TAIL_PIVOT.x, TAIL_PIVOT.y)
         )
 
         rect.x += int(animal.x)

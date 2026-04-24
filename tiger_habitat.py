@@ -3,10 +3,10 @@ import math
 import random
 import pygame
 
+from math_helper import MathHelper
 from scene import SceneManager
 from habitat_scene import HabitatScene, _IconButton
 from animal import Animal
-from animal_movement import AnimalMovement
 
 _tiger_states: dict[Animal, dict[str, list[float]]] = {}
 
@@ -68,8 +68,6 @@ class TigerHabitat(HabitatScene):
         self._pet_task_active = "tiger_pet" in incomplete
 
         super().__init__(manager)
-
-        self._movement = AnimalMovement()
 
         self._poop_active = "tiger_poop" in incomplete
         self._water_active = "tiger_water" in incomplete
@@ -220,7 +218,7 @@ class TigerHabitat(HabitatScene):
                 pivot = pygame.Vector2(layer.get_width() //
                                        2, layer.get_height() // 2)
 
-            img, rect = self._movement.rotate_image(layer, angle, pivot)
+            img, rect = MathHelper.rotate_image(layer, angle, pivot)
             rect.center = (int(body_pos.x), int(body_pos.y))
 
             if should_flip:

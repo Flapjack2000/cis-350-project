@@ -2,10 +2,11 @@ import os
 import math
 import random
 import pygame
+
+from math_helper import MathHelper
 from scene import SceneManager
 from habitat_scene import HabitatScene, _IconButton
 from animal import Animal
-from animal_movement import AnimalMovement
 
 _SUBFOLDER = os.path.join("assets", "animals", "penguin")
 WADDLE_SPEED = 6
@@ -39,7 +40,6 @@ class PenguinHabitat(HabitatScene):
         )
         super().__init__(manager)
 
-        self._movement = AnimalMovement()
         incomplete = manager.context.checklist.get_incomplete_tasks()
 
         self._pet_task_active = "penguin_pet" in incomplete
@@ -162,7 +162,8 @@ class PenguinHabitat(HabitatScene):
         )
         animal.y_offset = math.sin(t * WADDLE_SPEED * 2) * 2 * speed_factor
 
-    def _draw_animal(self, animal: Animal, screen: pygame.Surface) -> None:
+    @staticmethod
+    def _draw_animal(animal: Animal, screen: pygame.Surface) -> None:
         if not animal.layers:
             return
 
@@ -179,10 +180,10 @@ class PenguinHabitat(HabitatScene):
             draw_pivot = pygame.Vector2(img.get_width() -
                                         base_pivot.x, base_pivot.y)
 
-        rotated_img, rect = self._movement.rotate_image(
+        rotated_img, rect = MathHelper.rotate_image(
             draw_img,
             getattr(animal, "waddle_angle", 0),
-            (draw_pivot.x, draw_pivot.y)
+            pygame.Vector2(draw_pivot.x, draw_pivot.y)
         )
 
         rect.x += int(animal.x)

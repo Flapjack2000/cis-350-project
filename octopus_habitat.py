@@ -1,10 +1,11 @@
 import os
 import math
 import pygame
+
+from math_helper import MathHelper
 from scene import SceneManager
 from habitat_scene import HabitatScene
 from animal import Animal
-from animal_movement import AnimalMovement
 
 _SUBFOLDER = os.path.join("assets", "animals", "octopus")
 TENTACLE_PIVOT = pygame.Vector2(100, 400)
@@ -29,7 +30,6 @@ class OctopusHabitat(HabitatScene):
         )
         super().__init__(manager)
 
-        self._movement = AnimalMovement()
         incomplete = manager.context.checklist.get_incomplete_tasks()
 
         # Task activation - Pet only
@@ -58,7 +58,8 @@ class OctopusHabitat(HabitatScene):
         """Apply sinusoidal tentacle motion."""
         animal.tentacle_angle = math.sin(animal.time * 3) * 25
 
-    def _draw_animal(self, animal: Animal, screen: pygame.Surface) -> None:
+    @staticmethod
+    def _draw_animal(animal: Animal, screen: pygame.Surface) -> None:
         """Render octopus layers (body and tentacle) with pivots."""
         if not animal.layers:
             return
@@ -69,8 +70,8 @@ class OctopusHabitat(HabitatScene):
         screen.blit(body, (int(animal.x), int(animal.y)))
 
         angle = getattr(animal, "tentacle_angle", 0)
-        rotated_tentacle, rect = self._movement.rotate_image(
-            tentacle, angle, (TENTACLE_PIVOT.x, TENTACLE_PIVOT.y)
+        rotated_tentacle, rect = MathHelper.rotate_image(
+            tentacle, angle, pygame.Vector2(TENTACLE_PIVOT.x, TENTACLE_PIVOT.y)
         )
 
         rect.x += int(animal.x)

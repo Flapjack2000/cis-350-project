@@ -4,10 +4,10 @@ import random
 
 import pygame
 
+from math_helper import MathHelper
 from scene import SceneManager
 from habitat_scene import HabitatScene, _IconButton
 from animal import Animal
-from animal_movement import AnimalMovement
 
 
 class MeerkatHabitat(HabitatScene):
@@ -54,7 +54,6 @@ class MeerkatHabitat(HabitatScene):
         )
         super().__init__(manager)
 
-        self._movement = AnimalMovement()
         incomplete = manager.context.checklist.get_incomplete_tasks()
 
         self._pet_task_active = "meerkat_pet" in incomplete
@@ -202,7 +201,8 @@ class MeerkatHabitat(HabitatScene):
         animal.layer_angles[2] = math.sin(t * 3) * 6
         animal.layer_angles[6] = math.sin(t * 4) * 2
 
-    def _draw(self, animal, screen):
+    @staticmethod
+    def _draw(animal: Animal, screen: pygame.Surface):
         should_flip = animal.facing_left != animal.default_facing_left
         body_w = animal.layers[0].get_width() if animal.layers else 0
         body_pos = pygame.Vector2(animal.x + body_w / 2, animal.y)
@@ -223,7 +223,7 @@ class MeerkatHabitat(HabitatScene):
         ):
             name = animal.layer_files[i]
 
-            img, rect = self._movement.rotate_image(
+            img, rect = MathHelper.rotate_image(
                 layer,
                 angle,
                 pygame.Vector2(
@@ -236,7 +236,7 @@ class MeerkatHabitat(HabitatScene):
             if ("1_" in name or "2_" in name) and "head" in name:
                 pos = pygame.Vector2(body_pos.x, body_pos.y + head_bob)
 
-            rect.center = pos
+            rect.center = (int(pos.x), int(pos.y))
 
             if should_flip:
                 img = pygame.transform.flip(img, True, False)
