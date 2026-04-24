@@ -99,6 +99,10 @@ class ZebraHabitat(HabitatScene):
             greyed=not self._feed_active,
         )
 
+        if self._btn_pet:
+            self._btn_pet.enabled = self._pet_task_active
+            self._btn_pet.greyed = not self._pet_task_active
+
     def _rebuild_animals_if_needed(self) -> None:
         """Recreate animals when habitat mode changes."""
         self._animals = self.create_animals()
@@ -109,6 +113,10 @@ class ZebraHabitat(HabitatScene):
         super().on_enter()
         incomplete = self._manager.context.checklist.get_incomplete_tasks()
         self._pet_task_active = "zebra_pet" in incomplete
+
+        if self._btn_pet:
+            self._btn_pet.enabled = self._pet_task_active
+            self._btn_pet.greyed = not self._pet_task_active
 
     def _get_station_rects(self):
         sw, sh = pygame.display.get_surface().get_size()
