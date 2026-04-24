@@ -5,7 +5,7 @@ from abc import abstractmethod
 from scene import Scene, SceneManager
 from animal import Animal
 
-PET_RATE = 0.1
+PET_RATE = 0.2
 DECAY_RATE = 0.05
 ICON_SCALE = 0.18
 ICON_SPACING = 12
