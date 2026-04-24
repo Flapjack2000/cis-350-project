@@ -198,14 +198,14 @@ class PenguinHabitat(HabitatScene):
 
                 if self._btn_water and self._btn_water.is_clicked(e.pos):
                     prev = self._water_active or self._feed_active
-                    self._water_active = True
+                    self._water_active = "penguin_water" in self._manager.context.checklist.get_incomplete_tasks()  # <- fix
                     self._feed_active = False
                     if prev != (self._water_active or self._feed_active):
                         self._rebuild_animals_if_needed()
 
                 elif self._btn_food and self._btn_food.is_clicked(e.pos):
                     prev = self._water_active or self._feed_active
-                    self._feed_active = True
+                    self._feed_active = "penguin_feed" in self._manager.context.checklist.get_incomplete_tasks()  # <- fix
                     self._water_active = False
                     if prev != (self._water_active or self._feed_active):
                         self._rebuild_animals_if_needed()
@@ -267,6 +267,14 @@ class PenguinHabitat(HabitatScene):
                     penguin.speed = 0.5
         else:
             self._pass_counted = False
+
+        if self._water_active and self._water_level >= 100:
+            self._water_active = False
+            self._complete_task("penguin_water")
+
+        if self._feed_active and self._feed_level >= 100:
+            self._feed_active = False
+            self._complete_task("penguin_feed")
 
     def draw(self, screen: pygame.Surface) -> None:
         super().draw(screen)
