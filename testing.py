@@ -308,5 +308,152 @@ class TestSceneManager(unittest.TestCase):
         self.assertIsNone(manager.current)
 
 
+import unittest
+import numpy as np
+import pygame
+
+from math_helper import MathHelper
+
+
+class TestMathHelper(unittest.TestCase):
+    """MathHelper tests."""
+
+    pygame.init()
+
+    # Triangle edges used across several tests
+    TRIANGLE = [
+        ((0, 0), (4, 0)),
+        ((4, 0), (2, 4)),
+        ((2, 4), (0, 0)),
+    ]
+
+    # Simple convex quadrilateral
+    QUAD = [
+        ((0, 0), (6, 0)),
+        ((6, 0), (6, 6)),
+        ((6, 6), (0, 6)),
+        ((0, 6), (0, 0)),
+    ]
+
+    def test_cross2d_orthogonal(self):
+        """Orthogonal unit vectors should have cross product of 1."""
+        x = np.array([1.0, 0.0])
+        y = np.array([0.0, 1.0])
+        result = MathHelper.cross2d(x, y)
+        self.assertAlmostEqual(float(result), 1.0)
+
+    def test_cross2d_parallel(self):
+        """Parallel vectors should have a cross product of 0."""
+        x = np.array([3.0, 0.0])
+        y = np.array([6.0, 0.0])
+        result = MathHelper.cross2d(x, y)
+        self.assertAlmostEqual(float(result), 0.0)
+
+    def test_cross2d_anticommutative(self):
+        """Swapping operands should negate the result."""
+        x = np.array([2.0, 3.0])
+        y = np.array([4.0, 1.0])
+        self.assertAlmostEqual(
+            float(MathHelper.cross2d(x, y)),
+            -float(MathHelper.cross2d(y, x))
+        )
+
+    def test_cross2d_invalid_dimension(self):
+        """Non-2D inputs should raise ValueError."""
+        with self.assertRaises(ValueError):
+            MathHelper.cross2d(np.array([1.0, 2.0, 3.0]), np.array([4.0, 5.0, 6.0]))
+
+    def test_cross2d_invalid_2d_array(self):
+        """2D matrix inputs should raise ValueError."""
+        with self.assertRaises(ValueError):
+            MathHelper.cross2d(np.array([[1.0, 0.0]]), np.array([[0.0, 1.0]]))
+
+    def test_check_edge_valence_valid_triangle(self):
+        """A properly connected triangle should pass valence check."""
+        edges = [((0, 0), (1, 0)), ((1, 0), (0, 1)), ((0, 1), (0, 0))]
+        self.assertTrue(MathHelper.check_edge_valence(edges))
+
+    def test_check_edge_valence_valid_square(self):
+        """A properly connected square should pass valence check."""
+        edges = [
+            ((0, 0), (1, 0)),
+            ((1, 0), (1, 1)),
+            ((1, 1), (0, 1)),
+            ((0, 1), (0, 0)),
+        ]
+        self.assertTrue(MathHelper.check_edge_valence(edges))
+
+    def test_check_edge_valence_dangling_vertex(self):
+        """A polygon with a vertex appearing only once should fail."""
+
+        # (2, 2) only appears once
+        edges = [((0, 0), (1, 0)), ((1, 0), (2, 2)), ((0, 0), (0, 1))]
+        self.assertFalse(MathHelper.check_edge_valence(edges))
+
+    def test_is_within_polygon_inside_triangle(self):
+        """Verify point inside a triangle."""
+        self.assertTrue(MathHelper.is_within_polygon((2, 1), self.TRIANGLE))
+
+    def test_is_within_polygon_outside_triangle(self):
+        """Verify point outside a triangle."""
+        self.assertFalse(MathHelper.is_within_polygon((10, 10), self.TRIANGLE))
+
+    def test_is_within_polygon_inside_quad(self):
+        """Verify point inside a square."""
+        self.assertTrue(MathHelper.is_within_polygon((3, 3), self.QUAD))
+
+    def test_is_within_polygon_outside_quad(self):
+        """Verify point outside a square."""
+        self.assertFalse(MathHelper.is_within_polygon((-1, -1), self.QUAD))
+
+    def test_is_within_polygon_too_few_edges(self):
+        """Fewer than 3 edges should raise ValueError."""
+        with self.assertRaises(ValueError):
+            MathHelper.is_within_polygon(
+                (0, 0),
+                [((0, 0), (1, 0)), ((1, 0), (2, 0))]
+            )
+
+    def test_is_within_polygon_invalid_valence(self):
+        """A non-closed polygon should raise ValueError."""
+
+        # Missing closing edge back to (0,0)
+        open_shape = [
+            ((0, 0), (4, 0)),
+            ((4, 0), (4, 4)),
+            ((4, 4), (0, 4)),
+            ((0, 4), (0, 2)),
+        ]
+        with self.assertRaises(ValueError):
+            MathHelper.is_within_polygon((2, 2), open_shape)
+
+    def test_rotate_image_zero_degrees(self):
+        """Rotating 0 degrees should return an image of the same size."""
+        surface = pygame.Surface((100, 60))
+        pivot = pygame.Vector2(50, 30)
+        rotated, rect = MathHelper.rotate_image(surface, 0, pivot)
+        self.assertEqual(rotated.get_size(), surface.get_size())
+        self.assertIsInstance(rect, pygame.Rect)
+
+    def test_rotate_image_360_degrees(self):
+        """A full rotation should produce
+        the same dimensions as the original."""
+        surface = pygame.Surface((100, 60))
+        pivot = pygame.Vector2(50, 30)
+        rotated, _ = MathHelper.rotate_image(surface, 360, pivot)
+        self.assertEqual(rotated.get_size(), surface.get_size())
+
+    def test_rotate_image_90_degrees(self):
+        """A non-square surface rotated 90 degrees
+        should swap its width and height."""
+        surface = pygame.Surface((100, 40))
+        pivot = pygame.Vector2(50, 20)
+        rotated, _ = MathHelper.rotate_image(surface, 90, pivot)
+        orig_w, orig_h = surface.get_size()
+        rot_w, rot_h = rotated.get_size()
+        self.assertEqual(rot_w, orig_h)
+        self.assertEqual(rot_h, orig_w)
+
+
 if __name__ == '__main__':
     unittest.main()
