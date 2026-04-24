@@ -209,7 +209,7 @@ class LionHabitat(HabitatScene):
         for layer, angle, pivot in (
                 zip(animal.layers, animal.layer_angles, pivots)):
             img, rect = self._movement.rotate_image(layer, angle, pivot)
-            rect.center = body_pos
+            rect.center = int(body_pos[0]), int(body_pos[1])
             if should_flip:
                 img = pygame.transform.flip(img, True, False)
             screen.blit(img, rect)

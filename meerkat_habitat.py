@@ -219,14 +219,17 @@ class MeerkatHabitat(HabitatScene):
         head_bob = math.sin(t * 4 + phase) * 5
 
         for i, (layer, angle) in (
-                enumerate(zip(animal.layers, animal.layer_angles))):
+                enumerate(zip(animal.layers, animal.layer_angles))
+        ):
             name = animal.layer_files[i]
 
             img, rect = self._movement.rotate_image(
                 layer,
                 angle,
-                pygame.Vector2(layer.get_width() // 2,
-                               layer.get_height() // 2),
+                pygame.Vector2(
+                    layer.get_width() // 2,
+                    layer.get_height() // 2
+                ),
             )
 
             pos = body_pos

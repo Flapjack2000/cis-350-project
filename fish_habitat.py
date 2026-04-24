@@ -234,6 +234,11 @@ class FishHabitat(Scene):
         )
 
     def draw(self, screen: pygame.Surface) -> None:
+        """
+         Args:
+            screen (pygame.Surface): the screen to draw on
+        """
+
         if self._background:
             screen.blit(self._background, (0, 0))
         else:
@@ -257,6 +262,11 @@ class FishHabitat(Scene):
             self._draw_progress_bar(screen)
 
     def _draw_progress_bar(self, screen: pygame.Surface) -> None:
+        """Render the food game progress bar.
+
+        Args:
+            screen (pygame.Surface): the screen to draw on
+        """
         bar_w, bar_h = 220, 18
         screen_w = screen.get_width()
         bar_x = (screen_w - bar_w) // 2
