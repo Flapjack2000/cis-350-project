@@ -143,6 +143,13 @@ class MeerkatHabitat(HabitatScene):
         return w_rect, f_rect
 
     def create_animals(self) -> list[Animal]:
+        """
+
+
+        Returns:
+            list[Animal]:
+        """
+
         def v3(x, y, direction, droppings=False):
             return Animal(
                 x=x,
@@ -153,7 +160,7 @@ class MeerkatHabitat(HabitatScene):
                 direction=direction,
                 speed=self._SPEED,
                 animate_fn=self._animate,
-                draw_fn=self._draw,
+                draw_fn=self._draw_animal,
                 has_droppings=droppings,
             )
 
@@ -166,7 +173,7 @@ class MeerkatHabitat(HabitatScene):
                 scale=0.65,
                 speed=0,
                 animate_fn=None,
-                draw_fn=self._draw,
+                draw_fn=self._draw_animal,
             )
 
         def v2(x, y):
@@ -178,7 +185,7 @@ class MeerkatHabitat(HabitatScene):
                 scale=0.65,
                 speed=0,
                 animate_fn=None,
-                draw_fn=self._draw,
+                draw_fn=self._draw_animal,
             )
 
         if self._water_active or self._feed_active:
@@ -192,7 +199,12 @@ class MeerkatHabitat(HabitatScene):
         ]
 
     @staticmethod
-    def _animate(animal):
+    def _animate(animal: Animal):
+        """Animate a meerkat.
+
+        Args:
+            animal (Animal): The meerkat to animate.
+        """
         t = animal.time
         swing = math.sin(t * 10) * 10
 
@@ -204,7 +216,13 @@ class MeerkatHabitat(HabitatScene):
         animal.layer_angles[6] = math.sin(t * 4) * 2
 
     @staticmethod
-    def _draw(animal: Animal, screen: pygame.Surface):
+    def _draw_animal(animal: Animal, screen: pygame.Surface):
+        """Draw a meerkat on the screen.
+
+        Args:
+            animal (Animal): the animal to render
+            screen (pygame.Surface): the screen to render on
+        """
         should_flip = animal.facing_left != animal.default_facing_left
         body_w = animal.layers[0].get_width() if animal.layers else 0
         body_pos = pygame.Vector2(animal.x + body_w / 2, animal.y)

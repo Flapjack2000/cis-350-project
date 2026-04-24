@@ -89,6 +89,7 @@ class GiraffeHabitat(HabitatScene):
         self._build_toolbar()
 
     def _build_toolbar(self) -> None:
+        """Create minigame toolbar icons."""
         super()._build_toolbar()
 
         pad = 12
